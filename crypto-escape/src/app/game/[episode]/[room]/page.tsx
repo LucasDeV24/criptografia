@@ -21,7 +21,7 @@ export default function GameRoomPage() {
   const prev = getPreviousChallenge(episode, room);
 
   useEffect(() => {
-    const alreadyDone = isRoomComplete(room);
+    const alreadyDone = challenge ? isRoomComplete(challenge.id) : false;
     setChallengeCompleted(alreadyDone);
     updateCurrentPosition(episode, room);
   }, [episode, room]);
