@@ -87,6 +87,25 @@ export function updateCurrentPosition(episode: number, room: string): void {
   saveProgress(progress);
 }
 
+export function saveUserCode(challengeId: string, language: string, code: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const key = `crypto-escape-code-${challengeId}-${language}`;
+    localStorage.setItem(key, code);
+  } catch {
+    // storage full or blocked
+  }
+}
+
+export function getUserCode(challengeId: string, language: string): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    return localStorage.getItem(`crypto-escape-code-${challengeId}-${language}`);
+  } catch {
+    return null;
+  }
+}
+
 export function resetProgress(): void {
   if (typeof window === 'undefined') return;
   localStorage.removeItem(STORAGE_KEY);

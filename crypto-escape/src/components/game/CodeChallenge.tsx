@@ -6,7 +6,7 @@ import { runJavaScript } from '@/lib/sandbox/javascript-runner';
 import { runPython } from '@/lib/sandbox/python-runner';
 import type { CodeChallenge as CodeChallengeType } from '@/types/challenge';
 import { Play, Loader2, CheckCircle, XCircle, ChevronDown, AlertCircle } from 'lucide-react';
-import { trackLanguageUse, trackAttempt } from '@/lib/progress';
+import { trackLanguageUse, trackAttempt, saveUserCode, getUserCode } from '@/lib/progress';
 
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
@@ -30,7 +30,7 @@ export default function CodeChallenge({
 }) {
   const defaultLang = challenge.languages[0] ?? 'javascript';
   const [code, setCode] = useState(
-    challenge.starterCode[defaultLang] ?? LANGUAGE_TEMPLATES[defaultLang]
+    getUserCode(challenge.id, defaultLang) ?? challenge.starterCode[defaultLang] ?? LANGUAGE_TEMPLATES[defaultLang]
   );
   const [language, setLanguage] = useState<'javascript' | 'python'>(defaultLang);
   const [output, setOutput] = useState<string>('');
@@ -80,6 +80,7 @@ export default function CodeChallenge({
       if (isValid) {
         setStatus('success');
         trackAttempt(newAttempts === 1);
+        saveUserCode(challenge.id, language, code);
         onComplete?.();
       } else {
         setStatus('error');
@@ -98,7 +99,7 @@ export default function CodeChallenge({
   const handleLanguageChange = (lang: 'javascript' | 'python') => {
     if (!challenge.languages.includes(lang)) return;
     setLanguage(lang);
-    setCode(challenge.starterCode[lang] ?? LANGUAGE_TEMPLATES[lang]);
+    setCode(getUserCode(challenge.id, lang) ?? challenge.starterCode[lang] ?? LANGUAGE_TEMPLATES[lang]);
     setShowLanguageDropdown(false);
     setOutput('');
     setStatus('idle');
