@@ -103,56 +103,42 @@ const code1_2: CodeChallenge = {
   room: '1.2',
   title: 'Sua vez — mude a mensagem',
   description: 'Agora você recebeu outra mensagem secreta: **"Rrod"**. Mude APENAS a primeira linha do código para decodificar essa nova mensagem.',
-  instructions: 'Troque "Khoor" por "Rrod" e execute',
+  instructions: 'Escreva o código para decodificar "Rrod" usando Cifra de César com deslocamento 3. Use charCodeAt/ord para obter o código ASCII e volte 3 posições.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Mude APENAS esta linha:
-const mensagemSecreta = "Khoor";
+    javascript: `// Mensagem secreta que alguém te enviou:
+const mensagemSecreta = "Rrod";
 
-// O resto do código fica igual:
-let resultado = "";
-for (let i = 0; i < mensagemSecreta.length; i++) {
-  const letra = mensagemSecreta[i];
-  const codigo = letra.charCodeAt(0);
-  
-  if (codigo >= 65 && codigo <= 90) {
-    const novoCaractere = String.fromCharCode(((codigo - 65 - 3 + 26) % 26) + 65);
-    resultado += novoCaractere;
-  } else if (codigo >= 97 && codigo <= 122) {
-    const novoCaractere = String.fromCharCode(((codigo - 97 - 3 + 26) % 26) + 97);
-    resultado += novoCaractere;
-  } else {
-    resultado += letra;
-  }
-}
-
-console.log(resultado);
+// Decodifique usando Cifra de César (deslocamento 3)
+// Para cada caractere da mensagem:
+//   - Descubra o código ASCII com charCodeAt(0)
+//   - Se for letra maiúscula (65-90): volte 3 posições
+//   - Se for letra minúscula (97-122): volte 3 posições
+//   - Fórmula: ((codigo - base - 3 + 26) % 26) + base
+//     (base = 65 para maiúsculas, 97 para minúsculas)
+//   - Senão, mantenha o caractere original
+// Junte tudo em uma string resultado e imprima com console.log()
 `,
-    python: `# Mude APENAS esta linha:
-mensagem_secreta = "Khoor"
+    python: `# Mensagem secreta que alguém te enviou:
+mensagem_secreta = "Rrod"
 
-# O resto do código fica igual:
-resultado = ""
-for letra in mensagem_secreta:
-    codigo = ord(letra)
-    
-    if 65 <= codigo <= 90:
-        novo_caractere = chr(((codigo - 65 - 3 + 26) % 26) + 65)
-        resultado += novo_caractere
-    elif 97 <= codigo <= 122:
-        novo_caractere = chr(((codigo - 97 - 3 + 26) % 26) + 97)
-        resultado += novo_caractere
-    else:
-        resultado += letra
-
-print(resultado)
+# Decodifique usando Cifra de César (deslocamento 3)
+# Para cada caractere da mensagem:
+#   - Descubra o código ASCII com ord()
+#   - Se for letra maiúscula (65-90): volte 3 posições
+#   - Se for letra minúscula (97-122): volte 3 posições
+#   - Fórmula: chr(((codigo - base - 3 + 26) % 26) + base)
+#     (base = 65 para maiúsculas, 97 para minúsculas)
+#   - Senão, mantenha o caractere original
+# Junte tudo em uma string resultado e imprima com print()
 `,
   },
   expectedOutput: 'Good',
   hints: [
-    'Troque "Khoor" por "Rrod" na primeira linha',
-    'Mantenha as aspas!',
-    'O resultado é "Good"',
+    'Você precisa percorrer cada letra da mensagem com um loop',
+    'Para maiúsculas, use base 65. Para minúsculas, use base 97',
+    'A fórmula é: ((codigo - base - 3 + 26) % 26) + base',
+    'O resultado final é "Good"',
   ],
   difficulty: 'easy',
 };

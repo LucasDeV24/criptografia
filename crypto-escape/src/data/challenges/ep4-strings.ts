@@ -62,22 +62,25 @@ const code4_2: CodeChallenge = {
   room: '4.2',
   title: 'Maiúscula e minúscula',
   description: 'Transforme o texto em letras maiúsculas usando **.toUpperCase()** (JS) ou **.upper()** (Python). O código já está pronto!',
-  instructions: 'Execute e veja o texto em maiúsculas.',
+  instructions: 'Converta a mensagem para maiúsculas e imprima o resultado.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const mensagem = "hacker";
 
-console.log(mensagem.toUpperCase());
+// Imprima a mensagem convertida para letras maiúsculas
+// Use .toUpperCase() em JavaScript
 `,
     python: `mensagem = "hacker"
 
-print(mensagem.upper())
+# Imprima a mensagem convertida para letras maiúsculas
+# Use .upper() em Python
 `,
   },
   expectedOutput: 'HACKER',
   hints: [
-    'O código já está pronto! Execute.',
-    '.toUpperCase() converte tudo para maiúsculas',
+    'Em JS: console.log(mensagem.toUpperCase())',
+    'Em Python: print(mensagem.upper())',
+    '.toUpperCase() / .upper() converte tudo para maiúsculas',
   ],
   difficulty: 'easy',
 };
@@ -120,23 +123,24 @@ const code4_4: CodeChallenge = {
   room: '4.4',
   title: 'Letra para número',
   description: 'Vamos descobrir o número da letra **"A"**. O código já está pronto — **execute** e veja!',
-  instructions: 'Execute e veja o código numérico da letra A.',
+  instructions: 'Converta a letra "A" para seu código numérico e imprima.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const letra = "A";
-const numero = letra.charCodeAt(0);
 
-console.log(numero);
+// Converta a letra para seu código numérico e imprima
+// Use .charCodeAt(0) para obter o número
 `,
     python: `letra = "A"
-numero = ord(letra)
 
-print(numero)
+# Converta a letra para seu código numérico e imprima
+# Use ord() para obter o número
 `,
   },
   expectedOutput: '65',
   hints: [
-    'O código já está pronto! Execute.',
+    'Em JS: console.log(letra.charCodeAt(0))',
+    'Em Python: print(ord(letra))',
     'A letra "A" tem o código 65 na tabela ASCII',
   ],
   difficulty: 'easy',
@@ -149,23 +153,24 @@ const code4_5: CodeChallenge = {
   room: '4.5',
   title: 'Número para letra',
   description: 'Agora o contrário! Converta o número **72** de volta para uma letra. O código já está pronto — **execute**!',
-  instructions: 'Execute e descubra qual letra é o número 72.',
+  instructions: 'Converta o número 72 para uma letra e imprima.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const numero = 72;
-const letra = String.fromCharCode(numero);
 
-console.log(letra);
+// Converta o número para uma letra e imprima
+// Use String.fromCharCode() em JavaScript
 `,
     python: `numero = 72
-letra = chr(numero)
 
-print(letra)
+# Converta o número para uma letra e imprima
+# Use chr() em Python
 `,
   },
   expectedOutput: 'H',
   hints: [
-    'O código já está pronto! Execute.',
+    'Em JS: console.log(String.fromCharCode(numero))',
+    'Em Python: print(chr(numero))',
     'O número 72 corresponde à letra "H"',
   ],
   difficulty: 'easy',
@@ -178,39 +183,29 @@ const code4_6: CodeChallenge = {
   room: '4.6',
   title: 'Deslocando uma letra',
   description: 'Este é o coração da criptografia! Pegamos a letra **"A"**, somamos **3**, e descobrimos a nova letra. **Execute**!',
-  instructions: 'Execute e veja o resultado do deslocamento.',
+  instructions: 'Converta "A" em número, some 3, converta de volta em letra e imprima.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const letraOriginal = "A";
 
-// Passo 1: converter letra em número
-const numero = letraOriginal.charCodeAt(0);
-
-// Passo 2: somar 3 (deslocamento)
-const novoNumero = numero + 3;
-
-// Passo 3: converter de volta para letra
-const novaLetra = String.fromCharCode(novoNumero);
-
-console.log(novaLetra);
+// Passo 1: converta a letra em número usando .charCodeAt(0)
+// Passo 2: some 3 ao número (deslocamento)
+// Passo 3: converta de volta para letra usando String.fromCharCode()
+// Imprima a nova letra
 `,
     python: `letra_original = "A"
 
-# Passo 1: converter letra em número
-numero = ord(letra_original)
-
-# Passo 2: somar 3 (deslocamento)
-novo_numero = numero + 3
-
-# Passo 3: converter de volta para letra
-nova_letra = chr(novo_numero)
-
-print(nova_letra)
+# Passo 1: converta a letra em número usando ord()
+# Passo 2: some 3 ao número (deslocamento)
+# Passo 3: converta de volta para letra usando chr()
+# Imprima a nova letra
 `,
   },
   expectedOutput: 'D',
   hints: [
-    'O código já está pronto! Execute.',
+    'Passo 1: const numero = letraOriginal.charCodeAt(0) / numero = ord(letra_original)',
+    'Passo 2: const novoNumero = numero + 3 / novo_numero = numero + 3',
+    'Passo 3: console.log(String.fromCharCode(novoNumero)) / print(chr(novo_numero))',
     'A = 65, somando 3 = 68, que é a letra "D"',
   ],
   difficulty: 'easy',
@@ -223,31 +218,27 @@ const code4_7: CodeChallenge = {
   room: '4.7',
   title: 'Sua vez — mude a letra',
   description: 'Mude a letraOriginal para **"H"** e veja qual letra resulta do deslocamento de 3.',
-  instructions: 'Troque "A" por "H" e execute.',
+  instructions: 'Mude a letra para "H", converta em número, some 3, converta de volta e imprima.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `// Mude "A" para "H":
 const letraOriginal = "A";
 
-const numero = letraOriginal.charCodeAt(0);
-const novoNumero = numero + 3;
-const novaLetra = String.fromCharCode(novoNumero);
-
-console.log(novaLetra);
+// Converta a letra em número, some 3, converta de volta para letra
+// e imprima o resultado
 `,
     python: `# Mude "A" para "H":
 letra_original = "A"
 
-numero = ord(letra_original)
-novo_numero = numero + 3
-nova_letra = chr(novo_numero)
-
-print(nova_letra)
+# Converta a letra em número, some 3, converta de volta para letra
+# e imprima o resultado
 `,
   },
   expectedOutput: 'K',
   hints: [
-    'Mude "A" para "H" na primeira linha de código',
+    'Primeiro mude "A" para "H"',
+    'Depois: numero = charCodeAt(0), novoNumero = numero + 3, fromCharCode(novoNumero)',
+    'Em Python: numero = ord(letra_original), novo_numero = numero + 3, print(chr(novo_numero))',
     'H = 72, somando 3 = 75, que é "K"',
   ],
   difficulty: 'easy',

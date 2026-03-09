@@ -123,29 +123,15 @@ const code6_2: CodeChallenge = {
   "2026-03-07 14:32:00 - LOGIN SUCCESS - user: maria - IP: 192.168.1.60"
 ];
 
-// Contar falhas por IP
-const falhasPorIP = {};
+// Crie um objeto para contar falhas por IP (ex: { "192.168.1.100": 4 })
+// Percorra os logs:
+//   - Se contém "LOGIN FAILED":
+//     - Extraia o IP com: logs[i].split("IP: ")[1]
+//     - Incremente o contador desse IP no objeto
 
-for (let i = 0; i < logs.length; i++) {
-  if (logs[i].includes("LOGIN FAILED")) {
-    // Extrair IP (simplificado)
-    const partes = logs[i].split("IP: ");
-    const ip = partes[1];
-    
-    if (falhasPorIP[ip]) {
-      falhasPorIP[ip]++;
-    } else {
-      falhasPorIP[ip] = 1;
-    }
-  }
-}
-
-// Detectar ataques (3+ falhas)
-for (let ip in falhasPorIP) {
-  if (falhasPorIP[ip] >= 3) {
-    console.log("ALERTA: Ataque de força bruta detectado do IP " + ip);
-  }
-}
+// Depois, percorra o objeto de falhas:
+//   - Se um IP tem 3+ falhas, imprima:
+//   "ALERTA: Ataque de força bruta detectado do IP " + ip
 `,
     python: `logs = [
     "2026-03-07 14:31:05 - LOGIN FAILED - user: admin - IP: 192.168.1.100",
@@ -155,23 +141,15 @@ for (let ip in falhasPorIP) {
     "2026-03-07 14:32:00 - LOGIN SUCCESS - user: maria - IP: 192.168.1.60"
 ]
 
-# Contar falhas por IP
-falhas_por_ip = {}
+# Crie um dicionário para contar falhas por IP (ex: {"192.168.1.100": 4})
+# Percorra os logs:
+#   - Se contém "LOGIN FAILED":
+#     - Extraia o IP com: log.split("IP: ")[1]
+#     - Incremente o contador desse IP no dicionário
 
-for log in logs:
-    if "LOGIN FAILED" in log:
-        # Extrair IP (simplificado)
-        ip = log.split("IP: ")[1]
-        
-        if ip in falhas_por_ip:
-            falhas_por_ip[ip] += 1
-        else:
-            falhas_por_ip[ip] = 1
-
-# Detectar ataques (3+ falhas)
-for ip, falhas in falhas_por_ip.items():
-    if falhas >= 3:
-        print(f"ALERTA: Ataque de força bruta detectado do IP {ip}")
+# Depois, percorra o dicionário de falhas:
+#   - Se um IP tem 3+ falhas, imprima:
+#   f"ALERTA: Ataque de força bruta detectado do IP {ip}"
 `,
   },
   expectedOutput: 'ALERTA: Ataque de força bruta detectado do IP 192.168.1.100',
@@ -193,8 +171,10 @@ Tentou usuários privilegiados: admin, root
 • Fail2ban (bloqueio automático)
   `,
   hints: [
-    'O código está pronto - execute para ver a detecção',
-    'Usamos um objeto/dicionário para contar falhas por IP',
+    'Crie o objeto: const falhasPorIP = {} (ou dicionário em Python)',
+    'Para extrair IP: log.split("IP: ")[1]',
+    'Incremente o contador: falhasPorIP[ip] = (falhasPorIP[ip] || 0) + 1',
+    'Use for...in para percorrer o objeto e verificar >= 3',
   ],
   difficulty: 'easy',
 };
@@ -259,20 +239,11 @@ const palavrasChaveSQLi = ["'", "OR", "UNION", "SELECT", "--", ";"];
 console.log("Análise de segurança:");
 console.log("===================\\n");
 
-for (let i = 0; i < logs.length; i++) {
-  let suspeito = false;
-  
-  for (let j = 0; j < palavrasChaveSQLi.length; j++) {
-    if (logs[i].includes(palavrasChaveSQLi[j])) {
-      suspeito = true;
-      break;
-    }
-  }
-  
-  if (suspeito) {
-    console.log("🚨 SUSPEITO: " + logs[i]);
-  }
-}
+// Para cada log, verifique se contém alguma palavra-chave de SQLi
+// Use dois loops: um para percorrer logs, outro para palavras-chave
+// Se o log contiver qualquer palavra-chave, imprima:
+// "🚨 SUSPEITO: " + o log
+// Dica: use .includes() e uma variável boolean "suspeito"
 `,
     python: `# Logs de servidor web
 logs = [
@@ -290,16 +261,11 @@ palavras_chave_sqli = ["'", "OR", "UNION", "SELECT", "--", ";"]
 print("Análise de segurança:")
 print("===================\\n")
 
-for log in logs:
-    suspeito = False
-    
-    for palavra in palavras_chave_sqli:
-        if palavra in log:
-            suspeito = True
-            break
-    
-    if suspeito:
-        print(f"🚨 SUSPEITO: {log}")
+# Para cada log, verifique se contém alguma palavra-chave de SQLi
+# Use dois loops: um para percorrer logs, outro para palavras-chave
+# Se o log contiver qualquer palavra-chave, imprima:
+# f"🚨 SUSPEITO: {log}"
+# Dica: use "in" para verificar e uma variável boolean "suspeito"
 `,
   },
   expectedOutput: '🚨 SUSPEITO: GET /produto?id=1\' OR \'1\'=\'1 - 500 ERROR\n🚨 SUSPEITO: GET /usuario?id=5 UNION SELECT * FROM senhas-- - 500 ERROR',
@@ -321,8 +287,10 @@ Ambas resultaram em 500 ERROR = sistema vulnerável mas query falhou.
 SIEM (Security Information and Event Management) faz isso automaticamente para milhões de logs por segundo!
   `,
   hints: [
-    'O código está pronto - veja como detectamos SQLi',
-    'Procuramos por palavras-chave suspeitas nos logs',
+    'Loop externo: for (let i = 0; i < logs.length; i++)',
+    'Loop interno: for (let j = 0; j < palavrasChaveSQLi.length; j++)',
+    'Use logs[i].includes(palavrasChaveSQLi[j]) para verificar',
+    'Se suspeito, imprima: "🚨 SUSPEITO: " + logs[i]',
   ],
   difficulty: 'easy',
 };

@@ -63,23 +63,20 @@ const code2_2: CodeChallenge = {
   room: '2.2',
   title: 'Mudando o loop',
   description: 'Agora mude o loop para contar apenas de **1 até 3**.',
-  instructions: 'Altere o loop para contar até 3.',
+  instructions: 'Escreva um loop for que conta de 1 até 3, imprimindo cada número.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Mude para contar de 1 até 3:
-for (let i = 1; i <= 5; i++) {
-  console.log(i);
-}
+    javascript: `// Escreva um loop for que conta de 1 até 3
+// A cada volta, imprima o valor de i
 `,
-    python: `# Mude para contar de 1 até 3:
-for i in range(1, 6):
-    print(i)
+    python: `# Escreva um loop for que conta de 1 até 3
+# A cada volta, imprima o valor de i
 `,
   },
   expectedOutput: '1\n2\n3',
   hints: [
-    'Em JavaScript: mude i <= 5 para i <= 3',
-    'Em Python: mude range(1, 6) para range(1, 4)',
+    'Em JavaScript: for (let i = 1; i <= 3; i++) { console.log(i); }',
+    'Em Python: for i in range(1, 4): print(i)',
     'Lembre: em Python, range(1, 4) vai de 1 até 3',
   ],
   difficulty: 'easy',
@@ -120,25 +117,24 @@ const code2_4: CodeChallenge = {
   room: '2.4',
   title: 'Percorrendo um texto',
   description: 'O código abaixo mostra cada letra de "OLA" separadamente. **Execute** para ver!',
-  instructions: 'Execute e veja cada letra sendo mostrada.',
+  instructions: 'Escreva um loop que percorre o texto "OLA" e imprime cada letra.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const texto = "OLA";
 
-for (let i = 0; i < texto.length; i++) {
-  console.log(texto[i]);
-}
+// Escreva um loop for que percorre cada letra do texto
+// A cada volta, imprima a letra atual
 `,
     python: `texto = "OLA"
 
-for letra in texto:
-    print(letra)
+# Escreva um loop for que percorre cada letra do texto
+# A cada volta, imprima a letra atual
 `,
   },
   expectedOutput: 'O\nL\nA',
   hints: [
-    'O código já está pronto! Execute.',
-    'texto.length retorna 3 (OLA tem 3 letras)',
+    'Em JS: for (let i = 0; i < texto.length; i++) { console.log(texto[i]); }',
+    'Em Python: for letra in texto: print(letra)',
     'texto[0] = "O", texto[1] = "L", texto[2] = "A"',
   ],
   difficulty: 'easy',
@@ -151,27 +147,27 @@ const code2_5: CodeChallenge = {
   room: '2.5',
   title: 'Sua vez — mude o texto',
   description: 'Mude o texto para **"SEC"** (de segurança) e veja as letras.',
-  instructions: 'Troque "OLA" por "SEC" e execute.',
+  instructions: 'Mude o texto para "SEC" e escreva um loop para imprimir cada letra.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `// Mude "OLA" para "SEC":
 const texto = "OLA";
 
-for (let i = 0; i < texto.length; i++) {
-  console.log(texto[i]);
-}
+// Escreva um loop for que percorre cada letra do texto
+// A cada volta, imprima a letra atual
 `,
     python: `# Mude "OLA" para "SEC":
 texto = "OLA"
 
-for letra in texto:
-    print(letra)
+# Escreva um loop for que percorre cada letra do texto
+# A cada volta, imprima a letra atual
 `,
   },
   expectedOutput: 'S\nE\nC',
   hints: [
-    'Mude "OLA" para "SEC" na linha da variável',
-    'O loop automaticamente percorre as 3 novas letras',
+    'Primeiro mude "OLA" para "SEC" na variável texto',
+    'Depois escreva o loop: for (let i = 0; i < texto.length; i++) em JS',
+    'Em Python: for letra in texto: print(letra)',
   ],
   difficulty: 'easy',
 };
@@ -183,31 +179,30 @@ const code2_6: CodeChallenge = {
   room: '2.6',
   title: 'Juntando texto com loop',
   description: 'Agora vamos juntar letras com um loop! O código constrói uma palavra letra por letra. **Execute** para ver.',
-  instructions: 'Execute e veja a palavra sendo construída.',
+  instructions: 'Escreva um loop que percorre "HACK" e junta cada letra na variável resultado.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const letras = "HACK";
 let resultado = "";
 
-for (let i = 0; i < letras.length; i++) {
-  resultado = resultado + letras[i];
-}
+// Escreva um loop for que percorre cada letra de "letras"
+// A cada volta, adicione a letra ao resultado: resultado = resultado + letra
 
 console.log(resultado);
 `,
     python: `letras = "HACK"
 resultado = ""
 
-for letra in letras:
-    resultado = resultado + letra
+# Escreva um loop for que percorre cada letra de "letras"
+# A cada volta, adicione a letra ao resultado: resultado = resultado + letra
 
 print(resultado)
 `,
   },
   expectedOutput: 'HACK',
   hints: [
-    'O código já está pronto! Execute.',
-    'A cada volta do loop, uma letra é adicionada ao resultado',
+    'Em JS: for (let i = 0; i < letras.length; i++) { resultado = resultado + letras[i]; }',
+    'Em Python: for letra in letras: resultado = resultado + letra',
     'resultado = "" → "H" → "HA" → "HAC" → "HACK"',
   ],
   difficulty: 'easy',

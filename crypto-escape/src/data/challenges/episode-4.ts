@@ -76,14 +76,14 @@ const code4_2: CodeChallenge = {
   instructions: 'Mude o comentário para: <script>alert("XSS")</script>',
   languages: ['javascript'],
   starterCode: {
-    javascript: `// MUDE o comentário abaixo para incluir código:
-const comentarioDoUsuario = "Ótimo artigo!";
+    javascript: `// Insira um comentário MALICIOSO contendo código JavaScript
+// O payload XSS deve ser: <script>alert("XSS")</script>
+const comentarioDoUsuario = "";
 
-// Site vulnerável aceita QUALQUER coisa
-const htmlGerado = "<div>" + comentarioDoUsuario + "</div>";
-
-console.log("HTML gerado:");
-console.log(htmlGerado);
+// Monte o HTML como um site vulnerável faria:
+// Coloque o comentário dentro de tags <div>: "<div>" + comentario + "</div>"
+// Imprima "HTML gerado:" na primeira linha
+// Imprima o HTML gerado na segunda linha
 `,
   },
   expectedOutput: 'HTML gerado:\n<div><script>alert("XSS")</script></div>',
@@ -105,8 +105,9 @@ Usar bibliotecas de sanitização
 Content Security Policy (CSP)
   `,
   hints: [
-    'Troque "Ótimo artigo!" por "<script>alert(\\"XSS\\")</script>"',
-    'Veja como o código é inserido no HTML',
+    'Mude o comentário para: <script>alert("XSS")</script>',
+    'Use concatenação: "<div>" + comentarioDoUsuario + "</div>"',
+    'Use console.log() para imprimir cada linha',
   ],
   difficulty: 'easy',
 };
@@ -154,15 +155,14 @@ const code4_4: CodeChallenge = {
     javascript: `// Simulação de cookie de sessão
 const cookieSimulado = "sessionId=abc123xyz";
 
-// Payload XSS que "rouba" o cookie:
-const payloadXSS = "<img src='x' onerror='console.log(\\"Cookie roubado: " + cookieSimulado + "\\")'>";
+// Crie um payload XSS usando a tag <img> com evento onerror:
+// "<img src='x' onerror='console.log(\"Cookie roubado: ...\")'>""
+// A imagem com src='x' vai falhar, executando o código no onerror
 
-// Site vulnerável renderiza:
-console.log("Payload injetado:");
-console.log(payloadXSS);
+// Imprima "Payload injetado:" e o payload na próxima linha
 
-// Quando a imagem falha ao carregar, executa o código:
-console.log("Cookie roubado: " + cookieSimulado);
+// Simule o resultado do ataque:
+// Imprima "Cookie roubado: " + cookieSimulado
 `,
   },
   expectedOutput: 'Cookie roubado: sessionId=abc123xyz',
@@ -184,8 +184,9 @@ O cookie seria enviado para um servidor do hacker:
 Bug bounty hunters ganham milhares de dólares encontrando XSS em sites famosos!
   `,
   hints: [
-    'O código já está pronto - execute e veja',
-    'Repare na técnica: usar evento onerror para executar código',
+    'O payload usa <img> com src inválido para disparar onerror',
+    'No final, o importante é imprimir "Cookie roubado: " + cookieSimulado',
+    'Concatene strings para montar o payload e o resultado',
   ],
   difficulty: 'easy',
 };

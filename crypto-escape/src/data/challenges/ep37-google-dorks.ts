@@ -32,7 +32,7 @@ const code1: CodeChallenge = {
   id: 'gdork.1', type: 'code', episode: 37, room: '37.1',
   title: 'Simulador de Google Dorks',
   description: 'Crie um parser que interpreta operadores de busca avançada e filtra resultados. **Execute**!',
-  instructions: 'Execute e veja o parser de dorks em ação.',
+  instructions: 'Crie a funcao buscar(dork) que interpreta operadores de busca e filtra resultados.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const paginas = [
@@ -43,36 +43,11 @@ const code1: CodeChallenge = {
   { url: "example.com/sobre", titulo: "Sobre nos", tipo: "html", corpo: "Empresa X" }
 ];
 
-function buscar(dork) {
-  let resultados = paginas.slice();
-  const partes = dork.split(" ");
-
-  for (let i = 0; i < partes.length; i++) {
-    const p = partes[i];
-    if (p.startsWith("site:")) {
-      const site = p.slice(5);
-      resultados = resultados.filter(r => r.url.startsWith(site));
-    } else if (p.startsWith("filetype:")) {
-      const tipo = p.slice(9);
-      resultados = resultados.filter(r => r.tipo === tipo);
-    } else if (p.startsWith("inurl:")) {
-      const termo = p.slice(6);
-      resultados = resultados.filter(r => r.url.includes(termo));
-    } else if (p.startsWith("intext:")) {
-      const termo = p.slice(7).replace(/"/g, "");
-      resultados = resultados.filter(r => r.corpo.includes(termo));
-    }
-  }
-  return resultados;
-}
-
-let r1 = buscar("site:example.com filetype:sql");
-console.log("Dork 1: " + r1.length + " resultado(s)");
-for (let i = 0; i < r1.length; i++) console.log("  -> " + r1[i].url);
-
-let r2 = buscar("intext:DB_PASSWORD");
-console.log("Dork 2: " + r2.length + " resultado(s)");
-for (let i = 0; i < r2.length; i++) console.log("  -> " + r2[i].url);
+// Crie buscar(dork) que interpreta operadores:
+// "site:X" filtra url por prefixo, "filetype:X" filtra tipo,
+// "inurl:X" filtra url por conteudo, "intext:X" filtra corpo
+// Imprima "Dork N: X resultado(s)" e "  -> URL" para cada
+// Teste: buscar("site:example.com filetype:sql") e buscar("intext:DB_PASSWORD")
 `,
     python: `paginas = [
     {"url": "example.com/admin", "titulo": "Admin Panel", "tipo": "html", "corpo": "Login admin"},
@@ -82,32 +57,11 @@ for (let i = 0; i < r2.length; i++) console.log("  -> " + r2[i].url);
     {"url": "example.com/sobre", "titulo": "Sobre nos", "tipo": "html", "corpo": "Empresa X"}
 ]
 
-def buscar(dork):
-    resultados = paginas[:]
-    partes = dork.split(" ")
-
-    for p in partes:
-        if p.startswith("site:"):
-            site = p[5:]
-            resultados = [r for r in resultados if r["url"].startswith(site)]
-        elif p.startswith("filetype:"):
-            tipo = p[9:]
-            resultados = [r for r in resultados if r["tipo"] == tipo]
-        elif p.startswith("inurl:"):
-            termo = p[6:]
-            resultados = [r for r in resultados if termo in r["url"]]
-        elif p.startswith("intext:"):
-            termo = p[7:].replace('"', "")
-            resultados = [r for r in resultados if termo in r["corpo"]]
-    return resultados
-
-r1 = buscar("site:example.com filetype:sql")
-print("Dork 1: " + str(len(r1)) + " resultado(s)")
-for r in r1: print("  -> " + r["url"])
-
-r2 = buscar("intext:DB_PASSWORD")
-print("Dork 2: " + str(len(r2)) + " resultado(s)")
-for r in r2: print("  -> " + r["url"])
+# Crie buscar(dork) que interpreta operadores:
+# "site:X" filtra url por prefixo, "filetype:X" filtra tipo,
+# "inurl:X" filtra url por conteudo, "intext:X" filtra corpo
+# Imprima "Dork N: X resultado(s)" e "  -> URL" para cada
+# Teste: buscar("site:example.com filetype:sql") e buscar("intext:DB_PASSWORD")
 `,
   },
   expectedOutput: 'Dork 1: 1 resultado(s)\n  -> example.com/dados.sql\nDork 2: 1 resultado(s)\n  -> example.com/config.env',
@@ -119,7 +73,7 @@ const code2: CodeChallenge = {
   id: 'gdork.2', type: 'code', episode: 37, room: '37.2',
   title: 'Detector de exposição',
   description: 'Crie um scanner que verifica se um domínio tem dados sensíveis expostos. **Execute**!',
-  instructions: 'Execute e veja o relatório de exposição.',
+  instructions: 'Filtre arquivos expostos por risco e gere um relatorio de exposicao.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const arquivosExpostos = [
@@ -131,21 +85,10 @@ const code2: CodeChallenge = {
   { path: "/sitemap.xml", risco: "INFO", desc: "Sitemap (normal)" }
 ];
 
-console.log("=== SCAN DE EXPOSICAO ===");
-let criticos = 0;
-let altos = 0;
-
-for (let i = 0; i < arquivosExpostos.length; i++) {
-  const a = arquivosExpostos[i];
-  if (a.risco === "CRITICO" || a.risco === "ALTO") {
-    console.log("[" + a.risco + "] " + a.path + " - " + a.desc);
-    if (a.risco === "CRITICO") criticos++;
-    if (a.risco === "ALTO") altos++;
-  }
-}
-
-console.log("Criticos: " + criticos + " | Altos: " + altos);
-if (criticos > 0) console.log("ACAO IMEDIATA NECESSARIA!");
+// Imprima "=== SCAN DE EXPOSICAO ==="
+// Filtre apenas CRITICO e ALTO, imprima: "[RISCO] PATH - DESC"
+// Conte criticos e altos: "Criticos: N | Altos: N"
+// Se criticos > 0: "ACAO IMEDIATA NECESSARIA!"
 `,
     python: `arquivos_expostos = [
     {"path": "/backup.sql", "risco": "CRITICO", "desc": "Banco de dados exposto"},
@@ -156,18 +99,10 @@ if (criticos > 0) console.log("ACAO IMEDIATA NECESSARIA!");
     {"path": "/sitemap.xml", "risco": "INFO", "desc": "Sitemap (normal)"}
 ]
 
-print("=== SCAN DE EXPOSICAO ===")
-criticos = 0
-altos = 0
-
-for a in arquivos_expostos:
-    if a["risco"] in ["CRITICO", "ALTO"]:
-        print("[" + a["risco"] + "] " + a["path"] + " - " + a["desc"])
-        if a["risco"] == "CRITICO": criticos += 1
-        if a["risco"] == "ALTO": altos += 1
-
-print("Criticos: " + str(criticos) + " | Altos: " + str(altos))
-if criticos > 0: print("ACAO IMEDIATA NECESSARIA!")
+# Imprima "=== SCAN DE EXPOSICAO ==="
+# Filtre apenas CRITICO e ALTO, imprima: "[RISCO] PATH - DESC"
+# Conte criticos e altos: "Criticos: N | Altos: N"
+# Se criticos > 0: "ACAO IMEDIATA NECESSARIA!"
 `,
   },
   expectedOutput: '=== SCAN DE EXPOSICAO ===\n[CRITICO] /backup.sql - Banco de dados exposto\n[CRITICO] /.env - Variaveis de ambiente com senhas\n[ALTO] /.git/config - Repositorio git exposto\nCriticos: 2 | Altos: 1\nACAO IMEDIATA NECESSARIA!',

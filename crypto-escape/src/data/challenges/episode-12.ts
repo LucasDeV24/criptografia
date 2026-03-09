@@ -178,34 +178,17 @@ const requisicoes = [
   "14:36 - POST /api/admin/backup - 200 OK"
 ];
 
-console.log("=== INVESTIGAÇÃO: Requisições Web ===\\n");
-
-let idor = false;
-let escalacao = false;
-
-for (let i = 0; i < requisicoes.length; i++) {
-  const req = requisicoes[i];
-  console.log(req);
-  
-  // Detectar IDOR
-  if (req.includes("/api/usuarios/999") && req.includes("200 OK")) {
-    idor = true;
-  }
-  
-  // Detectar escalação de privilégio
-  if (req.includes("/api/admin/") && req.includes("200 OK")) {
-    escalacao = true;
-  }
-}
-
-console.log("\\n🚨 DESCOBERTAS:");
-if (idor) {
-  console.log("✓ IDOR explorado - acessou dados do Admin (id=999)");
-}
-if (escalacao) {
-  console.log("✓ Escalação de privilégio - acessou endpoint /admin/");
-  console.log("✓ Iniciou backup não autorizado");
-}
+// Analise as requisições e detecte dois tipos de ataque:
+// 1. IDOR: acesso a /api/usuarios/999 com 200 OK (dados de outro usuário)
+// 2. Escalação de privilégio: acesso a /api/admin/ com 200 OK
+//
+// Percorra as requisições e use variáveis boolean para rastrear:
+//   - Se alguma req contém "/api/usuarios/999" e "200 OK" → IDOR
+//   - Se alguma req contém "/api/admin/" e "200 OK" → Escalação
+//
+// No final, imprima as descobertas:
+//   Se IDOR: "✓ IDOR explorado - acessou dados do Admin (id=999)"
+//   Se Escalação: "✓ Escalação de privilégio - acessou endpoint /admin/"
 `,
     python: `# Requisições web da conta "maria" após 14:29
 requisicoes = [
@@ -218,28 +201,17 @@ requisicoes = [
     "14:36 - POST /api/admin/backup - 200 OK"
 ]
 
-print("=== INVESTIGAÇÃO: Requisições Web ===\\n")
-
-idor = False
-escalacao = False
-
-for req in requisicoes:
-    print(req)
-    
-    # Detectar IDOR
-    if "/api/usuarios/999" in req and "200 OK" in req:
-        idor = True
-    
-    # Detectar escalação de privilégio
-    if "/api/admin/" in req and "200 OK" in req:
-        escalacao = True
-
-print("\\n🚨 DESCOBERTAS:")
-if idor:
-    print("✓ IDOR explorado - acessou dados do Admin (id=999)")
-if escalacao:
-    print("✓ Escalação de privilégio - acessou endpoint /admin/")
-    print("✓ Iniciou backup não autorizado")
+# Analise as requisições e detecte dois tipos de ataque:
+# 1. IDOR: acesso a /api/usuarios/999 com 200 OK (dados de outro usuário)
+# 2. Escalação de privilégio: acesso a /api/admin/ com 200 OK
+#
+# Percorra as requisições e use variáveis boolean para rastrear:
+#   - Se alguma req contém "/api/usuarios/999" e "200 OK" → IDOR
+#   - Se alguma req contém "/api/admin/" e "200 OK" → Escalação
+#
+# No final, imprima as descobertas:
+#   Se IDOR: "✓ IDOR explorado - acessou dados do Admin (id=999)"
+#   Se Escalação: "✓ Escalação de privilégio - acessou endpoint /admin/"
 `,
   },
   expectedOutput: '✓ IDOR explorado\n✓ Escalação de privilégio',
@@ -258,8 +230,10 @@ Sistema não validou role!
 O atacante iniciou um backup não autorizado.
   `,
   hints: [
-    'IDOR = acessar dados de outros usuários mudando ID',
-    'Usuário comum não deveria acessar /admin/',
+    'Crie let idor = false e let escalacao = false antes do loop',
+    'Use .includes() para verificar strings dentro de cada requisição',
+    'IDOR: req contém "/api/usuarios/999" E "200 OK"',
+    'Escalação: req contém "/api/admin/" E "200 OK"',
   ],
   difficulty: 'medium',
 };
@@ -281,26 +255,15 @@ const conexoes = [
   { time: "14:38", src: "192.168.1.100", dst: "203.0.113.45", bytes: 1024, protocol: "HTTPS" }
 ];
 
-console.log("=== INVESTIGAÇÃO: Exfiltração de Dados ===\\n");
-
-let totalBytes = 0;
-
-for (let i = 0; i < conexoes.length; i++) {
-  const c = conexoes[i];
-  totalBytes += c.bytes;
-  
-  const mb = (c.bytes / 1024 / 1024).toFixed(2);
-  console.log(\`\${c.time} - \${c.src} → \${c.dst} | \${mb} MB via \${c.protocol}\`);
-}
-
-const totalMB = (totalBytes / 1024 / 1024).toFixed(2);
-
-console.log(\`\\nTotal transferido: \${totalMB} MB\`);
-console.log("\\n🚨 DESCOBERTAS:");
-console.log("✓ 50 MB de dados enviados para IP atacante");
-console.log("✓ Destino: 203.0.113.45 (mesmo IP do login suspeito)");
-console.log("✓ EXFILTRAÇÃO DE DADOS CONFIRMADA");
-console.log("✓ Backup contém dados sensíveis de clientes!");
+// Analise o tráfego de rede e detecte exfiltração de dados:
+// 1. Percorra as conexões e some o total de bytes transferidos
+// 2. Converta bytes para MB: bytes / 1024 / 1024
+// 3. Se o total for > 10 MB, é exfiltração!
+// 4. Verifique se o destino (dst) é o IP do atacante (203.0.113.45)
+//
+// Imprima as descobertas:
+//   "✓ EXFILTRAÇÃO DE DADOS CONFIRMADA"
+//   Inclua o total de MB e o IP de destino
 `,
     python: `# Tráfego de rede após 14:36
 conexoes = [
@@ -309,24 +272,15 @@ conexoes = [
     {"time": "14:38", "src": "192.168.1.100", "dst": "203.0.113.45", "bytes": 1024, "protocol": "HTTPS"}
 ]
 
-print("=== INVESTIGAÇÃO: Exfiltração de Dados ===\\n")
-
-total_bytes = 0
-
-for c in conexoes:
-    total_bytes += c["bytes"]
-    
-    mb = c["bytes"] / 1024 / 1024
-    print(f"{c['time']} - {c['src']} → {c['dst']} | {mb:.2f} MB via {c['protocol']}")
-
-total_mb = total_bytes / 1024 / 1024
-
-print(f"\\nTotal transferido: {total_mb:.2f} MB")
-print("\\n🚨 DESCOBERTAS:")
-print("✓ 50 MB de dados enviados para IP atacante")
-print("✓ Destino: 203.0.113.45 (mesmo IP do login suspeito)")
-print("✓ EXFILTRAÇÃO DE DADOS CONFIRMADA")
-print("✓ Backup contém dados sensíveis de clientes!")
+# Analise o tráfego de rede e detecte exfiltração de dados:
+# 1. Percorra as conexões e some o total de bytes transferidos
+# 2. Converta bytes para MB: bytes / 1024 / 1024
+# 3. Se o total for > 10 MB, é exfiltração!
+# 4. Verifique se o destino (dst) é o IP do atacante (203.0.113.45)
+#
+# Imprima as descobertas:
+#   "✓ EXFILTRAÇÃO DE DADOS CONFIRMADA"
+#   Inclua o total de MB e o IP de destino
 `,
   },
   expectedOutput: 'EXFILTRAÇÃO DE DADOS CONFIRMADA',
@@ -349,8 +303,10 @@ print("✓ Backup contém dados sensíveis de clientes!")
 **Gravidade:** CRÍTICA - Data Breach confirmado
   `,
   hints: [
-    'Procure transferência grande (MB)',
-    'O destino é o mesmo IP do atacante',
+    'Inicialize totalBytes = 0 e some c.bytes de cada conexão',
+    '52428800 bytes ÷ 1024 ÷ 1024 = 50 MB - isso é muito!',
+    'O destino 203.0.113.45 é o mesmo IP que fez o ataque de força bruta',
+    'Imprima "✓ EXFILTRAÇÃO DE DADOS CONFIRMADA" na conclusão',
   ],
   difficulty: 'medium',
 };
@@ -365,121 +321,63 @@ const code12_4: CodeChallenge = {
   instructions: 'Execute para gerar o relatório final',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `console.log("╔════════════════════════════════════════════════╗");
-console.log("║     RELATÓRIO DE INCIDENTE DE SEGURANÇA      ║");
-console.log("║           TechCorp Security Operations        ║");
-console.log("╚════════════════════════════════════════════════╝\\n");
+    javascript: `// Dados da investigação que você descobriu nas fases anteriores:
+const incidente = {
+  data: "2026-03-07",
+  horaDeteccao: "14:30",
+  ipAtacante: "203.0.113.45",
+  contaComprometida: "maria",
+  metodoInicial: "Força bruta",
+  vulnerabilidades: ["IDOR em /api/usuarios/", "Falta de validação de role", "Sem rate limiting", "Sem DLP"],
+  dadosRoubados: "50 MB",
+  timeline: [
+    "14:20-14:28 | Força bruta em múltiplas contas",
+    "14:29      | Compromisso da conta 'maria'",
+    "14:35      | IDOR → Dados de admin obtidos",
+    "14:36      | Escalação → Backup não autorizado",
+    "14:37      | Exfiltração de 50 MB de dados"
+  ]
+};
 
-console.log("📅 DATA: 2026-03-07");
-console.log("🕐 DETECÇÃO: 14:30");
-console.log("👤 ANALISTA: Você\\n");
-
-console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-console.log("🚨 RESUMO EXECUTIVO");
-console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\\n");
-
-console.log("Gravidade: 🔴 CRÍTICA");
-console.log("Tipo: Data Breach + Escalação de Privilégio");
-console.log("Status: CONFIRMADO\\n");
-
-console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-console.log("🔍 TIMELINE DO ATAQUE");
-console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\\n");
-
-console.log("14:20-14:28 | Força bruta em múltiplas contas");
-console.log("14:29      | Compromisso da conta 'maria'");
-console.log("14:30-14:34 | Reconhecimento interno");
-console.log("14:35      | IDOR → Dados de admin obtidos");
-console.log("14:36      | Escalação → Backup não autorizado");
-console.log("14:37      | Exfiltração de 50 MB de dados\\n");
-
-console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-console.log("🎯 INDICADORES DE COMPROMETIMENTO (IOCs)");
-console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\\n");
-
-console.log("IP Atacante: 203.0.113.45");
-console.log("Conta comprometida: maria");
-console.log("Vulnerabilidades exploradas:");
-console.log("  • Ausência de rate limiting (força bruta)");
-console.log("  • IDOR em /api/usuarios/");
-console.log("  • Falta de validação de role em /api/admin/");
-console.log("  • Sem DLP para bloquear exfiltração\\n");
-
-console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-console.log("✅ AÇÕES RECOMENDADAS (IMEDIATAS)");
-console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\\n");
-
-console.log("1. 🚫 Bloquear IP 203.0.113.45 no firewall");
-console.log("2. 🔒 Desativar conta 'maria' e resetar senha");
-console.log("3. 🔍 Revisar acessos de todas as contas nas últimas 24h");
-console.log("4. 🛠️ Aplicar correções:");
-console.log("   • Implementar rate limiting");
-console.log("   • Corrigir IDOR (validação de permissões)");
-console.log("   • Adicionar role-based access control");
-console.log("5. 📢 Notificar clientes afetados (LGPD)");
-console.log("6. 📊 Análise forense completa do servidor\\n");
-
-console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-console.log("Relatório gerado com sucesso!");
-console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+// Monte um relatório profissional de incidente de segurança!
+// Use os dados do objeto 'incidente' para preencher cada seção.
+//
+// Seções obrigatórias:
+// 1. Cabeçalho com data, hora e gravidade
+// 2. Timeline do ataque (percorra incidente.timeline)
+// 3. IOCs: IP atacante, conta comprometida, vulnerabilidades exploradas
+//    (percorra incidente.vulnerabilidades com um loop)
+// 4. Pelo menos 3 ações recomendadas
+// 5. No final, imprima: "Relatório gerado com sucesso!"
 `,
-    python: `print("╔════════════════════════════════════════════════╗")
-print("║     RELATÓRIO DE INCIDENTE DE SEGURANÇA      ║")
-print("║           TechCorp Security Operations        ║")
-print("╚════════════════════════════════════════════════╝\\n")
+    python: `# Dados da investigação que você descobriu nas fases anteriores:
+incidente = {
+    "data": "2026-03-07",
+    "hora_deteccao": "14:30",
+    "ip_atacante": "203.0.113.45",
+    "conta_comprometida": "maria",
+    "metodo_inicial": "Força bruta",
+    "vulnerabilidades": ["IDOR em /api/usuarios/", "Falta de validação de role", "Sem rate limiting", "Sem DLP"],
+    "dados_roubados": "50 MB",
+    "timeline": [
+        "14:20-14:28 | Força bruta em múltiplas contas",
+        "14:29      | Compromisso da conta 'maria'",
+        "14:35      | IDOR → Dados de admin obtidos",
+        "14:36      | Escalação → Backup não autorizado",
+        "14:37      | Exfiltração de 50 MB de dados"
+    ]
+}
 
-print("📅 DATA: 2026-03-07")
-print("🕐 DETECÇÃO: 14:30")
-print("👤 ANALISTA: Você\\n")
-
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("🚨 RESUMO EXECUTIVO")
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\\n")
-
-print("Gravidade: 🔴 CRÍTICA")
-print("Tipo: Data Breach + Escalação de Privilégio")
-print("Status: CONFIRMADO\\n")
-
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("🔍 TIMELINE DO ATAQUE")
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\\n")
-
-print("14:20-14:28 | Força bruta em múltiplas contas")
-print("14:29      | Compromisso da conta 'maria'")
-print("14:30-14:34 | Reconhecimento interno")
-print("14:35      | IDOR → Dados de admin obtidos")
-print("14:36      | Escalação → Backup não autorizado")
-print("14:37      | Exfiltração de 50 MB de dados\\n")
-
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("🎯 INDICADORES DE COMPROMETIMENTO (IOCs)")
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\\n")
-
-print("IP Atacante: 203.0.113.45")
-print("Conta comprometida: maria")
-print("Vulnerabilidades exploradas:")
-print("  • Ausência de rate limiting (força bruta)")
-print("  • IDOR em /api/usuarios/")
-print("  • Falta de validação de role em /api/admin/")
-print("  • Sem DLP para bloquear exfiltração\\n")
-
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("✅ AÇÕES RECOMENDADAS (IMEDIATAS)")
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\\n")
-
-print("1. 🚫 Bloquear IP 203.0.113.45 no firewall")
-print("2. 🔒 Desativar conta 'maria' e resetar senha")
-print("3. 🔍 Revisar acessos de todas as contas nas últimas 24h")
-print("4. 🛠️ Aplicar correções:")
-print("   • Implementar rate limiting")
-print("   • Corrigir IDOR (validação de permissões)")
-print("   • Adicionar role-based access control")
-print("5. 📢 Notificar clientes afetados (LGPD)")
-print("6. 📊 Análise forense completa do servidor\\n")
-
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-print("Relatório gerado com sucesso!")
-print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+# Monte um relatório profissional de incidente de segurança!
+# Use os dados do dicionário 'incidente' para preencher cada seção.
+#
+# Seções obrigatórias:
+# 1. Cabeçalho com data, hora e gravidade
+# 2. Timeline do ataque (percorra incidente["timeline"])
+# 3. IOCs: IP atacante, conta comprometida, vulnerabilidades exploradas
+#    (percorra incidente["vulnerabilidades"] com um loop)
+# 4. Pelo menos 3 ações recomendadas
+# 5. No final, imprima: "Relatório gerado com sucesso!"
 `,
   },
   expectedOutput: 'Relatório gerado com sucesso!',
@@ -501,8 +399,10 @@ Este relatório seria enviado para:
 • Eventualmente autoridades
   `,
   hints: [
-    'Este é um relatório profissional completo',
-    'Documenta todo o incidente do início ao fim',
+    'Use console.log/print para cada seção do relatório',
+    'Percorra incidente.timeline com um loop para imprimir cada evento',
+    'Percorra incidente.vulnerabilidades com um loop para listar cada uma',
+    'Termine com: "Relatório gerado com sucesso!"',
   ],
   difficulty: 'easy',
 };

@@ -30,7 +30,7 @@ const code1: CodeChallenge = {
   id: 'meta.1', type: 'code', episode: 38, room: '38.1',
   title: 'Extrator de metadados EXIF',
   description: 'Simule a extração de metadados EXIF de fotos para investigação. **Execute**!',
-  instructions: 'Execute e veja os metadados extraídos.',
+  instructions: 'Extraia e imprima metadados EXIF de cada foto, destacando GPS exposto.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const fotos = [
@@ -48,19 +48,10 @@ const code1: CodeChallenge = {
   }
 ];
 
-console.log("=== ANALISE DE METADADOS ===");
-for (let i = 0; i < fotos.length; i++) {
-  const f = fotos[i];
-  console.log("\\nArquivo: " + f.nome);
-  console.log("  Camera: " + f.exif.camera);
-  console.log("  Data: " + f.exif.data);
-  console.log("  Software: " + f.exif.software);
-  if (f.exif.gps) {
-    console.log("  GPS: " + f.exif.gps + " [LOCALIZACAO EXPOSTA!]");
-  } else {
-    console.log("  GPS: sem dados");
-  }
-}
+// Imprima "=== ANALISE DE METADADOS ==="
+// Para cada foto: "\\nArquivo: NOME", "  Camera: X", "  Data: X", "  Software: X"
+// Se GPS existe: "  GPS: COORDS [LOCALIZACAO EXPOSTA!]"
+// Se nao: "  GPS: sem dados"
 `,
     python: `fotos = [
     {
@@ -77,16 +68,10 @@ for (let i = 0; i < fotos.length; i++) {
     }
 ]
 
-print("=== ANALISE DE METADADOS ===")
-for f in fotos:
-    print("\\nArquivo: " + f["nome"])
-    print("  Camera: " + f["exif"]["camera"])
-    print("  Data: " + f["exif"]["data"])
-    print("  Software: " + f["exif"]["software"])
-    if f["exif"]["gps"]:
-        print("  GPS: " + f["exif"]["gps"] + " [LOCALIZACAO EXPOSTA!]")
-    else:
-        print("  GPS: sem dados")
+# Imprima "=== ANALISE DE METADADOS ==="
+# Para cada foto: "\\nArquivo: NOME", "  Camera: X", "  Data: X", "  Software: X"
+# Se GPS existe: "  GPS: COORDS [LOCALIZACAO EXPOSTA!]"
+# Se nao: "  GPS: sem dados"
 `,
   },
   expectedOutput: '=== ANALISE DE METADADOS ===\n\nArquivo: foto_ferias.jpg\n  Camera: iPhone 15\n  Data: 2024-01-15\n  Software: iOS 17\n  GPS: -23.5505,-46.6333 [LOCALIZACAO EXPOSTA!]\n\nArquivo: documento_secreto.png\n  Camera: Screenshot\n  Data: 2024-03-01\n  Software: Windows Snipping Tool\n  GPS: sem dados\n\nArquivo: selfie_empresa.jpg\n  Camera: Samsung S24\n  Data: 2024-02-20\n  Software: OneUI 6\n  GPS: -22.9068,-43.1729 [LOCALIZACAO EXPOSTA!]',
@@ -98,7 +83,7 @@ const code2: CodeChallenge = {
   id: 'meta.2', type: 'code', episode: 38, room: '38.2',
   title: 'Perfilamento por metadados',
   description: 'Analise metadados de documentos de uma empresa para montar um perfil de infraestrutura. **Execute**!',
-  instructions: 'Execute e veja o perfil montado.',
+  instructions: 'Analise metadados de documentos e monte um perfil da infraestrutura da empresa.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const documentos = [
@@ -109,24 +94,11 @@ const code2: CodeChallenge = {
   { nome: "orcamento.xlsx", autor: "maria.santos", software: "LibreOffice 7.5", so: "Ubuntu 22.04" }
 ];
 
-const usuarios = {};
-const softwares = {};
-const sistemas = {};
-
-for (let i = 0; i < documentos.length; i++) {
-  const d = documentos[i];
-  usuarios[d.autor] = (usuarios[d.autor] || 0) + 1;
-  softwares[d.software] = (softwares[d.software] || 0) + 1;
-  sistemas[d.so] = (sistemas[d.so] || 0) + 1;
-}
-
-console.log("=== PERFIL DA EMPRESA ===");
-console.log("\\nFuncionarios encontrados:");
-for (const u in usuarios) console.log("  " + u + " (" + usuarios[u] + " docs)");
-console.log("\\nSoftwares usados:");
-for (const s in softwares) console.log("  " + s);
-console.log("\\nSistemas operacionais:");
-for (const so in sistemas) console.log("  " + so + " (" + sistemas[so] + " maquinas)");
+// Conte documentos por autor, software e SO
+// Imprima "=== PERFIL DA EMPRESA ==="
+// "\\nFuncionarios encontrados:" com "  AUTOR (N docs)"
+// "\\nSoftwares usados:" com "  SOFTWARE"
+// "\\nSistemas operacionais:" com "  SO (N maquinas)"
 `,
     python: `documentos = [
     {"nome": "relatorio.pdf", "autor": "joao.silva", "software": "Microsoft Word 2019", "so": "Windows 10"},
@@ -136,22 +108,11 @@ for (const so in sistemas) console.log("  " + so + " (" + sistemas[so] + " maqui
     {"nome": "orcamento.xlsx", "autor": "maria.santos", "software": "LibreOffice 7.5", "so": "Ubuntu 22.04"}
 ]
 
-usuarios = {}
-softwares = {}
-sistemas = {}
-
-for d in documentos:
-    usuarios[d["autor"]] = usuarios.get(d["autor"], 0) + 1
-    softwares[d["software"]] = softwares.get(d["software"], 0) + 1
-    sistemas[d["so"]] = sistemas.get(d["so"], 0) + 1
-
-print("=== PERFIL DA EMPRESA ===")
-print("\\nFuncionarios encontrados:")
-for u in usuarios: print("  " + u + " (" + str(usuarios[u]) + " docs)")
-print("\\nSoftwares usados:")
-for s in softwares: print("  " + s)
-print("\\nSistemas operacionais:")
-for so in sistemas: print("  " + so + " (" + str(sistemas[so]) + " maquinas)")
+# Conte documentos por autor, software e SO
+# Imprima "=== PERFIL DA EMPRESA ==="
+# "\\nFuncionarios encontrados:" com "  AUTOR (N docs)"
+# "\\nSoftwares usados:" com "  SOFTWARE"
+# "\\nSistemas operacionais:" com "  SO (N maquinas)"
 `,
   },
   expectedOutput: '=== PERFIL DA EMPRESA ===\n\nFuncionarios encontrados:\n  joao.silva (2 docs)\n  maria.santos (2 docs)\n  ana.costa (1 docs)\n\nSoftwares usados:\n  Microsoft Word 2019\n  LibreOffice 7.5\n  Microsoft PowerPoint 2019\n  Adobe Acrobat DC\n\nSistemas operacionais:\n  Windows 10 (2 maquinas)\n  Ubuntu 22.04 (2 maquinas)\n  macOS Ventura (1 maquinas)',

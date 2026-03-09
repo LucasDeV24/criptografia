@@ -82,32 +82,30 @@ const code3_2: CodeChallenge = {
   room: '3.2',
   title: 'Codificando mensagens',
   description: 'Agora vamos fazer o contrário - codificar uma mensagem em Base64. Troque a mensagem para seu nome.',
-  instructions: 'Mude "teste" para seu nome e execute',
+  instructions: 'Use btoa() (JavaScript) ou base64.b64encode() (Python) para codificar "teste" em Base64 e imprima o resultado.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// MUDE a mensagem abaixo:
+    javascript: `// Mensagem para codificar:
 const mensagem = "teste";
 
-// Codificar em Base64
-const mensagemCodificada = btoa(mensagem);
-
-console.log(mensagemCodificada);
+// Codifique a mensagem em Base64 usando btoa()
+// Imprima o resultado com console.log()
 `,
     python: `import base64
 
-# MUDE a mensagem abaixo:
+# Mensagem para codificar:
 mensagem = "teste"
 
-# Codificar em Base64
-mensagem_codificada = base64.b64encode(mensagem.encode('utf-8')).decode('utf-8')
-
-print(mensagem_codificada)
+# Codifique a mensagem em Base64 usando base64.b64encode()
+# Lembre-se: .encode('utf-8') antes e .decode('utf-8') depois
+# Imprima o resultado com print()
 `,
   },
   expectedOutput: 'dGVzdGU=',
   hints: [
-    'Pode colocar qualquer texto no lugar de "teste"',
-    'btoa() codifica em Base64',
+    'JavaScript: btoa(mensagem) codifica em Base64',
+    'Python: base64.b64encode(mensagem.encode("utf-8")).decode("utf-8")',
+    'O resultado de "teste" em Base64 é "dGVzdGU="',
   ],
   difficulty: 'easy',
 };
@@ -152,23 +150,20 @@ const code3_4: CodeChallenge = {
   instructions: 'Decodifique a string Base64 e mostre o código oculto',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// String suspeita encontrada:
+    javascript: `// String suspeita encontrada em um site:
 const codigoSuspeito = "Y29uc29sZS5sb2coIkNvZGlnbyBtYWxpY2lvc28hIik=";
 
-// Decodifique para ver o que está escondido:
-const codigoReal = atob(codigoSuspeito);
-
-console.log(codigoReal);
+// Decodifique a string Base64 usando atob()
+// Imprima o código oculto com console.log()
 `,
     python: `import base64
 
-# String suspeita encontrada:
+# String suspeita encontrada em um site:
 codigo_suspeito = "Y29uc29sZS5sb2coIkNvZGlnbyBtYWxpY2lvc28hIik="
 
-# Decodifique para ver o que está escondido:
-codigo_real = base64.b64decode(codigo_suspeito).decode('utf-8')
-
-print(codigo_real)
+# Decodifique a string Base64 usando base64.b64decode()
+# Lembre-se de usar .decode('utf-8') no resultado
+# Imprima o código oculto com print()
 `,
   },
   expectedOutput: 'console.log("Codigo malicioso!")',
@@ -189,8 +184,9 @@ Analistas de malware fazem isso o tempo todo:
 • IDA Pro / Ghidra (engenharia reversa)
   `,
   hints: [
-    'O código já está pronto - só execute',
-    'Você vai ver o código JavaScript que estava escondido',
+    'JavaScript: atob(codigoSuspeito) decodifica Base64',
+    'Python: base64.b64decode(codigo_suspeito).decode("utf-8")',
+    'O resultado é um comando JavaScript malicioso',
   ],
   difficulty: 'easy',
 };

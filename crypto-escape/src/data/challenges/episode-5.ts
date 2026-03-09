@@ -123,23 +123,18 @@ const usuarios = [
   { usuario: "user", senha: "123456" }
 ];
 
-// MUDE esta linha:
+// Modifique o usuário para fazer SQL Injection:
+// Use: admin' OR '1'='1
 const usuarioDigitado = "admin";
 const senhaDigitada = "qualquer";
 
-// Sistema vulnerável monta query assim:
-const query = "SELECT * FROM usuarios WHERE usuario='" + usuarioDigitado + "' AND senha='" + senhaDigitada + "'";
+// Monte a query SQL concatenando as variáveis:
+// "SELECT * FROM usuarios WHERE usuario='" + usuario + "' AND senha='" + senha + "'"
+// Imprima "Query gerada:" e a query na próxima linha
 
-console.log("Query gerada:");
-console.log(query);
-
-// Simula execução (simplificada)
-// Se a query contém "OR '1'='1'" vai sempre retornar verdadeiro
-if (query.includes("OR '1'='1'") || query.includes('OR "1"="1"')) {
-  console.log("Login bem-sucedido!");
-} else {
-  console.log("Usuário ou senha incorretos");
-}
+// Verifique se a query contém "OR '1'='1'" (injection bem-sucedida)
+// Se sim, imprima: "Login bem-sucedido!"
+// Se não, imprima: "Usuário ou senha incorretos"
 `,
     python: `# Sistema VULNERÁVEL que concatena strings
 usuarios = [
@@ -147,22 +142,18 @@ usuarios = [
     {"usuario": "user", "senha": "123456"}
 ]
 
-# MUDE esta linha:
+# Modifique o usuário para fazer SQL Injection:
+# Use: admin' OR '1'='1
 usuario_digitado = "admin"
 senha_digitada = "qualquer"
 
-# Sistema vulnerável monta query assim:
-query = f"SELECT * FROM usuarios WHERE usuario='{usuario_digitado}' AND senha='{senha_digitada}'"
+# Monte a query SQL usando f-string:
+# f"SELECT * FROM usuarios WHERE usuario='{usuario}' AND senha='{senha}'"
+# Imprima "Query gerada:" e a query na próxima linha
 
-print("Query gerada:")
-print(query)
-
-# Simula execução (simplificada)
-# Se a query contém "OR '1'='1'" vai sempre retornar verdadeiro
-if "OR '1'='1'" in query or 'OR "1"="1"' in query:
-    print("Login bem-sucedido!")
-else:
-    print("Usuário ou senha incorretos")
+# Verifique se a query contém "OR '1'='1'" (injection bem-sucedida)
+# Se sim, imprima: "Login bem-sucedido!"
+# Se não, imprima: "Usuário ou senha incorretos"
 `,
   },
   expectedOutput: 'Login bem-sucedido!',
@@ -252,18 +243,13 @@ const senhas = [
   { usuario: "user", senha: "password" }
 ];
 
-// Query vulnerável para buscar produto
-const produtoId = "1 UNION SELECT usuario, senha FROM senhas--";
+// Crie o payload UNION para extrair dados da tabela de senhas
+// O payload deve ser: "1 UNION SELECT usuario, senha FROM senhas--"
+// Imprima "Payload injetado:" e o payload na próxima linha
 
-console.log("Payload injetado:");
-console.log(produtoId);
-
-// Simula query:
-// SELECT id, nome FROM produtos WHERE id = 1 UNION SELECT usuario, senha FROM senhas--
-
-console.log("\\nDados extraídos:");
-console.log("admin | super_secret_123");
-console.log("user | password");
+// Simule a extração: imprima "\\nDados extraídos:"
+// Percorra o array 'senhas' e para cada entrada imprima:
+// usuario + " | " + senha
 `,
     python: `# Banco de dados com múltiplas tabelas
 produtos = [
@@ -276,18 +262,13 @@ senhas = [
     {"usuario": "user", "senha": "password"}
 ]
 
-# Query vulnerável para buscar produto
-produto_id = "1 UNION SELECT usuario, senha FROM senhas--"
+# Crie o payload UNION para extrair dados da tabela de senhas
+# O payload deve ser: "1 UNION SELECT usuario, senha FROM senhas--"
+# Imprima "Payload injetado:" e o payload na próxima linha
 
-print("Payload injetado:")
-print(produto_id)
-
-# Simula query:
-# SELECT id, nome FROM produtos WHERE id = 1 UNION SELECT usuario, senha FROM senhas--
-
-print("\\nDados extraídos:")
-print("admin | super_secret_123")
-print("user | password")
+# Simule a extração: imprima "\\nDados extraídos:"
+# Percorra a lista 'senhas' e para cada entrada imprima:
+# usuario + " | " + senha
 `,
   },
   expectedOutput: 'Dados extraídos:\nadmin | super_secret_123\nuser | password',

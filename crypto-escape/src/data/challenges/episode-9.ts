@@ -125,62 +125,37 @@ const code9_2: CodeChallenge = {
   instructions: 'Execute e veja como criar um JWT malicioso',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Criando JWT com algoritmo "none" (sem assinatura)
+    javascript: `// Crie um JWT malicioso com algoritmo "none" (sem assinatura)
 
-// Header com algoritmo "none"
-const header = {
-  alg: "none",
-  typ: "JWT"
-};
+// 1. Crie o objeto header com: alg: "none", typ: "JWT"
 
-// Payload MODIFICADO (user → admin!)
-const payload = {
-  userId: 1,
-  username: "john",
-  role: "admin"  // 🚨 Mudamos de "user" para "admin"!
-};
+// 2. Crie o objeto payload com: userId: 1, username: "john", role: "admin"
+//    (mudamos "user" para "admin"!)
 
-// Codificar em Base64
-const headerB64 = btoa(JSON.stringify(header));
-const payloadB64 = btoa(JSON.stringify(payload));
+// 3. Codifique header e payload em Base64 com btoa(JSON.stringify(...))
 
-// JWT sem signature (termina com ".")
-const jwtMalicioso = headerB64 + "." + payloadB64 + ".";
+// 4. Monte o JWT: headerB64 + "." + payloadB64 + "."
+//    (termina com "." porque não tem signature)
 
-console.log("=== JWT Malicioso Criado ===\\n");
-console.log("🚨 Token:");
-console.log(jwtMalicioso);
-console.log("\\n⚠️ Agora você é ADMIN sem senha!");
+// 5. Imprima o token e depois: "\\n⚠️ Agora você é ADMIN sem senha!"
 `,
     python: `import base64
 import json
 
-# Criando JWT com algoritmo "none" (sem assinatura)
+# Crie um JWT malicioso com algoritmo "none" (sem assinatura)
 
-# Header com algoritmo "none"
-header = {
-    "alg": "none",
-    "typ": "JWT"
-}
+# 1. Crie o dicionário header com: "alg": "none", "typ": "JWT"
 
-# Payload MODIFICADO (user → admin!)
-payload = {
-    "userId": 1,
-    "username": "john",
-    "role": "admin"  # 🚨 Mudamos de "user" para "admin"!
-}
+# 2. Crie o dicionário payload com: "userId": 1, "username": "john", "role": "admin"
+#    (mudamos "user" para "admin"!)
 
-# Codificar em Base64
-header_b64 = base64.b64encode(json.dumps(header).encode()).decode().rstrip('=')
-payload_b64 = base64.b64encode(json.dumps(payload).encode()).decode().rstrip('=')
+# 3. Codifique header e payload em Base64:
+#    base64.b64encode(json.dumps(obj).encode()).decode().rstrip('=')
 
-# JWT sem signature (termina com ".")
-jwt_malicioso = f"{header_b64}.{payload_b64}."
+# 4. Monte o JWT: f"{header_b64}.{payload_b64}."
+#    (termina com "." porque não tem signature)
 
-print("=== JWT Malicioso Criado ===\\n")
-print("🚨 Token:")
-print(jwt_malicioso)
-print("\\n⚠️ Agora você é ADMIN sem senha!")
+# 5. Imprima o token e depois: "\\n⚠️ Agora você é ADMIN sem senha!"
 `,
   },
   expectedOutput: '⚠️ Agora você é ADMIN sem senha!',
@@ -206,8 +181,10 @@ print("\\n⚠️ Agora você é ADMIN sem senha!")
 • jwt_tool (exploração)
   `,
   hints: [
-    'Veja como mudamos role para admin sem saber a chave secreta',
-    'Algoritmo "none" remove toda a segurança!',
+    'Crie header: const header = { alg: "none", typ: "JWT" }',
+    'Crie payload com role: "admin" em vez de "user"',
+    'Use btoa(JSON.stringify(header)) para codificar em Base64',
+    'Monte: headerB64 + "." + payloadB64 + "." (sem signature)',
   ],
   difficulty: 'easy',
 };
@@ -269,26 +246,18 @@ const code9_4: CodeChallenge = {
     javascript: `// Token roubado da vítima (via XSS)
 const tokenRoubado = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjk5OSwibmFtZSI6IkFkbWluIiwicm9sZSI6ImFkbWluIn0.SIGNATURE";
 
-// Decodificar para ver de quem é
-const payload = JSON.parse(atob(tokenRoubado.split('.')[1]));
-
-console.log("🎯 Token roubado da vítima:");
-console.log(JSON.stringify(payload, null, 2));
-
-// Simular requisição autenticada com token roubado
-console.log("\\n📡 Fazendo requisição como vítima...");
-console.log("GET /api/admin/usuarios");
-console.log("Authorization: Bearer " + tokenRoubado.substring(0, 30) + "...");
-
-// Servidor valida token e retorna dados confidenciais
-console.log("\\n✅ Acesso concedido! Dados confidenciais:");
+// Dados confidenciais que o servidor retornaria
 const dadosConfidenciais = [
   { user: "joao", cpf: "111.222.333-44", saldo: "R$ 5.000" },
   { user: "maria", cpf: "555.666.777-88", saldo: "R$ 12.000" }
 ];
 
-console.log(JSON.stringify(dadosConfidenciais, null, 2));
-console.log("\\n⚠️ Session hijacking bem-sucedido!");
+// 1. Decodifique o payload do JWT (segunda parte, separada por ".")
+//    Use: JSON.parse(atob(tokenRoubado.split('.')[1]))
+// 2. Imprima os dados do payload para ver de quem é o token
+// 3. Simule a requisição: imprima a URL e o header Authorization
+// 4. Imprima os dados confidenciais com JSON.stringify()
+// 5. No final, imprima: "\\n⚠️ Session hijacking bem-sucedido!"
 `,
     python: `import base64
 import json
@@ -296,26 +265,18 @@ import json
 # Token roubado da vítima (via XSS)
 token_roubado = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjk5OSwibmFtZSI6IkFkbWluIiwicm9sZSI6ImFkbWluIn0.SIGNATURE"
 
-# Decodificar para ver de quem é
-payload = json.loads(base64.b64decode(token_roubado.split('.')[1] + '==').decode())
-
-print("🎯 Token roubado da vítima:")
-print(json.dumps(payload, indent=2))
-
-# Simular requisição autenticada com token roubado
-print("\\n📡 Fazendo requisição como vítima...")
-print("GET /api/admin/usuarios")
-print(f"Authorization: Bearer {token_roubado[:30]}...")
-
-# Servidor valida token e retorna dados confidenciais
-print("\\n✅ Acesso concedido! Dados confidenciais:")
+# Dados confidenciais que o servidor retornaria
 dados_confidenciais = [
     {"user": "joao", "cpf": "111.222.333-44", "saldo": "R$ 5.000"},
     {"user": "maria", "cpf": "555.666.777-88", "saldo": "R$ 12.000"}
 ]
 
-print(json.dumps(dados_confidenciais, indent=2, ensure_ascii=False))
-print("\\n⚠️ Session hijacking bem-sucedido!")
+# 1. Decodifique o payload do JWT (segunda parte, separada por ".")
+#    Use: json.loads(base64.b64decode(token_roubado.split('.')[1] + '==').decode())
+# 2. Imprima os dados do payload para ver de quem é o token
+# 3. Simule a requisição: imprima a URL e o header Authorization
+# 4. Imprima os dados confidenciais com json.dumps()
+# 5. No final, imprima: "\\n⚠️ Session hijacking bem-sucedido!"
 `,
   },
   expectedOutput: '⚠️ Session hijacking bem-sucedido!',
@@ -343,8 +304,10 @@ print("\\n⚠️ Session hijacking bem-sucedido!")
 Hackers roubavam tokens de reuniões.
   `,
   hints: [
-    'O token roubado tem role="admin"',
-    'Com ele acessamos dados confidenciais',
+    'Separe o JWT com .split(".") e pegue a parte [1] (payload)',
+    'Use atob() ou base64.b64decode() para decodificar o payload',
+    'O token pertence ao Admin - role="admin"',
+    'No final imprima: "⚠️ Session hijacking bem-sucedido!"',
   ],
   difficulty: 'easy',
 };

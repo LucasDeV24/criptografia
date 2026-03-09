@@ -143,33 +143,24 @@ const bancoDeDados = [
   { id: 999, nome: "Admin", email: "admin@empresa.com", role: "admin", senha: "super_secret" }
 ];
 
-// MUDE o ID aqui:
-const usuarioId = 1;
-
-// API busca sem verificar quem está pedindo (VULNERÁVEL!)
-const usuario = bancoDeDados.find(u => u.id === usuarioId);
-
-console.log("📡 GET /api/usuarios/" + usuarioId);
-console.log("\\n✅ Resposta:");
-console.log(JSON.stringify(usuario, null, 2));
+// A API não exige login - qualquer ID pode ser acessado!
+// 1. Defina uma variável usuarioId com o valor 999 (Admin)
+// 2. Use bancoDeDados.find() para buscar o usuário com esse ID
+// 3. Imprima os dados com console.log(JSON.stringify(usuario))
 `,
-    python: `# API VULNERÁVEL - sem autenticação
+    python: `import json
+
+# API VULNERÁVEL - sem autenticação
 
 banco_de_dados = [
     {"id": 1, "nome": "João", "email": "joao@email.com", "role": "user"},
     {"id": 999, "nome": "Admin", "email": "admin@empresa.com", "role": "admin", "senha": "super_secret"}
 ]
 
-# MUDE o ID aqui:
-usuario_id = 1
-
-# API busca sem verificar quem está pedindo (VULNERÁVEL!)
-usuario = next((u for u in banco_de_dados if u["id"] == usuario_id), None)
-
-import json
-print(f"📡 GET /api/usuarios/{usuario_id}")
-print("\\n✅ Resposta:")
-print(json.dumps(usuario, indent=2, ensure_ascii=False))
+# A API não exige login - qualquer ID pode ser acessado!
+# 1. Defina uma variável usuario_id com o valor 999 (Admin)
+# 2. Use next() com generator para buscar o usuário com esse ID no banco_de_dados
+# 3. Imprima os dados com print(json.dumps(usuario))
 `,
   },
   expectedOutput: '{"id": 999, "nome": "Admin", "email": "admin@empresa.com", "role": "admin", "senha": "super_secret"}',
@@ -191,8 +182,10 @@ Aconteceu com:
 • Não confiar em parâmetros do cliente
   `,
   hints: [
-    'Troque "1" por "999" na linha do usuarioId',
-    'Você verá dados sensíveis do admin!',
+    'Defina const usuarioId = 999 para acessar o Admin',
+    'Use bancoDeDados.find(u => u.id === usuarioId) para buscar',
+    'Use JSON.stringify(usuario) para imprimir como JSON',
+    'Você verá dados sensíveis do admin, incluindo a senha!',
   ],
   difficulty: 'easy',
 };
@@ -252,20 +245,12 @@ const sessoes = [
   { userId: 3, token: "TOKEN_1003", nome: "Admin" }
 ];
 
-// Seu token (usuário João, id=1)
-const meuToken = "TOKEN_1001";
-
-console.log("🔐 Meu token: " + meuToken);
-console.log("📊 Meus dados:");
-let minhaSessao = sessoes.find(s => s.token === meuToken);
-console.log(minhaSessao);
-
-// ATAQUE: tokens são previsíveis!
-console.log("\\n🚨 Testando token do Admin...");
-const tokenAdivinhado = "TOKEN_1003";
-
-let sessaoAdmin = sessoes.find(s => s.token === tokenAdivinhado);
-console.log("✅ Acessei dados do: " + sessaoAdmin.nome);
+// Seu token (usuário João, id=1): TOKEN_1001
+// Observe o padrão: TOKEN_1001, TOKEN_1002, TOKEN_1003...
+//
+// 1. Adivinhe o token do Admin baseado no padrão sequencial
+// 2. Use sessoes.find() para buscar a sessão com esse token
+// 3. Imprima: "✅ Acessei dados do: " + o nome do usuário encontrado
 `,
     python: `# Sistema com tokens fracos (VULNERÁVEL)
 
@@ -275,20 +260,12 @@ sessoes = [
     {"userId": 3, "token": "TOKEN_1003", "nome": "Admin"}
 ]
 
-# Seu token (usuário João, id=1)
-meu_token = "TOKEN_1001"
-
-print(f"🔐 Meu token: {meu_token}")
-print("📊 Meus dados:")
-minha_sessao = next(s for s in sessoes if s["token"] == meu_token)
-print(minha_sessao)
-
-# ATAQUE: tokens são previsíveis!
-print("\\n🚨 Testando token do Admin...")
-token_adivinhado = "TOKEN_1003"
-
-sessao_admin = next(s for s in sessoes if s["token"] == token_adivinhado)
-print(f"✅ Acessei dados do: {sessao_admin['nome']}")
+# Seu token (usuário João, id=1): TOKEN_1001
+# Observe o padrão: TOKEN_1001, TOKEN_1002, TOKEN_1003...
+#
+# 1. Adivinhe o token do Admin baseado no padrão sequencial
+# 2. Use next() com generator para buscar a sessão com esse token
+# 3. Imprima: f"✅ Acessei dados do: {nome}"
 `,
   },
   expectedOutput: '✅ Acessei dados do: Admin',
@@ -314,8 +291,10 @@ Tokens previsíveis permitem:
 • Postman (testar APIs)
   `,
   hints: [
-    'O código já mostra o ataque - tokens são sequenciais',
-    'TOKEN_1001, 1002, 1003... muito fácil de adivinhar!',
+    'Os tokens seguem o padrão TOKEN_100X, onde X é o userId',
+    'O Admin tem userId 3, então o token é TOKEN_1003',
+    'Use sessoes.find(s => s.token === "TOKEN_1003") para buscar',
+    'Imprima "✅ Acessei dados do: " + sessaoAdmin.nome',
   ],
   difficulty: 'easy',
 };

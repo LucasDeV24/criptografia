@@ -33,7 +33,7 @@ const code1: CodeChallenge = {
   id: 'scan.1', type: 'code', episode: 41, room: '41.1',
   title: 'Port scanner simulado',
   description: 'Simule um port scanner que verifica portas comuns e identifica serviços. **Execute**!',
-  instructions: 'Execute e veja o scan de portas.',
+  instructions: 'Simule um port scanner que verifica portas e identifica servicos abertos.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const servicos = {
@@ -52,23 +52,12 @@ const code1: CodeChallenge = {
 const portasAbertas = [22, 80, 443, 3306, 8080];
 const portasScan = [21, 22, 23, 25, 53, 80, 443, 3306, 3389, 8080];
 
-console.log("=== PORT SCAN - alvo: 192.168.1.50 ===");
-let abertas = 0;
-
-for (let i = 0; i < portasScan.length; i++) {
-  const porta = portasScan[i];
-  const aberta = portasAbertas.includes(porta);
-  const servico = servicos[porta] || "Desconhecido";
-
-  if (aberta) {
-    console.log("  " + porta + "/tcp  OPEN   " + servico);
-    abertas++;
-  }
-}
-
-console.log("\\n" + abertas + " portas abertas de " + portasScan.length + " escaneadas");
-if (portasAbertas.includes(23)) console.log("ALERTA: Telnet aberto (inseguro!)");
-if (portasAbertas.includes(3306)) console.log("ALERTA: MySQL exposto externamente!");
+// Imprima "=== PORT SCAN - alvo: 192.168.1.50 ==="
+// Para cada porta em portasScan que esteja em portasAbertas:
+//   "  PORTA/tcp  OPEN   SERVICO"
+// "\\nN portas abertas de M escaneadas"
+// Se 23 aberta: "ALERTA: Telnet aberto (inseguro!)"
+// Se 3306 aberta: "ALERTA: MySQL exposto externamente!"
 `,
     python: `servicos = {
     21: "FTP",
@@ -86,20 +75,12 @@ if (portasAbertas.includes(3306)) console.log("ALERTA: MySQL exposto externament
 portas_abertas = [22, 80, 443, 3306, 8080]
 portas_scan = [21, 22, 23, 25, 53, 80, 443, 3306, 3389, 8080]
 
-print("=== PORT SCAN - alvo: 192.168.1.50 ===")
-abertas = 0
-
-for porta in portas_scan:
-    aberta = porta in portas_abertas
-    servico = servicos.get(porta, "Desconhecido")
-
-    if aberta:
-        print("  " + str(porta) + "/tcp  OPEN   " + servico)
-        abertas += 1
-
-print("\\n" + str(abertas) + " portas abertas de " + str(len(portas_scan)) + " escaneadas")
-if 23 in portas_abertas: print("ALERTA: Telnet aberto (inseguro!)")
-if 3306 in portas_abertas: print("ALERTA: MySQL exposto externamente!")
+# Imprima "=== PORT SCAN - alvo: 192.168.1.50 ==="
+# Para cada porta em portas_scan que esteja em portas_abertas:
+#   "  PORTA/tcp  OPEN   SERVICO"
+# "\\nN portas abertas de M escaneadas"
+# Se 23 aberta: "ALERTA: Telnet aberto (inseguro!)"
+# Se 3306 aberta: "ALERTA: MySQL exposto externamente!"
 `,
   },
   expectedOutput: '=== PORT SCAN - alvo: 192.168.1.50 ===\n  22/tcp  OPEN   SSH\n  80/tcp  OPEN   HTTP\n  443/tcp  OPEN   HTTPS\n  3306/tcp  OPEN   MySQL\n  8080/tcp  OPEN   HTTP-Proxy\n\n5 portas abertas de 10 escaneadas\nALERTA: MySQL exposto externamente!',
@@ -111,7 +92,7 @@ const code2: CodeChallenge = {
   id: 'scan.2', type: 'code', episode: 41, room: '41.2',
   title: 'Vulnerability scanner',
   description: 'Crie um scanner que verifica vulnerabilidades conhecidas em serviços detectados. **Execute**!',
-  instructions: 'Execute e veja o relatório de vulnerabilidades.',
+  instructions: 'Compare servicos do alvo com CVEs conhecidas e gere relatorio de vulnerabilidades.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const vulns = [
@@ -123,26 +104,11 @@ const code2: CodeChallenge = {
 
 const alvo = ["Apache 2.4.49", "OpenSSH 8.9", "MySQL 5.7.0", "nginx 1.24.0"];
 
-console.log("=== VULNERABILITY SCAN ===");
-let encontradas = 0;
-
-for (let i = 0; i < alvo.length; i++) {
-  let achou = false;
-  for (let j = 0; j < vulns.length; j++) {
-    if (alvo[i] === vulns[j].servico) {
-      console.log("[" + vulns[j].severidade + "] " + vulns[j].cve);
-      console.log("  Servico: " + vulns[j].servico);
-      console.log("  " + vulns[j].desc);
-      encontradas++;
-      achou = true;
-    }
-  }
-  if (!achou) {
-    console.log("[OK] " + alvo[i] + " - sem vulns conhecidas");
-  }
-}
-
-console.log("\\nTotal: " + encontradas + " vulnerabilidade(s) encontrada(s)");
+// Imprima "=== VULNERABILITY SCAN ==="
+// Para cada servico do alvo, verifique se ha vuln conhecida:
+// Se sim: "[SEVERIDADE] CVE\n  Servico: NOME\n  DESC"
+// Se nao: "[OK] SERVICO - sem vulns conhecidas"
+// "\\nTotal: N vulnerabilidade(s) encontrada(s)"
 `,
     python: `vulns = [
     {"servico": "Apache 2.4.49", "cve": "CVE-2021-41773", "severidade": "CRITICO", "desc": "Path Traversal + RCE"},
@@ -153,22 +119,11 @@ console.log("\\nTotal: " + encontradas + " vulnerabilidade(s) encontrada(s)");
 
 alvo = ["Apache 2.4.49", "OpenSSH 8.9", "MySQL 5.7.0", "nginx 1.24.0"]
 
-print("=== VULNERABILITY SCAN ===")
-encontradas = 0
-
-for servico in alvo:
-    achou = False
-    for v in vulns:
-        if servico == v["servico"]:
-            print("[" + v["severidade"] + "] " + v["cve"])
-            print("  Servico: " + v["servico"])
-            print("  " + v["desc"])
-            encontradas += 1
-            achou = True
-    if not achou:
-        print("[OK] " + servico + " - sem vulns conhecidas")
-
-print("\\nTotal: " + str(encontradas) + " vulnerabilidade(s) encontrada(s)")
+# Imprima "=== VULNERABILITY SCAN ==="
+# Para cada servico do alvo, verifique se ha vuln conhecida:
+# Se sim: "[SEVERIDADE] CVE\n  Servico: NOME\n  DESC"
+# Se nao: "[OK] SERVICO - sem vulns conhecidas"
+# "\\nTotal: N vulnerabilidade(s) encontrada(s)"
 `,
   },
   expectedOutput: '=== VULNERABILITY SCAN ===\n[CRITICO] CVE-2021-41773\n  Servico: Apache 2.4.49\n  Path Traversal + RCE\n[OK] OpenSSH 8.9 - sem vulns conhecidas\n[CRITICO] CVE-2016-6662\n  Servico: MySQL 5.7.0\n  Remote Root Code Execution\n[OK] nginx 1.24.0 - sem vulns conhecidas\n\nTotal: 2 vulnerabilidade(s) encontrada(s)',

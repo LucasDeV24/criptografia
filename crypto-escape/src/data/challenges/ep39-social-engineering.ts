@@ -30,7 +30,7 @@ const code1: CodeChallenge = {
   id: 'soceng.1', type: 'code', episode: 39, room: '39.1',
   title: 'Detector de phishing',
   description: 'Crie um analisador que detecta indicadores de phishing em emails. **Execute**!',
-  instructions: 'Execute e veja a análise dos emails.',
+  instructions: 'Crie analisarEmail(email) que pontua indicadores de phishing e retorna o veredicto.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const emails = [
@@ -54,37 +54,14 @@ const code1: CodeChallenge = {
   }
 ];
 
-function analisarEmail(email) {
-  let pontos = 0;
-  const alertas = [];
-
-  if (email.assunto.includes("!!!") || email.assunto.includes("urgente")) {
-    pontos += 2;
-    alertas.push("Urgencia excessiva");
-  }
-  if (email.corpo.includes(".xyz") || email.corpo.includes(".tk")) {
-    pontos += 3;
-    alertas.push("Dominio suspeito");
-  }
-  if (email.remetente.includes("gmail.com") && email.remetente.includes("netflix")) {
-    pontos += 3;
-    alertas.push("Empresa usando Gmail");
-  }
-  if (email.corpo.includes("Clique aqui") || email.corpo.includes("Confirme")) {
-    pontos += 1;
-    alertas.push("Call-to-action suspeito");
-  }
-
-  let veredicto = "SEGURO";
-  if (pontos >= 4) veredicto = "PHISHING";
-  else if (pontos >= 2) veredicto = "SUSPEITO";
-
-  return veredicto + " (" + alertas.join(", ") + ")";
-}
-
-for (let i = 0; i < emails.length; i++) {
-  console.log(emails[i].remetente + ": " + analisarEmail(emails[i]));
-}
+// Crie analisarEmail(email) que pontua indicadores:
+// +2 se "!!!" ou "urgente" no assunto -> "Urgencia excessiva"
+// +3 se ".xyz" ou ".tk" no corpo -> "Dominio suspeito"
+// +3 se "gmail.com" + "netflix" no remetente -> "Empresa usando Gmail"
+// +1 se "Clique aqui" ou "Confirme" no corpo -> "Call-to-action suspeito"
+// >=4: "PHISHING", >=2: "SUSPEITO", senao: "SEGURO"
+// Retorne "VEREDICTO (alerta1, alerta2, ...)"
+// Imprima "REMETENTE: RESULTADO" para cada email
 `,
     python: `emails = [
     {
@@ -107,31 +84,14 @@ for (let i = 0; i < emails.length; i++) {
     }
 ]
 
-def analisar_email(email):
-    pontos = 0
-    alertas = []
-
-    if "!!!" in email["assunto"] or "urgente" in email["assunto"]:
-        pontos += 2
-        alertas.append("Urgencia excessiva")
-    if ".xyz" in email["corpo"] or ".tk" in email["corpo"]:
-        pontos += 3
-        alertas.append("Dominio suspeito")
-    if "gmail.com" in email["remetente"] and "netflix" in email["remetente"]:
-        pontos += 3
-        alertas.append("Empresa usando Gmail")
-    if "Clique aqui" in email["corpo"] or "Confirme" in email["corpo"]:
-        pontos += 1
-        alertas.append("Call-to-action suspeito")
-
-    veredicto = "SEGURO"
-    if pontos >= 4: veredicto = "PHISHING"
-    elif pontos >= 2: veredicto = "SUSPEITO"
-
-    return veredicto + " (" + ", ".join(alertas) + ")"
-
-for email in emails:
-    print(email["remetente"] + ": " + analisar_email(email))
+# Crie analisar_email(email) que pontua indicadores:
+# +2 se "!!!" ou "urgente" no assunto -> "Urgencia excessiva"
+# +3 se ".xyz" ou ".tk" no corpo -> "Dominio suspeito"
+# +3 se "gmail.com" + "netflix" no remetente -> "Empresa usando Gmail"
+# +1 se "Clique aqui" ou "Confirme" no corpo -> "Call-to-action suspeito"
+# >=4: "PHISHING", >=2: "SUSPEITO", senao: "SEGURO"
+# Retorne "VEREDICTO (alerta1, alerta2, ...)"
+# Imprima "REMETENTE: RESULTADO" para cada email
 `,
   },
   expectedOutput: 'suporte@banco-seguro.com.br: PHISHING (Urgencia excessiva, Dominio suspeito, Call-to-action suspeito)\nmaria@empresa.com: SEGURO ()\nnetflix-suporte@gmail.com: PHISHING (Urgencia excessiva, Dominio suspeito, Empresa usando Gmail, Call-to-action suspeito)',
@@ -143,7 +103,7 @@ const code2: CodeChallenge = {
   id: 'soceng.2', type: 'code', episode: 39, room: '39.2',
   title: 'Simulador de pretexting',
   description: 'Analise cenários de pretexting e identifique as técnicas de manipulação usadas. **Execute**!',
-  instructions: 'Execute e veja a análise de cada cenário.',
+  instructions: 'Analise cenarios de pretexting, liste tecnicas e classifique o risco.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const cenarios = [
@@ -161,12 +121,10 @@ const code2: CodeChallenge = {
   }
 ];
 
-for (let i = 0; i < cenarios.length; i++) {
-  const c = cenarios[i];
-  console.log("Cenario " + (i + 1) + ": \\"" + c.frase.substring(0, 50) + "...\\"");
-  console.log("  Tecnicas: " + c.tecnicas.join(", "));
-  console.log("  Risco: " + (c.tecnicas.length >= 3 ? "ALTO" : c.tecnicas.length >= 2 ? "MEDIO" : "BAIXO"));
-}
+// Para cada cenario imprima:
+// "Cenario N: \"PRIMEIROS_50_CHARS...\""
+// "  Tecnicas: tecnica1, tecnica2, ..."
+// "  Risco: ALTO (>=3 tecnicas), MEDIO (>=2) ou BAIXO"
 `,
     python: `cenarios = [
     {
@@ -183,12 +141,10 @@ for (let i = 0; i < cenarios.length; i++) {
     }
 ]
 
-for i in range(len(cenarios)):
-    c = cenarios[i]
-    print("Cenario " + str(i + 1) + ": \\"" + c["frase"][:50] + "...\\"")
-    print("  Tecnicas: " + ", ".join(c["tecnicas"]))
-    risco = "ALTO" if len(c["tecnicas"]) >= 3 else "MEDIO" if len(c["tecnicas"]) >= 2 else "BAIXO"
-    print("  Risco: " + risco)
+# Para cada cenario imprima:
+# "Cenario N: \"PRIMEIROS_50_CHARS...\""
+# "  Tecnicas: tecnica1, tecnica2, ..."
+# "  Risco: ALTO (>=3 tecnicas), MEDIO (>=2) ou BAIXO"
 `,
   },
   expectedOutput: 'Cenario 1: "Oi, sou o novo gerente de TI. Preciso da senh..."\n  Tecnicas: autoridade, urgencia\n  Risco: MEDIO\nCenario 2: "Lembra que te ajudei com aquele relatorio? Agora ..."\n  Tecnicas: reciprocidade, afinidade\n  Risco: MEDIO\nCenario 3: "Todos os funcionarios ja atualizaram a senha no li..."\n  Tecnicas: prova_social, urgencia, escassez\n  Risco: ALTO',

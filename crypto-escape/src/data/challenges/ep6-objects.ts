@@ -78,7 +78,7 @@ const code6_2: CodeChallenge = {
   room: '6.2',
   title: 'Acessando propriedades',
   description: 'Mude o código para mostrar apenas o **email** do usuário.',
-  instructions: 'Mude para acessar a propriedade "email".',
+  instructions: 'Acesse e imprima a propriedade "email" do objeto usuario.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const usuario = {
@@ -87,8 +87,8 @@ const code6_2: CodeChallenge = {
   nivel: "Senior"
 };
 
-// Mude para mostrar o email:
-console.log(usuario.nome);
+// Imprima o email do usuário
+// Acesse a propriedade "email" do objeto
 `,
     python: `usuario = {
     "nome": "Carlos",
@@ -96,14 +96,15 @@ console.log(usuario.nome);
     "nivel": "Senior"
 }
 
-# Mude para mostrar o email:
-print(usuario["nome"])
+# Imprima o email do usuário
+# Acesse a chave "email" do dicionário
 `,
   },
   expectedOutput: 'carlos@security.com',
   hints: [
-    'Em JS: mude usuario.nome para usuario.email',
-    'Em Python: mude usuario["nome"] para usuario["email"]',
+    'Em JS: console.log(usuario.email)',
+    'Em Python: print(usuario["email"])',
+    'Objetos guardam dados com chave: valor',
   ],
   difficulty: 'easy',
 };
@@ -152,7 +153,7 @@ const code6_4: CodeChallenge = {
   room: '6.4',
   title: 'Simulando resposta de API',
   description: 'O código simula a resposta de um servidor após login. **Execute** e veja os dados retornados!',
-  instructions: 'Execute e veja a resposta simulada.',
+  instructions: 'Escreva um if/else que verifica se o login foi um sucesso e imprime o resultado.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const resposta = {
@@ -161,11 +162,9 @@ const code6_4: CodeChallenge = {
   role: "administrador"
 };
 
-if (resposta.sucesso) {
-  console.log("Login OK: " + resposta.usuario);
-} else {
-  console.log("Login falhou");
-}
+// Escreva um if/else:
+// Se resposta.sucesso for true, imprima "Login OK: " + resposta.usuario
+// Senão, imprima "Login falhou"
 `,
     python: `resposta = {
     "sucesso": True,
@@ -173,16 +172,16 @@ if (resposta.sucesso) {
     "role": "administrador"
 }
 
-if resposta["sucesso"]:
-    print("Login OK: " + resposta["usuario"])
-else:
-    print("Login falhou")
+# Escreva um if/else:
+# Se resposta["sucesso"] for True, imprima "Login OK: " + resposta["usuario"]
+# Senão, imprima "Login falhou"
 `,
   },
   expectedOutput: 'Login OK: admin',
   hints: [
-    'O código já está pronto! Execute.',
-    'O if verifica se resposta.sucesso é true',
+    'Em JS: if (resposta.sucesso) { console.log("Login OK: " + resposta.usuario); }',
+    'Em Python: if resposta["sucesso"]: print("Login OK: " + resposta["usuario"])',
+    'Não esqueça o else com "Login falhou"',
   ],
   difficulty: 'easy',
 };
@@ -194,36 +193,35 @@ const code6_5: CodeChallenge = {
   room: '6.5',
   title: 'Verificando permissões',
   description: 'O código verifica se o usuário é admin. Mude o **role** para **"usuario"** e veja o resultado mudar.',
-  instructions: 'Mude "admin" para "usuario" na propriedade role.',
+  instructions: 'Mude o role para "usuario" e escreva o if/else para verificar permissões.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const usuario = {
   nome: "Carlos",
+  // Mude o role para "usuario":
   role: "admin"
 };
 
-if (usuario.role == "admin") {
-  console.log("Acesso total");
-} else {
-  console.log("Acesso limitado");
-}
+// Escreva um if/else:
+// Se usuario.role for "admin", imprima "Acesso total"
+// Senão, imprima "Acesso limitado"
 `,
     python: `usuario = {
     "nome": "Carlos",
+    # Mude o role para "usuario":
     "role": "admin"
 }
 
-if usuario["role"] == "admin":
-    print("Acesso total")
-else:
-    print("Acesso limitado")
+# Escreva um if/else:
+# Se usuario["role"] for "admin", imprima "Acesso total"
+# Senão, imprima "Acesso limitado"
 `,
   },
   expectedOutput: 'Acesso limitado',
   hints: [
-    'Mude role: "admin" para role: "usuario"',
-    'Em Python: mude "role": "admin" para "role": "usuario"',
-    'Como "usuario" não é "admin", entra no else',
+    'Primeiro mude role: "admin" para role: "usuario"',
+    'Depois: if (usuario.role == "admin") em JS',
+    'Como "usuario" não é "admin", deve entrar no else → "Acesso limitado"',
   ],
   difficulty: 'easy',
 };
@@ -235,7 +233,7 @@ const code6_6: CodeChallenge = {
   room: '6.6',
   title: 'Array de objetos — lista de usuários',
   description: 'Na vida real, sistemas guardam VÁRIOS usuários. Combinamos array + objetos! **Execute** e veja.',
-  instructions: 'Execute e veja a lista de usuários.',
+  instructions: 'Percorra o array de usuários e imprima o nome dos que são "admin".',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const usuarios = [
@@ -244,11 +242,8 @@ const code6_6: CodeChallenge = {
   { nome: "Maria", role: "admin" }
 ];
 
-for (let i = 0; i < usuarios.length; i++) {
-  if (usuarios[i].role == "admin") {
-    console.log(usuarios[i].nome + " é admin");
-  }
-}
+// Percorra o array usuarios com um loop for
+// Se o role do usuário for "admin", imprima: nome + " é admin"
 `,
     python: `usuarios = [
     {"nome": "Ana", "role": "admin"},
@@ -256,15 +251,15 @@ for (let i = 0; i < usuarios.length; i++) {
     {"nome": "Maria", "role": "admin"}
 ]
 
-for u in usuarios:
-    if u["role"] == "admin":
-        print(u["nome"] + " é admin")
+# Percorra a lista usuarios com um loop for
+# Se o role do usuário for "admin", imprima: nome + " é admin"
 `,
   },
   expectedOutput: 'Ana é admin\nMaria é admin',
   hints: [
-    'O código já está pronto! Execute.',
-    'O loop percorre cada usuário e o if filtra só os admins',
+    'Em JS: for (let i = 0; i < usuarios.length; i++) { if (usuarios[i].role == "admin") { ... } }',
+    'Em Python: for u in usuarios: if u["role"] == "admin": print(u["nome"] + " é admin")',
+    'Só Ana e Maria são admin',
   ],
   difficulty: 'easy',
 };
@@ -276,16 +271,12 @@ const code6_7: CodeChallenge = {
   room: '6.7',
   title: 'Função + Objeto — verificação real',
   description: 'Vamos combinar tudo! Uma função que recebe um usuário e verifica suas permissões. **Execute**!',
-  instructions: 'Execute e veja a verificação funcionando.',
+  instructions: 'Crie uma função que recebe um usuario e retorna "Permitido" se for admin, "Negado" se não for.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `function verificarAcesso(usuario) {
-  if (usuario.role == "admin") {
-    return "Permitido";
-  } else {
-    return "Negado";
-  }
-}
+    javascript: `// Crie uma função "verificarAcesso" que recebe um usuario
+// Se usuario.role for "admin", retorne "Permitido"
+// Senão, retorne "Negado"
 
 const ana = { nome: "Ana", role: "admin" };
 const carlos = { nome: "Carlos", role: "usuario" };
@@ -293,11 +284,9 @@ const carlos = { nome: "Carlos", role: "usuario" };
 console.log(ana.nome + ": " + verificarAcesso(ana));
 console.log(carlos.nome + ": " + verificarAcesso(carlos));
 `,
-    python: `def verificar_acesso(usuario):
-    if usuario["role"] == "admin":
-        return "Permitido"
-    else:
-        return "Negado"
+    python: `# Crie uma função "verificar_acesso" que recebe um usuario
+# Se usuario["role"] for "admin", retorne "Permitido"
+# Senão, retorne "Negado"
 
 ana = {"nome": "Ana", "role": "admin"}
 carlos = {"nome": "Carlos", "role": "usuario"}
@@ -308,8 +297,9 @@ print(carlos["nome"] + ": " + verificar_acesso(carlos))
   },
   expectedOutput: 'Ana: Permitido\nCarlos: Negado',
   hints: [
-    'O código já está pronto! Execute.',
-    'A função recebe um objeto e verifica o role',
+    'Em JS: function verificarAcesso(usuario) { if (usuario.role == "admin") { return "Permitido"; } ... }',
+    'Em Python: def verificar_acesso(usuario): if usuario["role"] == "admin": return "Permitido"',
+    'Ana é admin → "Permitido", Carlos é usuario → "Negado"',
   ],
   difficulty: 'easy',
 };

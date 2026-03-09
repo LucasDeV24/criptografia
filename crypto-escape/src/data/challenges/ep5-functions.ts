@@ -76,20 +76,15 @@ const code5_2: CodeChallenge = {
   room: '5.2',
   title: 'Criando sua função',
   description: 'Crie uma função chamada **alerta** que imprime **"Intruso detectado!"**. Depois chame ela. O código já está quase pronto!',
-  instructions: 'Complete a mensagem da função com "Intruso detectado!"',
+  instructions: 'Crie uma função chamada "alerta" que imprime "Intruso detectado!" e chame ela.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Complete a função:
-function alerta() {
-  console.log("Intruso detectado!");
-}
+    javascript: `// Crie uma função chamada "alerta" que imprime "Intruso detectado!"
 
 // Chame a função:
 alerta();
 `,
-    python: `# Complete a função:
-def alerta():
-    print("Intruso detectado!")
+    python: `# Crie uma função chamada "alerta" que imprime "Intruso detectado!"
 
 # Chame a função:
 alerta()
@@ -97,8 +92,9 @@ alerta()
   },
   expectedOutput: 'Intruso detectado!',
   hints: [
-    'O código já está completo — execute!',
-    'A função "alerta" imprime a mensagem quando é chamada',
+    'Em JS: function alerta() { console.log("Intruso detectado!"); }',
+    'Em Python: def alerta(): print("Intruso detectado!")',
+    'A função deve ser criada ANTES de ser chamada',
   ],
   difficulty: 'easy',
 };
@@ -147,25 +143,25 @@ const code5_4: CodeChallenge = {
   room: '5.4',
   title: 'Função com parâmetro',
   description: 'A função **saudacao** recebe um **nome** e imprime uma mensagem personalizada. **Execute** para ver!',
-  instructions: 'Execute e veja a saudação personalizada.',
+  instructions: 'Crie uma função "saudacao" que recebe "nome" e imprime "Olá, " + nome + "!".',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `function saudacao(nome) {
-  console.log("Olá, " + nome + "!");
-}
+    javascript: `// Crie uma função "saudacao" que recebe um parâmetro "nome"
+// e imprime "Olá, " + nome + "!"
 
 saudacao("Hacker");
 `,
-    python: `def saudacao(nome):
-    print("Olá, " + nome + "!")
+    python: `# Crie uma função "saudacao" que recebe um parâmetro "nome"
+# e imprime "Olá, " + nome + "!"
 
 saudacao("Hacker")
 `,
   },
   expectedOutput: 'Olá, Hacker!',
   hints: [
-    'O código já está pronto! Execute.',
-    'O parâmetro "nome" recebe o valor "Hacker"',
+    'Em JS: function saudacao(nome) { console.log("Olá, " + nome + "!"); }',
+    'Em Python: def saudacao(nome): print("Olá, " + nome + "!")',
+    'O parâmetro "nome" vai receber o valor "Hacker" quando chamada',
   ],
   difficulty: 'easy',
 };
@@ -177,27 +173,27 @@ const code5_5: CodeChallenge = {
   room: '5.5',
   title: 'Sua vez — mude o parâmetro',
   description: 'Mude a chamada da função para passar o nome **"Admin"** em vez de "Hacker".',
-  instructions: 'Troque "Hacker" por "Admin" na chamada da função.',
+  instructions: 'Crie a função "saudacao" e chame com "Admin" em vez de "Hacker".',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `function saudacao(nome) {
-  console.log("Olá, " + nome + "!");
-}
+    javascript: `// Crie uma função "saudacao" que recebe um parâmetro "nome"
+// e imprime "Olá, " + nome + "!"
 
-// Mude "Hacker" para "Admin":
+// Mude "Hacker" para "Admin" e chame a função:
 saudacao("Hacker");
 `,
-    python: `def saudacao(nome):
-    print("Olá, " + nome + "!")
+    python: `# Crie uma função "saudacao" que recebe um parâmetro "nome"
+# e imprime "Olá, " + nome + "!"
 
-# Mude "Hacker" para "Admin":
+# Mude "Hacker" para "Admin" e chame a função:
 saudacao("Hacker")
 `,
   },
   expectedOutput: 'Olá, Admin!',
   hints: [
-    'Mude saudacao("Hacker") para saudacao("Admin")',
-    'Mantenha as aspas!',
+    'Primeiro crie a função: function saudacao(nome) { ... }',
+    'Depois mude saudacao("Hacker") para saudacao("Admin")',
+    'Em Python: def saudacao(nome): print("Olá, " + nome + "!")',
   ],
   difficulty: 'easy',
 };
@@ -242,18 +238,17 @@ const code5_7: CodeChallenge = {
   room: '5.7',
   title: 'Função com return',
   description: 'A função **dobro** retorna o dobro de um número. O resultado é guardado em uma variável. **Execute**!',
-  instructions: 'Execute e veja o return funcionando.',
+  instructions: 'Crie uma função "dobro" que recebe um número e retorna o dobro dele.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `function dobro(numero) {
-  return numero * 2;
-}
+    javascript: `// Crie uma função "dobro" que recebe um número
+// e retorna (return) o número multiplicado por 2
 
 const resultado = dobro(5);
 console.log(resultado);
 `,
-    python: `def dobro(numero):
-    return numero * 2
+    python: `# Crie uma função "dobro" que recebe um número
+# e retorna (return) o número multiplicado por 2
 
 resultado = dobro(5)
 print(resultado)
@@ -261,8 +256,9 @@ print(resultado)
   },
   expectedOutput: '10',
   hints: [
-    'O código já está pronto! Execute.',
-    'dobro(5) retorna 5 * 2 = 10',
+    'Em JS: function dobro(numero) { return numero * 2; }',
+    'Em Python: def dobro(numero): return numero * 2',
+    'dobro(5) deve retornar 5 * 2 = 10',
   ],
   difficulty: 'easy',
 };
@@ -274,33 +270,30 @@ const code5_8: CodeChallenge = {
   room: '5.8',
   title: 'Função de segurança — verificar senha',
   description: 'Agora vamos criar algo REAL! Uma função que verifica se a senha é forte (8+ caracteres). **Execute** para ver!',
-  instructions: 'Execute e veja a verificação de senha.',
+  instructions: 'Crie uma função que verifica se a senha tem 8+ caracteres e retorna "Senha forte" ou "Senha fraca".',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `function senhaForte(senha) {
-  if (senha.length >= 8) {
-    return "Senha forte";
-  } else {
-    return "Senha fraca";
-  }
-}
+    javascript: `// Crie uma função "senhaForte" que recebe uma senha
+// Se a senha tiver 8 ou mais caracteres, retorne "Senha forte"
+// Senão, retorne "Senha fraca"
 
+// Teste com:
 console.log(senhaForte("admin"));
 console.log(senhaForte("s3nh4segur4"));
 `,
-    python: `def senha_forte(senha):
-    if len(senha) >= 8:
-        return "Senha forte"
-    else:
-        return "Senha fraca"
+    python: `# Crie uma função "senha_forte" que recebe uma senha
+# Se a senha tiver 8 ou mais caracteres, retorne "Senha forte"
+# Senão, retorne "Senha fraca"
 
+# Teste com:
 print(senha_forte("admin"))
 print(senha_forte("s3nh4segur4"))
 `,
   },
   expectedOutput: 'Senha fraca\nSenha forte',
   hints: [
-    'O código já está pronto! Execute.',
+    'Use senha.length >= 8 em JS ou len(senha) >= 8 em Python',
+    'Em JS: function senhaForte(senha) { if (senha.length >= 8) { return "Senha forte"; } ... }',
     '"admin" tem 5 letras → fraca. "s3nh4segur4" tem 11 → forte',
   ],
   difficulty: 'easy',

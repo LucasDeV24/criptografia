@@ -131,30 +131,24 @@ const code10_2: CodeChallenge = {
   instructions: 'Execute e veja o texto escondido',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Dados em hexadecimal encontrados
+    javascript: `// Dados em hexadecimal encontrados em um arquivo suspeito
 const hexData = "48656c6c6f";
 
-console.log("🔢 Hex encontrado: " + hexData);
-
-// Converter hex para texto
-let texto = "";
-for (let i = 0; i < hexData.length; i += 2) {
-  const hex = hexData.substr(i, 2);
-  const charCode = parseInt(hex, 16);
-  texto += String.fromCharCode(charCode);
-}
-
-console.log("📝 Texto decodificado: " + texto);
+// Converta o hexadecimal para texto ASCII:
+// 1. Percorra hexData de 2 em 2 caracteres (i += 2)
+// 2. Extraia cada par de hex com hexData.substr(i, 2)
+// 3. Converta para número decimal com parseInt(hex, 16)
+// 4. Converta para caractere com String.fromCharCode()
+// 5. Junte tudo em uma string resultado
+// 6. Imprima: "📝 Texto decodificado: " + resultado
 `,
-    python: `# Dados em hexadecimal encontrados
+    python: `# Dados em hexadecimal encontrados em um arquivo suspeito
 hex_data = "48656c6c6f"
 
-print(f"🔢 Hex encontrado: {hex_data}")
-
-# Converter hex para texto
-texto = bytes.fromhex(hex_data).decode('utf-8')
-
-print(f"📝 Texto decodificado: {texto}")
+# Converta o hexadecimal para texto ASCII:
+# 1. Use bytes.fromhex(hex_data) para converter hex em bytes
+# 2. Use .decode('utf-8') para converter bytes em texto
+# 3. Imprima: f"📝 Texto decodificado: {texto}"
 `,
   },
   expectedOutput: '📝 Texto decodificado: Hello',
@@ -179,8 +173,10 @@ print(f"📝 Texto decodificado: {texto}")
 • xxd (Linux hex dump)
   `,
   hints: [
-    'Hexadecimal é base 16 (0-9, A-F)',
-    'Cada 2 dígitos hex = 1 caractere',
+    'Hexadecimal é base 16 (0-9, A-F). Cada 2 dígitos = 1 caractere',
+    'JS: parseInt("48", 16) retorna 72. String.fromCharCode(72) retorna "H"',
+    'Python: bytes.fromhex("48656c6c6f").decode("utf-8") retorna "Hello"',
+    'O texto escondido é "Hello"',
   ],
   difficulty: 'easy',
 };
@@ -242,45 +238,20 @@ const code10_4: CodeChallenge = {
     javascript: `// "Pixels" da imagem (valores RGB simplificados)
 const pixels = [72, 101, 108, 108, 111];
 
-console.log("🖼️ Analisando pixels: " + pixels.join(", "));
-
-// Extrair LSB (último bit) de cada pixel
-let bits = "";
-for (let i = 0; i < pixels.length; i++) {
-  const pixel = pixels[i];
-  const lsb = pixel & 1; // Pega último bit
-  bits += lsb;
-}
-
-// Na verdade, esses pixels SÃO os caracteres ASCII!
-let mensagem = "";
-for (let i = 0; i < pixels.length; i++) {
-  mensagem += String.fromCharCode(pixels[i]);
-}
-
-console.log("\\n🔍 Dados extraídos:");
-console.log("Bits LSB: " + bits);
-console.log("\\n📝 Mensagem escondida: " + mensagem);
+// Os valores dos pixels são na verdade códigos ASCII!
+// 1. Percorra o array pixels
+// 2. Converta cada número para caractere com String.fromCharCode()
+// 3. Junte todos os caracteres em uma string
+// 4. Imprima: "📝 Mensagem escondida: " + a mensagem
 `,
     python: `# "Pixels" da imagem (valores RGB simplificados)
 pixels = [72, 101, 108, 108, 111]
 
-print(f"🖼️ Analisando pixels: {pixels}")
-
-# Extrair LSB (último bit) de cada pixel
-bits = ""
-for pixel in pixels:
-    lsb = pixel & 1  # Pega último bit
-    bits += str(lsb)
-
-# Na verdade, esses pixels SÃO os caracteres ASCII!
-mensagem = ""
-for pixel in pixels:
-    mensagem += chr(pixel)
-
-print("\\n🔍 Dados extraídos:")
-print(f"Bits LSB: {bits}")
-print(f"\\n📝 Mensagem escondida: {mensagem}")
+# Os valores dos pixels são na verdade códigos ASCII!
+# 1. Percorra a lista pixels
+# 2. Converta cada número para caractere com chr()
+# 3. Junte todos os caracteres em uma string
+# 4. Imprima: f"📝 Mensagem escondida: {mensagem}"
 `,
   },
   expectedOutput: '📝 Mensagem escondida: Hello',
@@ -303,8 +274,10 @@ Pode esconder: ~250KB de dados!
 • Chi-square test
   `,
   hints: [
-    'Os valores 72, 101, 108... são caracteres ASCII',
-    'LSB técnico: & 1 pega último bit',
+    '72 = "H", 101 = "e", 108 = "l"... são valores ASCII',
+    'JS: String.fromCharCode(72) retorna "H"',
+    'Python: chr(72) retorna "H"',
+    'Percorra com loop e concatene os caracteres em uma string',
   ],
   difficulty: 'easy',
 };

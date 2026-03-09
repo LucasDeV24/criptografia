@@ -129,3 +129,23 @@ export function getNextChallenge(episode: number, room: string): { episode: numb
 
   return null;
 }
+
+export function getPreviousChallenge(episode: number, room: string): { episode: number; room: string } | null {
+  const episodeChallenges = challengesByEpisode[episode];
+  if (!episodeChallenges) return null;
+
+  const currentIndex = episodeChallenges.findIndex((c) => c.room === room);
+  if (currentIndex === -1) return null;
+
+  if (currentIndex > 0) {
+    const prev = episodeChallenges[currentIndex - 1];
+    return { episode, room: prev.room };
+  }
+
+  const prevEpisode = challengesByEpisode[episode - 1];
+  if (prevEpisode?.length) {
+    return { episode: episode - 1, room: prevEpisode[prevEpisode.length - 1].room };
+  }
+
+  return null;
+}

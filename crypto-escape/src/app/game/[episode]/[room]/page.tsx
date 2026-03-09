@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { getChallenge, getNextChallenge } from '@/data/challenges';
+import { getChallenge, getNextChallenge, getPreviousChallenge } from '@/data/challenges';
 import ChallengeRoom from '@/components/game/ChallengeRoom';
-import { ArrowLeft, ArrowRight, Lock } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Lock, Home } from 'lucide-react';
 import { markRoomComplete, updateCurrentPosition, isRoomComplete } from '@/lib/progress';
 
 export default function GameRoomPage() {
@@ -18,6 +18,7 @@ export default function GameRoomPage() {
 
   const challenge = getChallenge(episode, room);
   const next = getNextChallenge(episode, room);
+  const prev = getPreviousChallenge(episode, room);
 
   useEffect(() => {
     const alreadyDone = isRoomComplete(room);
@@ -54,13 +55,26 @@ export default function GameRoomPage() {
     <div className="min-h-screen">
       <header className="border-b border-[var(--border-subtle)] bg-[var(--deep-space)]/80 backdrop-blur sticky top-0 z-20">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-[var(--muted-gray)] hover:text-[var(--matrix-green)] transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Voltar
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              className="flex items-center gap-1.5 text-[var(--muted-gray)] hover:text-[var(--matrix-green)] transition-colors"
+              title="Página inicial"
+            >
+              <Home className="w-4 h-4" />
+              <span className="hidden sm:inline">Home</span>
+            </Link>
+            {prev && (
+              <Link
+                href={`/game/${prev.episode}/${prev.room}`}
+                className="flex items-center gap-1.5 text-[var(--muted-gray)] hover:text-[var(--matrix-green)] transition-colors"
+                title="Sala anterior"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span className="hidden sm:inline">Voltar</span>
+              </Link>
+            )}
+          </div>
           <span className="text-sm text-[var(--muted-gray)]">
             Episódio {episode} · Sala {room}
           </span>

@@ -31,7 +31,7 @@ const code1: CodeChallenge = {
   id: 'rep.1', type: 'code', episode: 43, room: '43.1',
   title: 'Gerador de relatório de pentest',
   description: 'Crie um gerador automático de relatórios de pentest com classificação CVSS. **Execute**!',
-  instructions: 'Execute e veja o relatório gerado.',
+  instructions: 'Gere um relatorio de pentest ordenando achados por CVSS e classificando severidade.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const achados = [
@@ -42,26 +42,12 @@ const code1: CodeChallenge = {
   { titulo: "CSRF em /transfer", cvss: 5.5, tipo: "CSRF", correcao: "Implementar token anti-CSRF" }
 ];
 
-function severidade(cvss) {
-  if (cvss >= 9) return "CRITICO";
-  if (cvss >= 7) return "ALTO";
-  if (cvss >= 4) return "MEDIO";
-  if (cvss > 0) return "BAIXO";
-  return "INFO";
-}
-
-achados.sort(function(a, b) { return b.cvss - a.cvss; });
-
-console.log("=== RELATORIO DE PENTEST ===");
-console.log("Data: 2024-03-15");
-console.log("Alvo: app.empresa.com");
-console.log("Achados: " + achados.length + " vulnerabilidades\\n");
-
-for (let i = 0; i < achados.length; i++) {
-  const a = achados[i];
-  console.log((i + 1) + ". [" + severidade(a.cvss) + " - CVSS " + a.cvss + "] " + a.titulo);
-  console.log("   Correcao: " + a.correcao);
-}
+// Crie severidade(cvss): >=9 "CRITICO", >=7 "ALTO", >=4 "MEDIO", >0 "BAIXO", else "INFO"
+// Ordene achados por cvss decrescente
+// Imprima "=== RELATORIO DE PENTEST ==="
+// "Data: 2024-03-15", "Alvo: app.empresa.com"
+// "Achados: N vulnerabilidades\\n"
+// "N. [SEV - CVSS X] TITULO\\n   Correcao: CORRECAO"
 `,
     python: `achados = [
     {"titulo": "SQL Injection em /login", "cvss": 9.8, "tipo": "SQLi", "correcao": "Usar prepared statements"},
@@ -71,24 +57,12 @@ for (let i = 0; i < achados.length; i++) {
     {"titulo": "CSRF em /transfer", "cvss": 5.5, "tipo": "CSRF", "correcao": "Implementar token anti-CSRF"}
 ]
 
-def severidade(cvss):
-    if cvss >= 9: return "CRITICO"
-    if cvss >= 7: return "ALTO"
-    if cvss >= 4: return "MEDIO"
-    if cvss > 0: return "BAIXO"
-    return "INFO"
-
-achados.sort(key=lambda a: a["cvss"], reverse=True)
-
-print("=== RELATORIO DE PENTEST ===")
-print("Data: 2024-03-15")
-print("Alvo: app.empresa.com")
-print("Achados: " + str(len(achados)) + " vulnerabilidades\\n")
-
-for i in range(len(achados)):
-    a = achados[i]
-    print(str(i + 1) + ". [" + severidade(a["cvss"]) + " - CVSS " + str(a["cvss"]) + "] " + a["titulo"])
-    print("   Correcao: " + a["correcao"])
+# Crie severidade(cvss): >=9 "CRITICO", >=7 "ALTO", >=4 "MEDIO", >0 "BAIXO", else "INFO"
+# Ordene achados por cvss decrescente
+# Imprima "=== RELATORIO DE PENTEST ==="
+# "Data: 2024-03-15", "Alvo: app.empresa.com"
+# "Achados: N vulnerabilidades\\n"
+# "N. [SEV - CVSS X] TITULO\\n   Correcao: CORRECAO"
 `,
   },
   expectedOutput: '=== RELATORIO DE PENTEST ===\nData: 2024-03-15\nAlvo: app.empresa.com\nAchados: 5 vulnerabilidades\n\n1. [CRITICO - CVSS 9.8] SQL Injection em /login\n   Correcao: Usar prepared statements\n2. [CRITICO - CVSS 9.1] Senha padrao no admin\n   Correcao: Forcar troca de senha no primeiro login\n3. [MEDIO - CVSS 6.1] XSS Stored em comentarios\n   Correcao: Sanitizar output com encoding\n4. [MEDIO - CVSS 5.5] CSRF em /transfer\n   Correcao: Implementar token anti-CSRF\n5. [BAIXO - CVSS 2.0] Versao do servidor exposta\n   Correcao: Remover header Server',
@@ -100,7 +74,7 @@ const code2: CodeChallenge = {
   id: 'rep.2', type: 'code', episode: 43, room: '43.2',
   title: 'Dashboard de risco',
   description: 'Gere um sumário executivo com métricas de risco para apresentar à diretoria. **Execute**!',
-  instructions: 'Execute e veja o dashboard.',
+  instructions: 'Gere um dashboard de risco com barras visuais e pontuacao ponderada.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const vulns = [
@@ -112,26 +86,15 @@ const code2: CodeChallenge = {
 ];
 
 const pesos = { CRITICO: 10, ALTO: 7, MEDIO: 4, BAIXO: 1, INFO: 0 };
-let totalVulns = 0;
-let pontuacao = 0;
 
-console.log("=== DASHBOARD DE RISCO ===\\n");
-for (let i = 0; i < vulns.length; i++) {
-  const v = vulns[i];
-  totalVulns += v.qtd;
-  pontuacao += v.qtd * pesos[v.sev];
-  const barra = "#".repeat(v.qtd);
-  console.log("  " + v.sev.padEnd(8) + " | " + barra + " (" + v.qtd + ")");
-}
-
-const maxPontos = totalVulns * 10;
-const risco = Math.round((pontuacao / maxPontos) * 100);
-
-console.log("\\nTotal: " + totalVulns + " vulnerabilidades");
-console.log("Pontuacao de risco: " + pontuacao + "/" + maxPontos + " (" + risco + "%)");
-if (risco >= 60) console.log("Status: RISCO ALTO - acao imediata necessaria");
-else if (risco >= 30) console.log("Status: RISCO MEDIO - planejar correcoes");
-else console.log("Status: RISCO BAIXO - monitorar");
+// Imprima "=== DASHBOARD DE RISCO ===\\n"
+// Para cada: "  SEV(padEnd 8) | ###(repeat qtd) (QTD)"
+// Calcule pontuacao = sum(qtd * peso), maxPontos = totalVulns * 10
+// "\\nTotal: N vulnerabilidades"
+// "Pontuacao de risco: P/MAX (PCT%)"
+// >=60%: "Status: RISCO ALTO - acao imediata necessaria"
+// >=30%: "Status: RISCO MEDIO - planejar correcoes"
+// else: "Status: RISCO BAIXO - monitorar"
 `,
     python: `vulns = [
     {"sev": "CRITICO", "qtd": 2},
@@ -142,24 +105,15 @@ else console.log("Status: RISCO BAIXO - monitorar");
 ]
 
 pesos = {"CRITICO": 10, "ALTO": 7, "MEDIO": 4, "BAIXO": 1, "INFO": 0}
-total_vulns = 0
-pontuacao = 0
 
-print("=== DASHBOARD DE RISCO ===\\n")
-for v in vulns:
-    total_vulns += v["qtd"]
-    pontuacao += v["qtd"] * pesos[v["sev"]]
-    barra = "#" * v["qtd"]
-    print("  " + v["sev"].ljust(8) + " | " + barra + " (" + str(v["qtd"]) + ")")
-
-max_pontos = total_vulns * 10
-risco = round((pontuacao / max_pontos) * 100)
-
-print("\\nTotal: " + str(total_vulns) + " vulnerabilidades")
-print("Pontuacao de risco: " + str(pontuacao) + "/" + str(max_pontos) + " (" + str(risco) + "%)")
-if risco >= 60: print("Status: RISCO ALTO - acao imediata necessaria")
-elif risco >= 30: print("Status: RISCO MEDIO - planejar correcoes")
-else: print("Status: RISCO BAIXO - monitorar")
+# Imprima "=== DASHBOARD DE RISCO ===\\n"
+# Para cada: "  SEV(ljust 8) | ###(repeat qtd) (QTD)"
+# Calcule pontuacao = sum(qtd * peso), max_pontos = total_vulns * 10
+# "\\nTotal: N vulnerabilidades"
+# "Pontuacao de risco: P/MAX (PCT%)"
+# >=60%: "Status: RISCO ALTO - acao imediata necessaria"
+# >=30%: "Status: RISCO MEDIO - planejar correcoes"
+# else: "Status: RISCO BAIXO - monitorar"
 `,
   },
   expectedOutput: '=== DASHBOARD DE RISCO ===\n\n  CRITICO  | ## (2)\n  ALTO     | # (1)\n  MEDIO    | #### (4)\n  BAIXO    | ### (3)\n  INFO     | ##### (5)\n\nTotal: 15 vulnerabilidades\nPontuacao de risco: 46/150 (31%)\nStatus: RISCO MEDIO - planejar correcoes',

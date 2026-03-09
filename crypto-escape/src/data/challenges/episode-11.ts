@@ -148,31 +148,15 @@ const conexoes = [
   { src: "192.168.1.50", dst: "8.8.8.8", port: 53, status: "OPEN" }
 ];
 
-console.log("=== Detectando Port Scanning ===\\n");
-
-// Contar tentativas por IP de origem
-const tentativasPorIP = {};
-
-for (let i = 0; i < conexoes.length; i++) {
-  const c = conexoes[i];
-  const key = c.src + " → " + c.dst;
-  
-  if (!tentativasPorIP[key]) {
-    tentativasPorIP[key] = [];
-  }
-  tentativasPorIP[key].push(c.port);
-}
-
-// Alertar se múltiplas portas foram testadas
-for (let key in tentativasPorIP) {
-  const portas = tentativasPorIP[key];
-  if (portas.length >= 3) {
-    console.log("🚨 PORT SCAN DETECTADO!");
-    console.log("   Origem: " + key);
-    console.log("   Portas testadas: " + portas.join(", "));
-    console.log("   Total: " + portas.length + " portas\\n");
-  }
-}
+// Detecte port scanning: um IP testando muitas portas é suspeito!
+// 1. Crie um objeto para agrupar portas por par "src → dst"
+// 2. Percorra conexoes e agrupe as portas de cada par src→dst
+//    Chave: c.src + " → " + c.dst  |  Valor: array de portas
+// 3. Percorra o objeto e se algum par tem 3+ portas, imprima:
+//    "🚨 PORT SCAN DETECTADO!"
+//    "   Origem: " + chave
+//    "   Portas testadas: " + portas.join(", ")
+//    "   Total: " + portas.length + " portas"
 `,
     python: `# Pacotes capturados
 conexoes = [
@@ -184,25 +168,15 @@ conexoes = [
     {"src": "192.168.1.50", "dst": "8.8.8.8", "port": 53, "status": "OPEN"}
 ]
 
-print("=== Detectando Port Scanning ===\\n")
-
-# Contar tentativas por IP de origem
-tentativas_por_ip = {}
-
-for c in conexoes:
-    key = f"{c['src']} → {c['dst']}"
-    
-    if key not in tentativas_por_ip:
-        tentativas_por_ip[key] = []
-    tentativas_por_ip[key].append(c['port'])
-
-# Alertar se múltiplas portas foram testadas
-for key, portas in tentativas_por_ip.items():
-    if len(portas) >= 3:
-        print("🚨 PORT SCAN DETECTADO!")
-        print(f"   Origem: {key}")
-        print(f"   Portas testadas: {', '.join(map(str, portas))}")
-        print(f"   Total: {len(portas)} portas\\n")
+# Detecte port scanning: um IP testando muitas portas é suspeito!
+# 1. Crie um dicionário para agrupar portas por par "src → dst"
+# 2. Percorra conexoes e agrupe as portas de cada par src→dst
+#    Chave: f"{c['src']} → {c['dst']}"  |  Valor: lista de portas
+# 3. Percorra o dicionário e se algum par tem 3+ portas, imprima:
+#    "🚨 PORT SCAN DETECTADO!"
+#    f"   Origem: {chave}"
+#    f"   Portas testadas: {', '.join(map(str, portas))}"
+#    f"   Total: {len(portas)} portas"
 `,
   },
   expectedOutput: '🚨 PORT SCAN DETECTADO!\n   Origem: 203.0.113.10 → 192.168.1.100\n   Portas testadas: 22, 80, 443, 3306, 8080\n   Total: 5 portas',
@@ -231,8 +205,10 @@ MySQL aberto (3306) = possível alvo de ataque!
 • Fechar portas desnecessárias
   `,
   hints: [
-    'Port scan = múltiplas portas testadas pelo mesmo IP',
-    'Threshold comum: 3+ portas = suspeito',
+    'Crie um objeto/dicionário vazio e agrupe portas por chave "src → dst"',
+    'JS: if (!obj[key]) obj[key] = []; obj[key].push(port)',
+    'Python: if key not in d: d[key] = []; d[key].append(port)',
+    'Se um par tem 3+ portas, é port scan! O IP 203.0.113.10 testou 5 portas',
   ],
   difficulty: 'easy',
 };
@@ -301,58 +277,33 @@ const code11_4: CodeChallenge = {
 const usuarios = {
   "joao": [5, 4, 6, 5, 7, 5, 6],
   "maria": [10, 12, 11, 9, 13, 10, 11],
-  "carlos": [3, 2, 4, 3, 520, 2, 3]  // 👀
+  "carlos": [3, 2, 4, 3, 520, 2, 3]
 };
 
-console.log("=== Análise de Data Exfiltration ===\\n");
-
-for (let user in usuarios) {
-  const uploads = usuarios[user];
-  
-  // Calcular média
-  let soma = 0;
-  for (let i = 0; i < uploads.length; i++) {
-    soma += uploads[i];
-  }
-  const media = soma / uploads.length;
-  
-  console.log(\`Usuário: \${user}\`);
-  console.log(\`  Uploads: \${uploads.join(", ")} MB\`);
-  console.log(\`  Média: \${media.toFixed(1)} MB/dia\`);
-  
-  // Detectar picos anômalos
-  for (let i = 0; i < uploads.length; i++) {
-    if (uploads[i] > media * 10) {
-      console.log(\`  🚨 ALERTA: Dia \${i + 1} teve upload de \${uploads[i]} MB!\`);
-      console.log(\`  Isso é \${(uploads[i] / media).toFixed(0)}x a média!\`);
-    }
-  }
-  console.log("");
-}
+// Detecte exfiltração de dados analisando uploads anômalos
+// Para cada usuário:
+//   1. Calcule a média dos uploads (soma / length)
+//   2. Percorra os uploads e verifique se algum dia é > 10x a média
+//   3. Se encontrar anomalia, imprima:
+//      "  🚨 ALERTA: Dia " + (i+1) + " teve upload de " + valor + " MB!"
+//      "  Isso é " + Math.round(valor/media) + "x a média!"
+// Dica: use for...in para percorrer o objeto usuarios
 `,
     python: `# Dados de upload dos últimos 7 dias (MB por dia)
 usuarios = {
     "joao": [5, 4, 6, 5, 7, 5, 6],
     "maria": [10, 12, 11, 9, 13, 10, 11],
-    "carlos": [3, 2, 4, 3, 520, 2, 3]  # 👀
+    "carlos": [3, 2, 4, 3, 520, 2, 3]
 }
 
-print("=== Análise de Data Exfiltration ===\\n")
-
-for user, uploads in usuarios.items():
-    # Calcular média
-    media = sum(uploads) / len(uploads)
-    
-    print(f"Usuário: {user}")
-    print(f"  Uploads: {', '.join(map(str, uploads))} MB")
-    print(f"  Média: {media:.1f} MB/dia")
-    
-    # Detectar picos anômalos
-    for i, upload in enumerate(uploads, 1):
-        if upload > media * 10:
-            print(f"  🚨 ALERTA: Dia {i} teve upload de {upload} MB!")
-            print(f"  Isso é {upload / media:.0f}x a média!")
-    print("")
+# Detecte exfiltração de dados analisando uploads anômalos
+# Para cada usuário:
+#   1. Calcule a média dos uploads: sum(uploads) / len(uploads)
+#   2. Percorra os uploads e verifique se algum dia é > 10x a média
+#   3. Se encontrar anomalia, imprima:
+#      f"  🚨 ALERTA: Dia {i} teve upload de {upload} MB!"
+#      f"  Isso é {upload / media:.0f}x a média!"
+# Dica: use .items() para percorrer o dicionário
 `,
   },
   expectedOutput: '🚨 ALERTA: Dia 5 teve upload de 520 MB!\n  Isso é 70x a média!',
@@ -376,8 +327,10 @@ Sistemas não detectaram o volume anômalo.
 Bloquearia upload imediatamente ao detectar anomalia.
   `,
   hints: [
-    'Procure por valores MUITO acima da média',
-    'Carlos teve um dia com 520MB (normal é 3MB)',
+    'Calcule a média primeiro: soma de todos os valores / quantidade',
+    'Carlos tem média ~76.7 MB/dia, mas sem o pico seria ~2.8 MB/dia',
+    'Verifique se uploads[i] > media * 10 para encontrar anomalias',
+    'O dia 5 de Carlos (520 MB) é ~68x a média!',
   ],
   difficulty: 'easy',
 };

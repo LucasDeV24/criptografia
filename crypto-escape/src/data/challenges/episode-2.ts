@@ -110,13 +110,13 @@ const code2_2: CodeChallenge = {
   room: '2.2',
   title: 'Testando diferentes senhas',
   description: 'Agora tente trocar a senha digitada para "admin" e veja se o login funciona.',
-  instructions: 'Mude senhaDigitada de "password" para "admin"',
+  instructions: 'Use a função simpleHash() para calcular o hash da senha "admin" e compare com o hash armazenado. Imprima se o login foi bem-sucedido ou não.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// MUDE APENAS A LINHA ABAIXO:
-const senhaDigitada = "password";
+    javascript: `// Senha que o usuário está tentando:
+const senhaDigitada = "admin";
 
-// O resto fica igual:
+// Hash armazenado no banco de dados:
 const hashArmazenado = "5f4dcc3b5aa765d61d8327deb882cf99";
 
 function simpleHash(texto) {
@@ -128,18 +128,15 @@ function simpleHash(texto) {
   return Math.abs(hash).toString(16);
 }
 
-const hashDigitado = simpleHash(senhaDigitada);
-
-if (hashDigitado === hashArmazenado) {
-  console.log("Login bem-sucedido!");
-} else {
-  console.log("Senha incorreta");
-}
+// Calcule o hash da senhaDigitada usando simpleHash()
+// Compare o hash calculado com hashArmazenado
+// Se forem iguais, imprima: "Login bem-sucedido!"
+// Se forem diferentes, imprima: "Senha incorreta"
 `,
-    python: `# MUDE APENAS A LINHA ABAIXO:
-senha_digitada = "password"
+    python: `# Senha que o usuário está tentando:
+senha_digitada = "admin"
 
-# O resto fica igual:
+# Hash armazenado no banco de dados:
 hash_armazenado = "5f4dcc3b5aa765d61d8327deb882cf99"
 
 def simple_hash(texto):
@@ -149,18 +146,17 @@ def simple_hash(texto):
         hash_val = hash_val & 0xFFFFFFFF
     return format(abs(hash_val), 'x')
 
-hash_digitado = simple_hash(senha_digitada)
-
-if hash_digitado == hash_armazenado:
-    print("Login bem-sucedido!")
-else:
-    print("Senha incorreta")
+# Calcule o hash da senha_digitada usando simple_hash()
+# Compare o hash calculado com hash_armazenado
+# Se forem iguais, imprima: "Login bem-sucedido!"
+# Se forem diferentes, imprima: "Senha incorreta"
 `,
   },
   expectedOutput: 'Senha incorreta',
   hints: [
-    'Troque "password" por "admin" na primeira linha',
-    'Ainda vai dar senha incorreta - nenhuma das duas é a senha certa!',
+    'Chame simpleHash(senhaDigitada) e guarde o resultado em uma variável',
+    'Use if/else para comparar o hash calculado com hashArmazenado',
+    'Nenhuma das senhas testadas corresponde ao hash - o resultado é "Senha incorreta"',
   ],
   difficulty: 'easy',
 };
@@ -200,7 +196,7 @@ const code2_4: CodeChallenge = {
   room: '2.4',
   title: 'Seu primeiro ataque de força bruta',
   description: 'Você tem um hash. Teste senhas comuns até encontrar a correta. O código já tem uma lista de senhas - você só precisa completar o loop.',
-  instructions: 'Complete o código para testar cada senha da lista',
+  instructions: 'Escreva um loop que teste cada senha da wordlist contra o hash alvo. Para cada senha, calcule o hash e compare. Quando encontrar, imprima a senha.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const hashAlvo = "21232f297a57a5a743894a0e4a801fc3";
@@ -217,16 +213,11 @@ function simpleHash(texto) {
   return Math.abs(hash).toString(16);
 }
 
-// Complete: teste cada senha da lista
-for (let i = 0; i < senhasComuns.length; i++) {
-  const senha = senhasComuns[i];
-  const hash = simpleHash(senha);
-  
-  if (hash === hashAlvo) {
-    console.log("Senha encontrada: " + senha);
-    break; // Para quando encontrar
-  }
-}
+// Percorra a lista senhasComuns com um loop
+// Para cada senha, calcule o hash com simpleHash()
+// Compare o hash calculado com hashAlvo
+// Se encontrar, imprima: "Senha encontrada: " + a senha
+// Use break para parar quando encontrar
 `,
     python: `hash_alvo = "21232f297a57a5a743894a0e4a801fc3"
 
@@ -240,13 +231,11 @@ def simple_hash(texto):
         hash_val = hash_val & 0xFFFFFFFF
     return format(abs(hash_val), 'x')
 
-# Complete: teste cada senha da lista
-for senha in senhas_comuns:
-    hash_val = simple_hash(senha)
-    
-    if hash_val == hash_alvo:
-        print("Senha encontrada: " + senha)
-        break  # Para quando encontrar
+# Percorra a lista senhas_comuns com um loop
+# Para cada senha, calcule o hash com simple_hash()
+# Compare o hash calculado com hash_alvo
+# Se encontrar, imprima: "Senha encontrada: " + a senha
+# Use break para parar quando encontrar
 `,
   },
   expectedOutput: 'Senha encontrada: admin',
@@ -262,8 +251,10 @@ for senha in senhas_comuns:
 Pentesters (testadores de invasão) são pagos para fazer exatamente isso - tentar quebrar sistemas para encontrar vulnerabilidades ANTES dos hackers do mal.
   `,
   hints: [
-    'O código já está pronto! Execute e veja',
-    'O loop testa cada senha até encontrar "admin"',
+    'Use for (let i = 0; i < senhasComuns.length; i++) ou for...of',
+    'Dentro do loop: const hash = simpleHash(senhasComuns[i])',
+    'Compare: if (hash === hashAlvo) e imprima a senha encontrada',
+    'A senha correta é "admin"',
   ],
   difficulty: 'easy',
 };

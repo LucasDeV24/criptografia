@@ -43,7 +43,7 @@ const code1: CodeChallenge = {
   id: 'cert.1', type: 'code', episode: 45, room: '45.1',
   title: 'Seu perfil de habilidades',
   description: 'Gere seu perfil completo de habilidades adquiridas no Crypto Escape. **Execute**!',
-  instructions: 'Execute e veja seu perfil.',
+  instructions: 'Gere seu perfil completo de habilidades com barras visuais — escreva tudo do zero.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const modulos = [
@@ -58,20 +58,13 @@ const code1: CodeChallenge = {
   { nome: "Pentest", nivel: 100, episodios: 2 }
 ];
 
-console.log("=== PERFIL DO HACKER ===");
-console.log("Status: FORMADO NO CRYPTO ESCAPE\\n");
-
-let totalEps = 0;
-for (let i = 0; i < modulos.length; i++) {
-  const m = modulos[i];
-  totalEps += m.episodios;
-  const barra = "=".repeat(Math.floor(m.nivel / 5));
-  console.log("  " + m.nome.padEnd(18) + " [" + barra + "] " + m.nivel + "%");
-}
-
-console.log("\\nTotal: " + totalEps + " episodios completados");
-console.log("Modulos: " + modulos.length + "/9");
-console.log("\\nPronto para: eJPT, CompTIA Security+, CEH");
+// Gere o perfil completo:
+// "=== PERFIL DO HACKER ===" + "Status: FORMADO NO CRYPTO ESCAPE\\n"
+// Para cada modulo: "  NOME(padEnd 18) [===...] NIVEL%"
+//   barra = "=" repetido (nivel / 5) vezes
+// Some episodios: "\\nTotal: N episodios completados"
+// "Modulos: 9/9"
+// "\\nPronto para: eJPT, CompTIA Security+, CEH"
 `,
     python: `modulos = [
     {"nome": "Programacao", "nivel": 100, "episodios": 8},
@@ -85,18 +78,13 @@ console.log("\\nPronto para: eJPT, CompTIA Security+, CEH");
     {"nome": "Pentest", "nivel": 100, "episodios": 2}
 ]
 
-print("=== PERFIL DO HACKER ===")
-print("Status: FORMADO NO CRYPTO ESCAPE\\n")
-
-total_eps = 0
-for m in modulos:
-    total_eps += m["episodios"]
-    barra = "=" * (m["nivel"] // 5)
-    print("  " + m["nome"].ljust(18) + " [" + barra + "] " + str(m["nivel"]) + "%")
-
-print("\\nTotal: " + str(total_eps) + " episodios completados")
-print("Modulos: " + str(len(modulos)) + "/9")
-print("\\nPronto para: eJPT, CompTIA Security+, CEH")
+# Gere o perfil completo:
+# "=== PERFIL DO HACKER ===" + "Status: FORMADO NO CRYPTO ESCAPE\\n"
+# Para cada modulo: "  NOME(ljust 18) [===...] NIVEL%"
+#   barra = "=" repetido (nivel // 5) vezes
+# Some episodios: "\\nTotal: N episodios completados"
+# "Modulos: 9/9"
+# "\\nPronto para: eJPT, CompTIA Security+, CEH"
 `,
   },
   expectedOutput: '=== PERFIL DO HACKER ===\nStatus: FORMADO NO CRYPTO ESCAPE\n\n  Programacao        [====================] 100%\n  Ciberseguranca     [====================] 100%\n  Logica e Algoritmos [====================] 100%\n  Seguranca Web      [====================] 100%\n  Criptografia       [====================] 100%\n  Blue Team          [====================] 100%\n  OSINT              [====================] 100%\n  Automacao          [====================] 100%\n  Pentest            [====================] 100%\n\nTotal: 46 episodios completados\nModulos: 9/9\n\nPronto para: eJPT, CompTIA Security+, CEH',

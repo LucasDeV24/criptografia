@@ -136,27 +136,17 @@ console.log("🔍 Iniciando ataque de força bruta...");
 console.log("Hash alvo: " + hashAlvo);
 console.log("\\n");
 
-let tentativas = 0;
-let senhaEncontrada = false;
-
-for (let i = 0; i < wordlist.length; i++) {
-  tentativas++;
-  const senha = wordlist[i];
-  const hash = simpleHash(senha);
-  
-  console.log("Tentativa " + tentativas + ": testando '" + senha + "'...");
-  
-  if (hash === hashAlvo) {
-    console.log("\\n✅ SENHA ENCONTRADA: " + senha);
-    console.log("Total de tentativas: " + tentativas);
-    senhaEncontrada = true;
-    break;
-  }
-}
-
-if (!senhaEncontrada) {
-  console.log("\\n❌ Senha não encontrada na wordlist");
-}
+// Crie variáveis: tentativas (0) e senhaEncontrada (false)
+// Percorra a wordlist:
+//   - Incremente tentativas
+//   - Calcule o hash com simpleHash()
+//   - Imprima: "Tentativa " + tentativas + ": testando '" + senha + "'..."
+//   - Se hash === hashAlvo:
+//     - Imprima: "\\n✅ SENHA ENCONTRADA: " + senha
+//     - Imprima: "Total de tentativas: " + tentativas
+//     - Marque como encontrada e use break
+// Depois do loop, se não encontrou:
+//   - Imprima: "\\n❌ Senha não encontrada na wordlist"
 `,
     python: `wordlist = ["123456", "password", "123456789", "12345678", "qwerty"]
 
@@ -175,23 +165,17 @@ print("🔍 Iniciando ataque de força bruta...")
 print(f"Hash alvo: {hash_alvo}")
 print("\\n")
 
-tentativas = 0
-senha_encontrada = False
-
-for senha in wordlist:
-    tentativas += 1
-    hash_val = simple_hash(senha)
-    
-    print(f"Tentativa {tentativas}: testando '{senha}'...")
-    
-    if hash_val == hash_alvo:
-        print(f"\\n✅ SENHA ENCONTRADA: {senha}")
-        print(f"Total de tentativas: {tentativas}")
-        senha_encontrada = True
-        break
-
-if not senha_encontrada:
-    print("\\n❌ Senha não encontrada na wordlist")
+# Crie variáveis: tentativas (0) e senha_encontrada (False)
+# Percorra a wordlist:
+#   - Incremente tentativas
+#   - Calcule o hash com simple_hash()
+#   - Imprima: f"Tentativa {tentativas}: testando '{senha}'..."
+#   - Se hash == hash_alvo:
+#     - Imprima: f"\\n✅ SENHA ENCONTRADA: {senha}"
+#     - Imprima: f"Total de tentativas: {tentativas}"
+#     - Marque como encontrada e use break
+# Depois do loop, se não encontrou:
+#   - Imprima: "\\n❌ Senha não encontrada na wordlist"
 `,
   },
   expectedOutput: 'Tentativa 2: testando \'password\'...\n\n✅ SENHA ENCONTRADA: password\nTotal de tentativas: 2',
@@ -269,74 +253,46 @@ const code7_4: CodeChallenge = {
   starterCode: {
     javascript: `const palavrasBase = ["admin", "password"];
 
-// Regras de mutação comuns
+// Implemente a função gerarMutacoes que retorna um array com 5 variações:
+// 1. A palavra original
+// 2. Primeira letra maiúscula (charAt(0).toUpperCase() + slice(1))
+// 3. Palavra + "123"
+// 4. Palavra + "2024"
+// 5. Leetspeak: a→@, o→0, i→1, e→3 (use .replace(/a/g, '@') etc.)
 function gerarMutacoes(palavra) {
   const mutacoes = [];
-  
-  // Original
-  mutacoes.push(palavra);
-  
-  // Primeira letra maiúscula
-  mutacoes.push(palavra.charAt(0).toUpperCase() + palavra.slice(1));
-  
-  // Adicionar números
-  mutacoes.push(palavra + "123");
-  mutacoes.push(palavra + "2024");
-  
-  // Substituições leetspeak (a→@, o→0, i→1, e→3)
-  let leet = palavra.replace(/a/g, '@').replace(/o/g, '0').replace(/i/g, '1').replace(/e/g, '3');
-  mutacoes.push(leet);
-  
+  // Adicione as 5 variações aqui
   return mutacoes;
 }
 
 console.log("=== Gerando wordlist com mutações ===\\n");
 
-let wordlistFinal = [];
-for (let i = 0; i < palavrasBase.length; i++) {
-  const mutacoes = gerarMutacoes(palavrasBase[i]);
-  wordlistFinal = wordlistFinal.concat(mutacoes);
-}
-
-console.log("Total de senhas geradas: " + wordlistFinal.length);
-console.log("\\nExemplos:");
-for (let i = 0; i < Math.min(10, wordlistFinal.length); i++) {
-  console.log((i + 1) + ". " + wordlistFinal[i]);
-}
+// Percorra palavrasBase, gere mutações de cada uma
+// Junte tudo em um array wordlistFinal usando .concat()
+// Imprima "Total de senhas geradas: " + wordlistFinal.length
+// Imprima "\\nExemplos:" e liste as 10 primeiras:
+//   (i + 1) + ". " + wordlistFinal[i]
 `,
     python: `palavras_base = ["admin", "password"]
 
-# Regras de mutação comuns
+# Implemente a função gerar_mutacoes que retorna uma lista com 5 variações:
+# 1. A palavra original
+# 2. Primeira letra maiúscula (.capitalize())
+# 3. Palavra + "123"
+# 4. Palavra + "2024"
+# 5. Leetspeak: a→@, o→0, i→1, e→3 (use .replace())
 def gerar_mutacoes(palavra):
     mutacoes = []
-    
-    # Original
-    mutacoes.append(palavra)
-    
-    # Primeira letra maiúscula
-    mutacoes.append(palavra.capitalize())
-    
-    # Adicionar números
-    mutacoes.append(palavra + "123")
-    mutacoes.append(palavra + "2024")
-    
-    # Substituições leetspeak (a→@, o→0, i→1, e→3)
-    leet = palavra.replace('a', '@').replace('o', '0').replace('i', '1').replace('e', '3')
-    mutacoes.append(leet)
-    
+    # Adicione as 5 variações aqui
     return mutacoes
 
 print("=== Gerando wordlist com mutações ===\\n")
 
-wordlist_final = []
-for palavra in palavras_base:
-    mutacoes = gerar_mutacoes(palavra)
-    wordlist_final.extend(mutacoes)
-
-print(f"Total de senhas geradas: {len(wordlist_final)}")
-print("\\nExemplos:")
-for i, senha in enumerate(wordlist_final[:10], 1):
-    print(f"{i}. {senha}")
+# Percorra palavras_base, gere mutações de cada uma
+# Junte tudo em uma lista wordlist_final usando .extend()
+# Imprima f"Total de senhas geradas: {len(wordlist_final)}"
+# Imprima "\\nExemplos:" e liste as 10 primeiras:
+#   f"{i + 1}. {senha}"
 `,
   },
   expectedOutput: 'Total de senhas geradas: 10\n\nExemplos:\n1. admin\n2. Admin\n3. admin123\n4. admin2024\n5. @dm1n',

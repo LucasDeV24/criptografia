@@ -63,23 +63,22 @@ const code3_2: CodeChallenge = {
   room: '3.2',
   title: 'Acessando outro item',
   description: 'Mude o código para mostrar **"uva"** em vez de "maçã". Dica: uva está na posição **2**.',
-  instructions: 'Mude [0] para [2] e execute.',
+  instructions: 'Imprima o item na posição 2 do array (que é "uva").',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const frutas = ["maçã", "banana", "uva"];
 
-// Mude [0] para [2]:
-console.log(frutas[0]);
+// Imprima o item na posição 2 do array (que é "uva")
 `,
     python: `frutas = ["maçã", "banana", "uva"]
 
-# Mude [0] para [2]:
-print(frutas[0])
+# Imprima o item na posição 2 do array (que é "uva")
 `,
   },
   expectedOutput: 'uva',
   hints: [
-    'Troque frutas[0] por frutas[2]',
+    'Use console.log(frutas[2]) em JavaScript',
+    'Use print(frutas[2]) em Python',
     'Posição 0 = maçã, 1 = banana, 2 = uva',
   ],
   difficulty: 'easy',
@@ -124,30 +123,29 @@ const code3_4: CodeChallenge = {
   room: '3.4',
   title: 'Buscando na lista',
   description: 'O código percorre uma lista de senhas e verifica se alguma é igual a "admin". **Execute** para ver!',
-  instructions: 'Execute e veja o resultado da busca.',
+  instructions: 'Percorra o array e encontre a senha igual ao alvo, imprimindo "Senha encontrada: " + a senha.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const senhas = ["1234", "admin", "qwerty"];
 const alvo = "admin";
 
-for (let i = 0; i < senhas.length; i++) {
-  if (senhas[i] == alvo) {
-    console.log("Senha encontrada: " + senhas[i]);
-  }
-}
+// Percorra o array senhas usando um for
+// Compare cada item com a variável alvo
+// Se encontrar, imprima: "Senha encontrada: " + o item
 `,
     python: `senhas = ["1234", "admin", "qwerty"]
 alvo = "admin"
 
-for senha in senhas:
-    if senha == alvo:
-        print("Senha encontrada: " + senha)
+# Percorra a lista senhas usando um for
+# Compare cada item com a variável alvo
+# Se encontrar, imprima: "Senha encontrada: " + o item
 `,
   },
   expectedOutput: 'Senha encontrada: admin',
   hints: [
-    'O código já está pronto! Execute.',
-    'O loop testa cada senha da lista contra o alvo "admin"',
+    'Em JS: for (let i = 0; i < senhas.length; i++) { if (senhas[i] == alvo) { ... } }',
+    'Em Python: for senha in senhas: if senha == alvo: ...',
+    'Dentro do if, imprima: "Senha encontrada: " + senhas[i] (ou senha)',
   ],
   difficulty: 'easy',
 };
@@ -159,30 +157,31 @@ const code3_5: CodeChallenge = {
   room: '3.5',
   title: 'Sua vez — mude o alvo',
   description: 'Mude a variável **alvo** para **"qwerty"** e encontre essa senha na lista.',
-  instructions: 'Troque "admin" por "qwerty" na variável alvo.',
+  instructions: 'Mude o alvo para "qwerty" e escreva o loop para buscar no array.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const senhas = ["1234", "admin", "qwerty"];
+// Mude o alvo para "qwerty":
 const alvo = "admin";
 
-for (let i = 0; i < senhas.length; i++) {
-  if (senhas[i] == alvo) {
-    console.log("Senha encontrada: " + senhas[i]);
-  }
-}
+// Percorra o array senhas usando um for
+// Compare cada item com a variável alvo
+// Se encontrar, imprima: "Senha encontrada: " + o item
 `,
     python: `senhas = ["1234", "admin", "qwerty"]
+# Mude o alvo para "qwerty":
 alvo = "admin"
 
-for senha in senhas:
-    if senha == alvo:
-        print("Senha encontrada: " + senha)
+# Percorra a lista senhas usando um for
+# Compare cada item com a variável alvo
+# Se encontrar, imprima: "Senha encontrada: " + o item
 `,
   },
   expectedOutput: 'Senha encontrada: qwerty',
   hints: [
-    'Mude const alvo = "admin" para const alvo = "qwerty"',
-    'Em Python: mude alvo = "admin" para alvo = "qwerty"',
+    'Primeiro mude alvo = "admin" para alvo = "qwerty"',
+    'Depois escreva o loop com for e o if comparando cada item com alvo',
+    'Imprima: "Senha encontrada: " + o item quando encontrar',
   ],
   difficulty: 'easy',
 };
@@ -194,22 +193,25 @@ const code3_6: CodeChallenge = {
   room: '3.6',
   title: 'Contando itens da lista',
   description: 'Use **.length** (JS) ou **len()** (Python) para contar quantos itens uma lista tem. **Execute** o código pronto.',
-  instructions: 'Execute e veja quantas senhas a lista tem.',
+  instructions: 'Imprima o total de senhas no formato "Total de senhas: X" usando .length ou len().',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const senhasComuns = ["123456", "password", "admin", "qwerty", "letmein"];
 
-console.log("Total de senhas: " + senhasComuns.length);
+// Imprima "Total de senhas: " seguido do tamanho do array
+// Use .length para obter o tamanho
 `,
     python: `senhas_comuns = ["123456", "password", "admin", "qwerty", "letmein"]
 
-print("Total de senhas: " + str(len(senhas_comuns)))
+# Imprima "Total de senhas: " seguido do tamanho da lista
+# Use len() para obter o tamanho (converta com str())
 `,
   },
   expectedOutput: 'Total de senhas: 5',
   hints: [
-    'O código já está pronto! Execute.',
-    '.length em JS e len() em Python retornam a quantidade de itens',
+    'Em JS: console.log("Total de senhas: " + senhasComuns.length)',
+    'Em Python: print("Total de senhas: " + str(len(senhas_comuns)))',
+    'O array tem 5 itens',
   ],
   difficulty: 'easy',
 };

@@ -66,29 +66,27 @@ const code7_2: CodeChallenge = {
   room: '7.2',
   title: 'Detectando ataque simples',
   description: 'Use **.includes()** para detectar se um input contém **"<script>"** — um sinal de ataque XSS! O código já está pronto.',
-  instructions: 'Execute e veja a detecção de XSS.',
+  instructions: 'Use includes() para verificar se o input contém "<script>" e imprima o alerta adequado.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const input = '<script>alert("hack")</script>';
 
-if (input.includes("<script>")) {
-  console.log("ALERTA: XSS detectado!");
-} else {
-  console.log("Input seguro");
-}
+// Escreva um if/else:
+// Se input contiver "<script>" (use .includes()), imprima "ALERTA: XSS detectado!"
+// Senão, imprima "Input seguro"
 `,
     python: `input_usuario = '<script>alert("hack")</script>'
 
-if "<script>" in input_usuario:
-    print("ALERTA: XSS detectado!")
-else:
-    print("Input seguro")
+# Escreva um if/else:
+# Se input_usuario contiver "<script>" (use "in"), imprima "ALERTA: XSS detectado!"
+# Senão, imprima "Input seguro"
 `,
   },
   expectedOutput: 'ALERTA: XSS detectado!',
   hints: [
-    'O código já está pronto! Execute.',
-    'O input contém "<script>", então é XSS',
+    'Em JS: if (input.includes("<script>")) { console.log("ALERTA: XSS detectado!"); }',
+    'Em Python: if "<script>" in input_usuario: print("ALERTA: XSS detectado!")',
+    'Não esqueça o else com "Input seguro"',
   ],
   difficulty: 'easy',
 };
@@ -100,31 +98,29 @@ const code7_3: CodeChallenge = {
   room: '7.3',
   title: 'Sua vez — input seguro',
   description: 'Mude o input para **"Olá, mundo!"** (sem script) e veja que o sistema aceita.',
-  instructions: 'Troque o input para "Olá, mundo!" e execute.',
+  instructions: 'Mude o input para "Olá, mundo!" e escreva a verificação de XSS.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `// Mude o input para: "Olá, mundo!"
 const input = '<script>alert("hack")</script>';
 
-if (input.includes("<script>")) {
-  console.log("ALERTA: XSS detectado!");
-} else {
-  console.log("Input seguro");
-}
+// Escreva um if/else:
+// Se input contiver "<script>" (use .includes()), imprima "ALERTA: XSS detectado!"
+// Senão, imprima "Input seguro"
 `,
     python: `# Mude o input para: "Olá, mundo!"
 input_usuario = '<script>alert("hack")</script>'
 
-if "<script>" in input_usuario:
-    print("ALERTA: XSS detectado!")
-else:
-    print("Input seguro")
+# Escreva um if/else:
+# Se input_usuario contiver "<script>" (use "in"), imprima "ALERTA: XSS detectado!"
+# Senão, imprima "Input seguro"
 `,
   },
   expectedOutput: 'Input seguro',
   hints: [
-    'Mude o valor do input para "Olá, mundo!"',
-    'Como não contém "<script>", entra no else',
+    'Primeiro mude o input para "Olá, mundo!"',
+    'Depois escreva: if (input.includes("<script>")) { ... } else { ... }',
+    'Como "Olá, mundo!" não contém "<script>", deve imprimir "Input seguro"',
   ],
   difficulty: 'easy',
 };
@@ -169,32 +165,33 @@ const code7_5: CodeChallenge = {
   room: '7.5',
   title: 'split() na prática',
   description: 'O código divide uma linha de log em partes e mostra o usuário. **Execute**!',
-  instructions: 'Execute e veja o log sendo analisado.',
+  instructions: 'Use split(" ") para dividir o log e imprima cada parte (Data, Evento, Usuario, IP).',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const log = "2024-01-15 FALHA admin 192.168.1.1";
 
-const partes = log.split(" ");
-
-console.log("Data: " + partes[0]);
-console.log("Evento: " + partes[1]);
-console.log("Usuario: " + partes[2]);
-console.log("IP: " + partes[3]);
+// Use .split(" ") para dividir o log em partes
+// Depois imprima cada parte no formato:
+// "Data: " + partes[0]
+// "Evento: " + partes[1]
+// "Usuario: " + partes[2]
+// "IP: " + partes[3]
 `,
     python: `log = "2024-01-15 FALHA admin 192.168.1.1"
 
-partes = log.split(" ")
-
-print("Data: " + partes[0])
-print("Evento: " + partes[1])
-print("Usuario: " + partes[2])
-print("IP: " + partes[3])
+# Use .split(" ") para dividir o log em partes
+# Depois imprima cada parte no formato:
+# "Data: " + partes[0]
+# "Evento: " + partes[1]
+# "Usuario: " + partes[2]
+# "IP: " + partes[3]
 `,
   },
   expectedOutput: 'Data: 2024-01-15\nEvento: FALHA\nUsuario: admin\nIP: 192.168.1.1',
   hints: [
-    'O código já está pronto! Execute.',
-    'split(" ") divide o texto nos espaços',
+    'Primeiro: const partes = log.split(" ") / partes = log.split(" ")',
+    'Depois: console.log("Data: " + partes[0]) para cada campo',
+    'split(" ") divide o texto nos espaços, criando um array',
   ],
   difficulty: 'easy',
 };
@@ -206,26 +203,25 @@ const code7_6: CodeChallenge = {
   room: '7.6',
   title: 'replace() — substituindo texto',
   description: 'O método **.replace()** substitui uma parte do texto por outra. Útil para sanitizar inputs! **Execute**.',
-  instructions: 'Execute e veja o texto sendo sanitizado.',
+  instructions: 'Use replace() para remover "<script>" e "</script>" do texto e imprima o resultado.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const inputPerigoso = "Olá <script>alert(1)</script>";
 
-const inputSeguro = inputPerigoso.replace("<script>", "").replace("</script>", "");
-
-console.log(inputSeguro);
+// Use .replace() para remover "<script>" e "</script>" do texto
+// Imprima o resultado limpo
 `,
     python: `input_perigoso = "Olá <script>alert(1)</script>"
 
-input_seguro = input_perigoso.replace("<script>", "").replace("</script>", "")
-
-print(input_seguro)
+# Use .replace() para remover "<script>" e "</script>" do texto
+# Imprima o resultado limpo
 `,
   },
   expectedOutput: 'Olá alert(1)',
   hints: [
-    'O código já está pronto! Execute.',
-    'replace() remove as tags perigosas do input',
+    'Use .replace("<script>", "") para remover a tag de abertura',
+    'Encadeie outro .replace("</script>", "") para remover a de fechamento',
+    'Em JS: console.log(inputPerigoso.replace("<script>", "").replace("</script>", ""))',
   ],
   difficulty: 'easy',
 };
@@ -237,31 +233,29 @@ const code7_7: CodeChallenge = {
   room: '7.7',
   title: 'indexOf() — encontrando posição',
   description: '**.indexOf()** retorna a POSIÇÃO onde algo aparece no texto. Se não encontrar, retorna **-1**. **Execute**!',
-  instructions: 'Execute e veja as posições encontradas.',
+  instructions: 'Use indexOf/index para encontrar ":" e extraia o usuário e senha do texto.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const texto = "admin:password123";
 
-const posicao = texto.indexOf(":");
-
-console.log("Os dois pontos estão na posição: " + posicao);
-console.log("Usuário: " + texto.substring(0, posicao));
-console.log("Senha: " + texto.substring(posicao + 1));
+// Use .indexOf(":") para encontrar a posição dos dois pontos
+// Imprima: "Os dois pontos estão na posição: " + posição
+// Use .substring(0, posição) para extrair o usuário e imprima: "Usuário: " + ...
+// Use .substring(posição + 1) para extrair a senha e imprima: "Senha: " + ...
 `,
     python: `texto = "admin:password123"
 
-posicao = texto.index(":")
-
-print("Os dois pontos estão na posição: " + str(posicao))
-print("Usuário: " + texto[:posicao])
-print("Senha: " + texto[posicao + 1:])
+# Use .index(":") para encontrar a posição dos dois pontos
+# Imprima: "Os dois pontos estão na posição: " + str(posição)
+# Use texto[:posição] para extrair o usuário e imprima: "Usuário: " + ...
+# Use texto[posição + 1:] para extrair a senha e imprima: "Senha: " + ...
 `,
   },
   expectedOutput: 'Os dois pontos estão na posição: 5\nUsuário: admin\nSenha: password123',
   hints: [
-    'O código já está pronto! Execute.',
+    'Em JS: const posicao = texto.indexOf(":") / Em Python: posicao = texto.index(":")',
     'O ":" está na posição 5 (contando do 0)',
-    'substring/fatias dividem o texto na posição encontrada',
+    'Em JS: texto.substring(0, posicao) pega "admin" / Em Python: texto[:posicao]',
   ],
   difficulty: 'easy',
 };
@@ -273,41 +267,31 @@ const code7_8: CodeChallenge = {
   room: '7.8',
   title: 'Desafio — analisar log completo',
   description: 'Combine TUDO! Analise um log: divida com split, verifique se é FALHA com includes, e mostre os detalhes. O código está pronto!',
-  instructions: 'Execute e veja a análise completa.',
+  instructions: 'Divida o log com split, verifique se é FALHA, e imprima os detalhes do alerta.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const log = "2024-03-15 FALHA root 10.0.0.5";
-const partes = log.split(" ");
 
-const data = partes[0];
-const evento = partes[1];
-const usuario = partes[2];
-const ip = partes[3];
-
-if (evento.includes("FALHA")) {
-  console.log("ALERTA de seguranca!");
-  console.log("Quem: " + usuario);
-  console.log("De onde: " + ip);
-}
+// Divida o log com .split(" ") para obter: data, evento, usuario, ip
+// Se o evento contiver "FALHA" (use .includes()):
+//   Imprima "ALERTA de seguranca!"
+//   Imprima "Quem: " + usuario
+//   Imprima "De onde: " + ip
 `,
     python: `log = "2024-03-15 FALHA root 10.0.0.5"
-partes = log.split(" ")
 
-data = partes[0]
-evento = partes[1]
-usuario = partes[2]
-ip = partes[3]
-
-if "FALHA" in evento:
-    print("ALERTA de seguranca!")
-    print("Quem: " + usuario)
-    print("De onde: " + ip)
+# Divida o log com .split(" ") para obter: data, evento, usuario, ip
+# Se o evento contiver "FALHA" (use "in"):
+#   Imprima "ALERTA de seguranca!"
+#   Imprima "Quem: " + usuario
+#   Imprima "De onde: " + ip
 `,
   },
   expectedOutput: 'ALERTA de seguranca!\nQuem: root\nDe onde: 10.0.0.5',
   hints: [
-    'O código já está pronto! Execute.',
-    'Combina split + includes + if — tudo que você aprendeu!',
+    'Primeiro: const partes = log.split(" ") e acesse partes[0], partes[1], etc.',
+    'Em JS: if (evento.includes("FALHA")) { ... }',
+    'Em Python: if "FALHA" in evento: ...',
   ],
   difficulty: 'easy',
 };

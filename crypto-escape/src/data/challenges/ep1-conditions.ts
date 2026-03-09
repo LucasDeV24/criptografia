@@ -64,23 +64,24 @@ const code1_2: CodeChallenge = {
   room: '1.2',
   title: 'Sua vez — mude a comparação',
   description: 'Agora mude o segundo número para **5** e veja o que acontece. Se 10 não é igual a 5, o resultado muda!',
-  instructions: 'Troque o segundo 10 por 5 e execute.',
+  instructions: 'Escreva a comparação entre 10 e 5 usando == e guarde na variável "resultado".',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Mude o segundo 10 para 5:
+    javascript: `// Compare 10 com 5 usando == e guarde na variável "resultado"
+// Escreva aqui a comparação:
 
-const resultado = (10 == 10);
 console.log(resultado);
 `,
-    python: `# Mude o segundo 10 para 5:
+    python: `# Compare 10 com 5 usando == e guarde na variável "resultado"
+# Escreva aqui a comparação:
 
-resultado = (10 == 10)
 print(resultado)
 `,
   },
   expectedOutput: ['false', 'False'],
   hints: [
-    'Troque (10 == 10) por (10 == 5)',
+    'Escreva: const resultado = (10 == 5); em JavaScript',
+    'Em Python: resultado = (10 == 5)',
     '10 não é igual a 5, então o resultado é false',
   ],
   difficulty: 'easy',
@@ -130,31 +131,29 @@ const code1_4: CodeChallenge = {
   room: '1.4',
   title: 'Seu primeiro if/else',
   description: 'O código abaixo simula uma verificação de senha. A senha correta é **"1234"**. O código já está pronto — **execute** para ver!',
-  instructions: 'Execute o código para ver a verificação de senha.',
+  instructions: 'Escreva um if/else que compara senhaDigitada com senhaCorreta e imprime o resultado.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const senhaCorreta = "1234";
 const senhaDigitada = "1234";
 
-if (senhaDigitada == senhaCorreta) {
-  console.log("Acesso permitido");
-} else {
-  console.log("Acesso negado");
-}
+// Escreva um if/else:
+// Se senhaDigitada for igual a senhaCorreta, imprima "Acesso permitido"
+// Senão, imprima "Acesso negado"
 `,
     python: `senha_correta = "1234"
 senha_digitada = "1234"
 
-if senha_digitada == senha_correta:
-    print("Acesso permitido")
-else:
-    print("Acesso negado")
+# Escreva um if/else:
+# Se senha_digitada for igual a senha_correta, imprima "Acesso permitido"
+# Senão, imprima "Acesso negado"
 `,
   },
   expectedOutput: 'Acesso permitido',
   hints: [
-    'O código já está pronto! Clique em Executar.',
-    'Como a senha digitada é igual à correta, mostra "Acesso permitido"',
+    'Use if (senhaDigitada == senhaCorreta) em JavaScript',
+    'Use if senha_digitada == senha_correta: em Python',
+    'Dentro do if: console.log("Acesso permitido") / print("Acesso permitido")',
   ],
   difficulty: 'easy',
 };
@@ -166,31 +165,31 @@ const code1_5: CodeChallenge = {
   room: '1.5',
   title: 'Senha errada!',
   description: 'Agora simule alguém digitando a senha **errada**. Mude a senhaDigitada para **"0000"** e veja o que acontece.',
-  instructions: 'Mude a senha digitada para "0000" e execute.',
+  instructions: 'Mude a senha digitada para "0000" e escreva o if/else para verificar.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const senhaCorreta = "1234";
+// Mude a senha digitada para "0000":
 const senhaDigitada = "1234";
 
-if (senhaDigitada == senhaCorreta) {
-  console.log("Acesso permitido");
-} else {
-  console.log("Acesso negado");
-}
+// Escreva um if/else:
+// Se senhaDigitada for igual a senhaCorreta, imprima "Acesso permitido"
+// Senão, imprima "Acesso negado"
 `,
     python: `senha_correta = "1234"
+# Mude a senha digitada para "0000":
 senha_digitada = "1234"
 
-if senha_digitada == senha_correta:
-    print("Acesso permitido")
-else:
-    print("Acesso negado")
+# Escreva um if/else:
+# Se senha_digitada for igual a senha_correta, imprima "Acesso permitido"
+# Senão, imprima "Acesso negado"
 `,
   },
   expectedOutput: 'Acesso negado',
   hints: [
-    'Mude "1234" na segunda linha para "0000"',
-    'Como "0000" não é igual a "1234", entra no else',
+    'Primeiro, mude "1234" para "0000" na variável senhaDigitada',
+    'Depois escreva: if (senhaDigitada == senhaCorreta) { ... } else { ... }',
+    'Como "0000" não é igual a "1234", deve imprimir "Acesso negado"',
   ],
   difficulty: 'easy',
 };
@@ -202,31 +201,27 @@ const code1_6: CodeChallenge = {
   room: '1.6',
   title: 'Verificação de idade',
   description: 'Agora vamos usar comparação com números! Complete o código: se a idade for **maior ou igual a 18**, imprima **"Maior de idade"**.',
-  instructions: 'Complete a condição com >= 18',
+  instructions: 'Escreva um if/else verificando se idade é maior ou igual a 18.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const idade = 20;
 
-// Complete a condição: idade >= 18
-if (idade >= 18) {
-  console.log("Maior de idade");
-} else {
-  console.log("Menor de idade");
-}
+// Escreva um if/else:
+// Se idade >= 18, imprima "Maior de idade"
+// Senão, imprima "Menor de idade"
 `,
     python: `idade = 20
 
-# Complete a condição: idade >= 18
-if idade >= 18:
-    print("Maior de idade")
-else:
-    print("Menor de idade")
+# Escreva um if/else:
+# Se idade >= 18, imprima "Maior de idade"
+# Senão, imprima "Menor de idade"
 `,
   },
   expectedOutput: 'Maior de idade',
   hints: [
-    'O código já está pronto! Execute para ver.',
-    '20 é maior que 18, então entra no if',
+    'Use if (idade >= 18) em JavaScript',
+    'Use if idade >= 18: em Python',
+    '20 é maior que 18, então entra no if → "Maior de idade"',
   ],
   difficulty: 'easy',
 };

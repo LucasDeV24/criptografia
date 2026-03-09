@@ -35,7 +35,7 @@ const code1: CodeChallenge = {
   id: 'auto.1', type: 'code', episode: 42, room: '42.1',
   title: 'Analisador de logs automatizado',
   description: 'Crie um script que processa logs automaticamente e gera alertas. **Execute**!',
-  instructions: 'Execute e veja a análise automática.',
+  instructions: 'Parse logs automaticamente, conte niveis e detecte IPs suspeitos.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const logs = [
@@ -49,30 +49,12 @@ const code1: CodeChallenge = {
   "2024-01-15 14:02:00 INFO Login bem-sucedido user=joao ip=192.168.1.20"
 ];
 
-const contadorIP = {};
-const contadorNivel = { INFO: 0, WARN: 0, ERROR: 0 };
-
-for (let i = 0; i < logs.length; i++) {
-  const partes = logs[i].split(" ");
-  const nivel = partes[2];
-  contadorNivel[nivel]++;
-
-  const ipMatch = logs[i].match(/ip=(\\S+)/);
-  if (ipMatch && nivel !== "INFO") {
-    const ip = ipMatch[1];
-    contadorIP[ip] = (contadorIP[ip] || 0) + 1;
-  }
-}
-
-console.log("=== RELATORIO AUTOMATICO ===");
-console.log("INFO: " + contadorNivel.INFO + " | WARN: " + contadorNivel.WARN + " | ERROR: " + contadorNivel.ERROR);
-
-console.log("\\nIPs suspeitos:");
-for (const ip in contadorIP) {
-  if (contadorIP[ip] >= 3) {
-    console.log("  [ALERTA] " + ip + " - " + contadorIP[ip] + " eventos");
-  }
-}
+// Parse cada log: nivel e o 3o campo, extraia IPs com regex /ip=(\\S+)/
+// Conte niveis e IPs suspeitos (somente niveis != INFO)
+// Imprima "=== RELATORIO AUTOMATICO ==="
+// "INFO: N | WARN: N | ERROR: N"
+// "\\nIPs suspeitos:"
+// "  [ALERTA] IP - N eventos" para IPs com >=3 eventos
 `,
     python: `logs = [
     "2024-01-15 14:00:01 INFO Login bem-sucedido user=admin ip=192.168.1.10",
@@ -87,26 +69,12 @@ for (const ip in contadorIP) {
 
 import re
 
-contador_ip = {}
-contador_nivel = {"INFO": 0, "WARN": 0, "ERROR": 0}
-
-for log in logs:
-    partes = log.split(" ")
-    nivel = partes[2]
-    contador_nivel[nivel] += 1
-
-    ip_match = re.search(r"ip=(\\S+)", log)
-    if ip_match and nivel != "INFO":
-        ip = ip_match.group(1)
-        contador_ip[ip] = contador_ip.get(ip, 0) + 1
-
-print("=== RELATORIO AUTOMATICO ===")
-print("INFO: " + str(contador_nivel["INFO"]) + " | WARN: " + str(contador_nivel["WARN"]) + " | ERROR: " + str(contador_nivel["ERROR"]))
-
-print("\\nIPs suspeitos:")
-for ip in contador_ip:
-    if contador_ip[ip] >= 3:
-        print("  [ALERTA] " + ip + " - " + str(contador_ip[ip]) + " eventos")
+# Parse cada log: nivel e o 3o campo, extraia IPs com regex r"ip=(\\S+)"
+# Conte niveis e IPs suspeitos (somente niveis != INFO)
+# Imprima "=== RELATORIO AUTOMATICO ==="
+# "INFO: N | WARN: N | ERROR: N"
+# "\\nIPs suspeitos:"
+# "  [ALERTA] IP - N eventos" para IPs com >=3 eventos
 `,
   },
   expectedOutput: '=== RELATORIO AUTOMATICO ===\nINFO: 2 | WARN: 5 | ERROR: 1\n\nIPs suspeitos:\n  [ALERTA] 10.0.0.99 - 5 eventos',
@@ -118,7 +86,7 @@ const code2: CodeChallenge = {
   id: 'auto.2', type: 'code', episode: 42, room: '42.2',
   title: 'Compliance checker automatizado',
   description: 'Crie um verificador automático de compliance que audita configurações de segurança. **Execute**!',
-  instructions: 'Execute e veja o relatório de compliance.',
+  instructions: 'Verifique compliance de cada servidor contra os requisitos e gere relatorio.',
   languages: ['javascript', 'python'],
   starterCode: {
     javascript: `const servidores = [
@@ -138,25 +106,11 @@ const code2: CodeChallenge = {
 
 const requisitos = ["https", "senhaForte", "firewall", "backup", "logs"];
 
-console.log("=== COMPLIANCE CHECK ===");
-for (let i = 0; i < servidores.length; i++) {
-  const s = servidores[i];
-  let ok = 0;
-  const falhas = [];
-
-  for (let j = 0; j < requisitos.length; j++) {
-    if (s.config[requisitos[j]]) {
-      ok++;
-    } else {
-      falhas.push(requisitos[j]);
-    }
-  }
-
-  const pct = Math.round((ok / requisitos.length) * 100);
-  const status = pct === 100 ? "CONFORME" : pct >= 60 ? "PARCIAL" : "NAO-CONFORME";
-  console.log("\\n" + s.nome + ": " + status + " (" + pct + "%)");
-  if (falhas.length > 0) console.log("  Falhas: " + falhas.join(", "));
-}
+// Imprima "=== COMPLIANCE CHECK ==="
+// Para cada servidor: verifique % dos requisitos atendidos
+// "\\nNOME: STATUS (PCT%)" onde STATUS:
+//   100%="CONFORME", >=60%="PARCIAL", <60%="NAO-CONFORME"
+// Se falhas: "  Falhas: falha1, falha2, ..."
 `,
     python: `servidores = [
     {
@@ -175,21 +129,11 @@ for (let i = 0; i < servidores.length; i++) {
 
 requisitos = ["https", "senhaForte", "firewall", "backup", "logs"]
 
-print("=== COMPLIANCE CHECK ===")
-for s in servidores:
-    ok = 0
-    falhas = []
-
-    for req in requisitos:
-        if s["config"].get(req):
-            ok += 1
-        else:
-            falhas.append(req)
-
-    pct = round((ok / len(requisitos)) * 100)
-    status = "CONFORME" if pct == 100 else "PARCIAL" if pct >= 60 else "NAO-CONFORME"
-    print("\\n" + s["nome"] + ": " + status + " (" + str(pct) + "%)")
-    if falhas: print("  Falhas: " + ", ".join(falhas))
+# Imprima "=== COMPLIANCE CHECK ==="
+# Para cada servidor: verifique % dos requisitos atendidos
+# "\\nNOME: STATUS (PCT%)" onde STATUS:
+#   100%="CONFORME", >=60%="PARCIAL", <60%="NAO-CONFORME"
+# Se falhas: "  Falhas: falha1, falha2, ..."
 `,
   },
   expectedOutput: '=== COMPLIANCE CHECK ===\n\nweb-01: CONFORME (100%)\n\ndb-01: PARCIAL (60%)\n  Falhas: https, backup\n\napp-01: PARCIAL (60%)\n  Falhas: senhaForte, firewall, logs',
