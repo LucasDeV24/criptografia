@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Lucas" }],
   openGraph: {
     title: "Crypto Escape — Aprenda Cibersegurança",
-    description: "74 desafios interativos de cibersegurança. Do zero ao nível intermediário.",
+    description: "268 salas interativas de cibersegurança. Do zero ao nível profissional.",
     type: "website",
     locale: "pt_BR",
   },
@@ -38,12 +39,12 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <head>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>" />
+        <link rel="icon" type="image/svg+xml" href="/icon.svg" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

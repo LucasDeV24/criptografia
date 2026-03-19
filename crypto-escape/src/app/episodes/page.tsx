@@ -3,16 +3,14 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
-  ArrowLeft, Lock, CheckCircle, Shield, Code2, Database, Terminal, Key,
+  ArrowLeft, Lock, CheckCircle, Shield, Code2, Database, Terminal, Key, Trophy,
   Globe, Search, Network, Wifi, FileCode, AlertTriangle,
   GitBranch, Repeat, List, Type, Braces, TextCursorInput, Puzzle,
   Filter, RefreshCw, ArrowUpDown, FolderOpen, Binary, KeyRound, Hash, ShieldAlert, Activity,
   Eye, FileSearch, Users, Regex, Radar, Zap, ClipboardList, Crosshair, Award,
 } from 'lucide-react';
-import { getProgress } from '@/lib/progress';
+import { getProgress, TOTAL_ROOMS } from '@/lib/progress';
 import { challengesByEpisode } from '@/data/challenges';
-
-const TOTAL_ROOMS = 268;
 
 const EPISODE_META = [
   // Módulo 1: Programação (0-7)
@@ -83,10 +81,16 @@ export default function EpisodesPage() {
     <main className="min-h-screen p-8">
       <div className="max-w-6xl mx-auto">
         <header className="mb-12">
-          <Link href="/" className="inline-flex items-center gap-2 text-[var(--muted-gray)] hover:text-[var(--matrix-green)] transition-colors mb-8">
-            <ArrowLeft className="w-4 h-4" />
-            Voltar
-          </Link>
+          <div className="flex items-center justify-between mb-8">
+            <Link href="/" className="inline-flex items-center gap-2 text-[var(--muted-gray)] hover:text-[var(--matrix-green)] transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+              Voltar
+            </Link>
+            <Link href="/ranking" className="inline-flex items-center gap-2 text-[var(--muted-gray)] hover:text-[var(--matrix-green)] transition-colors">
+              <Trophy className="w-4 h-4" />
+              Ranking
+            </Link>
+          </div>
           <h1 className="text-4xl font-bold text-[var(--ghost-white)] mb-4">Episódios</h1>
           <p className="text-[var(--muted-gray)] text-lg">
             {completedRooms.length} de {TOTAL_ROOMS} salas completas

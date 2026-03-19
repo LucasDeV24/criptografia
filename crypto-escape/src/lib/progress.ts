@@ -1,5 +1,18 @@
 const STORAGE_KEY = 'crypto-escape-progress';
 
+export const TOTAL_ROOMS = 268;
+
+export type ProgressSyncCallback = () => void;
+let progressSyncCallback: ProgressSyncCallback | null = null;
+
+export function setProgressSyncCallback(cb: ProgressSyncCallback | null) {
+  progressSyncCallback = cb;
+}
+
+function triggerSync() {
+  progressSyncCallback?.();
+}
+
 export interface PlayerProgress {
   completedRooms: string[];
   currentEpisode: number;
@@ -42,6 +55,7 @@ export function saveProgress(progress: PlayerProgress): void {
   try {
     progress.lastPlayedAt = new Date().toISOString();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    triggerSync();
   } catch {
     // storage full or blocked
   }
@@ -61,10 +75,9 @@ export function isRoomComplete(roomId: string): boolean {
 
 export function getCompletionStats() {
   const progress = getProgress();
-  const total = 74;
   const completed = progress.completedRooms.length;
-  const percentage = Math.round((completed / total) * 100);
-  return { total, completed, percentage };
+  const percentage = Math.round((completed / TOTAL_ROOMS) * 100);
+  return { total: TOTAL_ROOMS, completed, percentage };
 }
 
 export function trackLanguageUse(lang: 'javascript' | 'python'): void {
@@ -92,6 +105,7 @@ export function saveUserCode(challengeId: string, language: string, code: string
   try {
     const key = `crypto-escape-code-${challengeId}-${language}`;
     localStorage.setItem(key, code);
+    triggerSync();
   } catch {
     // storage full or blocked
   }

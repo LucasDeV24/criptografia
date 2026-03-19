@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Terminal, Code, Shield, Book } from 'lucide-react';
-import { getProgress } from '@/lib/progress';
+import { Terminal, Code, Shield, Book, Trophy, LogIn, UserPlus, LogOut } from 'lucide-react';
+import { getProgress, TOTAL_ROOMS } from '@/lib/progress';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Home() {
+  const { user, loading: authLoading, signingOut, signOut } = useAuth();
   const [completed, setCompleted] = useState(0);
   const [currentEp, setCurrentEp] = useState(0);
   const [currentRoom, setCurrentRoom] = useState('0.1');
@@ -18,7 +20,7 @@ export default function Home() {
   }, []);
 
   const hasProgress = completed > 0;
-  const percentage = Math.round((completed / 268) * 100);
+  const percentage = Math.round((completed / TOTAL_ROOMS) * 100);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-8 relative overflow-hidden">
@@ -26,9 +28,50 @@ export default function Home() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,255,136,0.03)_0%,transparent_70%)]" />
 
       <main className="relative z-10 max-w-2xl mx-auto text-center">
-        <div className="mb-8 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--border-subtle)] bg-[var(--deep-space)]">
-          <Terminal className="w-4 h-4 text-[var(--matrix-green)]" />
-          <span className="text-sm text-[var(--muted-gray)]">Terminal Noir v1.0</span>
+        <div className="mb-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--border-subtle)] bg-[var(--deep-space)]">
+            <Terminal className="w-4 h-4 text-[var(--matrix-green)]" />
+            <span className="text-sm text-[var(--muted-gray)]">Terminal Noir v1.0</span>
+          </div>
+          {authLoading ? (
+            <div className="h-10 w-48 rounded-full bg-[var(--deep-space)] animate-pulse border border-[var(--border-subtle)]" />
+          ) : (
+            <>
+              {user ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-[var(--muted-gray)] truncate max-w-[160px]">
+                    {user.user_metadata?.full_name || user.email}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => signOut()}
+                    disabled={signingOut}
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-[var(--border-subtle)] text-[var(--muted-gray)] hover:text-[var(--error-red)] hover:border-[var(--error-red)]/50 text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    {signingOut ? 'Saindo...' : 'Sair'}
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Link
+                    href="/entrar"
+                    className="flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--border-subtle)] bg-[var(--deep-space)] text-[var(--muted-gray)] hover:text-[var(--matrix-green)] hover:border-[var(--matrix-green)]/50 transition-colors"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    Entrar
+                  </Link>
+                  <Link
+                    href="/cadastro"
+                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--matrix-green)]/20 border border-[var(--matrix-green)]/50 text-[var(--matrix-green)] hover:bg-[var(--matrix-green)]/30 transition-colors"
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    Cadastrar
+                  </Link>
+                </div>
+              )}
+            </>
+          )}
         </div>
 
         <h1 className="text-5xl md:text-6xl font-bold mb-4 tracking-tight">
@@ -46,7 +89,7 @@ export default function Home() {
           <div className="mb-10 max-w-md mx-auto">
             <div className="flex items-center justify-between text-sm mb-2">
               <span className="text-[var(--muted-gray)]">Progresso</span>
-              <span className="text-[var(--matrix-green)] font-medium">{completed}/268 salas ({percentage}%)</span>
+              <span className="text-[var(--matrix-green)] font-medium">{completed}/{TOTAL_ROOMS} salas ({percentage}%)</span>
             </div>
             <div className="w-full h-2 bg-[var(--deep-space)] rounded-full overflow-hidden border border-[var(--border-subtle)]">
               <div
@@ -87,6 +130,13 @@ export default function Home() {
           >
             <Book className="w-5 h-5" />
             Referência
+          </Link>
+          <Link
+            href="/ranking"
+            className="px-8 py-4 rounded-lg border border-[var(--border-subtle)] text-[var(--ghost-white)] font-semibold hover:bg-[var(--deep-space)] hover:border-[var(--matrix-green)] transition-all flex items-center gap-2"
+          >
+            <Trophy className="w-5 h-5" />
+            Ranking
           </Link>
         </div>
 
