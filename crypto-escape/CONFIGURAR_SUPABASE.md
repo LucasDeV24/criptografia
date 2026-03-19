@@ -63,6 +63,18 @@ Por padrão o Supabase exige que o usuário confirme o email. Para permitir logi
 
 ---
 
+## 6. (Opcional) Aumentar limite de cadastro/login
+
+Se aparecer "Muitas tentativas" ou "email rate limit exceeded":
+
+1. No Supabase, vá em **Authentication** → **Rate Limits**
+2. Aumente os valores de `Email` (ex: de 4 para 30 por hora)
+3. Salve
+
+Ou aguarde 1 hora para o limite resetar.
+
+---
+
 ## Pronto!
 
 Reinicie o projeto (`npm run dev`) e teste:

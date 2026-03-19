@@ -1,5 +1,11 @@
 # Deploy para produção (Vercel)
 
+## ⚠️ Cadastro dando "Sistema indisponível"?
+
+As variáveis de ambiente não estão na Vercel. Veja **CONFIGURAR_VERCEL.md** para o passo a passo.
+
+---
+
 ## Opção A: Deploy pelo site da Vercel (mais fácil)
 
 1. Acesse **https://vercel.com** e faça login (ou crie conta com GitHub)

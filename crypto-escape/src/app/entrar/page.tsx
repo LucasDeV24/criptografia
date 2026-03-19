@@ -26,7 +26,10 @@ export default function EntrarPage() {
     const { error } = await signIn(email.trim(), password);
     setLoading(false);
     if (error) {
-      setError(error);
+      const msg = error.toLowerCase().includes('rate limit')
+        ? 'Muitas tentativas. Aguarde alguns minutos e tente novamente.'
+        : error;
+      setError(msg);
       return;
     }
     router.replace('/');

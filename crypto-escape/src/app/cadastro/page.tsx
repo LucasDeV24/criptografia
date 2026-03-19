@@ -28,7 +28,10 @@ export default function CadastroPage() {
     const { error } = await signUp(email.trim(), password, name.trim());
     setLoading(false);
     if (error) {
-      setError(error);
+      const msg = error.toLowerCase().includes('rate limit')
+        ? 'Muitas tentativas. Aguarde alguns minutos e tente novamente.'
+        : error;
+      setError(msg);
       return;
     }
     setSuccess(true);
