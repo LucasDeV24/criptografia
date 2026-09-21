@@ -16,6 +16,13 @@ export default function LabChallenge({
   switch (challenge.labId) {
     case 'terminal-recon':
     case 'terminal-ssh':
+    case 'term-nav':
+    case 'term-paths':
+    case 'term-read':
+    case 'term-files':
+    case 'term-search':
+    case 'term-pipes':
+    case 'term-perm':
       return <TerminalLab scenario={SCENARIOS[challenge.labId]} onComplete={onComplete} />;
     case 'web-sqli':
       return <SqliLab onComplete={onComplete} />;

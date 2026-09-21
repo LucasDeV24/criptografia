@@ -186,7 +186,26 @@ const LABS: Context = {
 • **OWASP Juice Shop e DVWA:** sites vulneráveis para treinar legalmente`,
 };
 
+const TERMINAL: Context = {
+  realWorld: `**Onde o terminal aparece no trabalho:**
+
+• Servidores e nuvem quase sempre são administrados pelo terminal, sem interface gráfica
+• Desenvolvedores usam o terminal para rodar programas, testes e Git
+• Analistas de segurança investigam incidentes lendo logs com \`grep\`, \`sort\` e \`uniq\`
+• Pentesters usam o terminal para ferramentas como nmap e ssh
+
+**Hábito de profissional:** conferir com \`ls\` e \`pwd\` antes de mexer, e nunca copiar um comando com \`rm -r\` sem entender o que ele faz.`,
+  tools: `**Onde praticar no seu computador:**
+
+• **Windows:** WSL (Ubuntu dentro do Windows) e o Windows Terminal
+• **macOS:** o app Terminal (ou o iTerm2)
+• **Linux:** o terminal da sua distribuição
+• **VS Code:** tem um terminal integrado no próprio editor
+• **explainshell.com:** você cola um comando e ele explica cada parte`,
+};
+
 const SPECIFIC: Record<number, Context> = {
+  47: TERMINAL,
   11: XSS,
   12: SQLI,
   46: LABS,

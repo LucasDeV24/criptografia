@@ -460,6 +460,163 @@ Você guardou o resultado de uma conta em uma variável e devolveu esse valor co
   difficulty: 'easy',
 };
 
+const code0_13: CodeChallenge = {
+  id: '0.13',
+  type: 'code',
+  episode: 0,
+  room: '0.13',
+  title: 'Área de um retângulo',
+  description: 'Mais uma função com dois parâmetros. A área de um retângulo é a **largura vezes a altura**. Use o sinal `*` para multiplicar.',
+  instructions: 'Devolva a área do retângulo. Exemplo: areaRetangulo(3, 4) devolve 12.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Devolva largura * altura
+function areaRetangulo(largura, altura) {
+  // seu código aqui
+}
+`,
+    python: `# Devolva largura * altura
+def area_retangulo(largura, altura):
+    # seu código aqui
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'areaRetangulo', python: 'area_retangulo' },
+    cases: [
+      { name: '3 por 4', args: [3, 4], expected: 12 },
+      { name: '10 por 2', args: [10, 2], expected: 20 },
+      { name: 'largura zero', args: [0, 5], expected: 0, hidden: true },
+      { name: 'com decimal', args: [2.5, 4], expected: 10, hidden: true },
+      { name: 'quadrado 1 por 1', args: [1, 1], expected: 1, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function areaRetangulo(largura, altura) {
+  return largura * altura;
+}`,
+    python: `def area_retangulo(largura, altura):
+    return largura * altura`,
+  },
+  explanation: `
+**Operações com números**
+Os sinais são + (somar), - (subtrair), * (multiplicar) e / (dividir). Aqui o return já devolve a conta pronta, sem precisar de variável.
+
+**Atenção:** não use x para multiplicar. O sinal é o asterisco (*).
+  `,
+  hints: [
+    'A conta é largura * altura',
+    'return largura * altura',
+    'No Python, lembre do recuo (4 espaços) e de apagar o pass',
+  ],
+  difficulty: 'easy',
+};
+
+const code0_14: CodeChallenge = {
+  id: '0.14',
+  type: 'code',
+  episode: 0,
+  room: '0.14',
+  title: 'Juntando texto e número',
+  description: 'Lembra da conversão de tipo? No Python, para juntar um texto com um número é preciso usar `str()`. No JavaScript o `+` converte sozinho. Monte uma frase de apresentação.',
+  instructions: 'Devolva "NOME tem IDADE anos". Exemplo: apresentar("Ana", 20) devolve "Ana tem 20 anos".',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Devolva nome + " tem " + idade + " anos"
+function apresentar(nome, idade) {
+  // seu código aqui
+}
+`,
+    python: `# Devolva nome + " tem " + str(idade) + " anos"
+def apresentar(nome, idade):
+    # seu código aqui
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'apresentar', python: 'apresentar' },
+    cases: [
+      { name: 'Ana com 20 anos', args: ['Ana', 20], expected: 'Ana tem 20 anos' },
+      { name: 'Carlos com 35 anos', args: ['Carlos', 35], expected: 'Carlos tem 35 anos' },
+      { name: 'idade zero', args: ['Bebê', 0], expected: 'Bebê tem 0 anos', hidden: true },
+      { name: 'nome vazio', args: ['', 5], expected: ' tem 5 anos', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function apresentar(nome, idade) {
+  return nome + " tem " + idade + " anos";
+}`,
+    python: `def apresentar(nome, idade):
+    return nome + " tem " + str(idade) + " anos"`,
+  },
+  explanation: `
+**Texto + número**
+No JavaScript, o + junta o texto com o número e converte sozinho. No Python isso dá erro (TypeError), então converta o número com str(idade).
+
+**Os espaços fazem parte do texto:** " tem " e " anos" têm espaço dos dois lados; sem eles ficaria "Anatem20anos".
+  `,
+  hints: [
+    'Junte os pedaços com +: o nome, " tem ", a idade, " anos"',
+    'JavaScript: return nome + " tem " + idade + " anos";',
+    'Python: use str(idade) para converter o número em texto',
+  ],
+  difficulty: 'easy',
+};
+
+const code0_15: CodeChallenge = {
+  id: '0.15',
+  type: 'code',
+  episode: 0,
+  room: '0.15',
+  title: 'Convertendo temperatura',
+  description: 'Para converter Celsius em Fahrenheit: multiplique por 9, divida por 5 e some 32. Use uma **variável** para deixar a conta em passos.',
+  instructions: 'Devolva a temperatura em Fahrenheit. Exemplo: celsiusParaFahrenheit(100) devolve 212.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Fahrenheit = celsius * 9 / 5 + 32
+function celsiusParaFahrenheit(celsius) {
+  // seu código aqui
+}
+`,
+    python: `# Fahrenheit = celsius * 9 / 5 + 32
+def celsius_para_fahrenheit(celsius):
+    # seu código aqui
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'celsiusParaFahrenheit', python: 'celsius_para_fahrenheit' },
+    cases: [
+      { name: 'ponto de ebulição', args: [100], expected: 212 },
+      { name: 'ponto de congelamento', args: [0], expected: 32 },
+      { name: 'temperatura negativa', args: [-40], expected: -40, hidden: true },
+      { name: '10 graus', args: [10], expected: 50, hidden: true },
+      { name: '20 graus', args: [20], expected: 68, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function celsiusParaFahrenheit(celsius) {
+  const fahrenheit = celsius * 9 / 5 + 32;
+  return fahrenheit;
+}`,
+    python: `def celsius_para_fahrenheit(celsius):
+    fahrenheit = celsius * 9 / 5 + 32
+    return fahrenheit`,
+  },
+  explanation: `
+**Ordem das contas**
+Multiplicação e divisão acontecem antes da soma, como na matemática. Para mudar a ordem, use parênteses.
+
+**Um valor curioso:** -40 é o único ponto em que Celsius e Fahrenheit coincidem. Os testes ocultos incluem esse caso.
+  `,
+  hints: [
+    'A conta completa é celsius * 9 / 5 + 32',
+    'Guarde em uma variável (fahrenheit) e devolva com return',
+    'Teste na cabeça: 100 * 9 / 5 + 32 dá 212',
+  ],
+  difficulty: 'easy',
+};
+
 export const episode0Challenges: Challenge[] = [
   theory0_1,
   theory0_2,
@@ -473,4 +630,7 @@ export const episode0Challenges: Challenge[] = [
   theory0_10,
   code0_11,
   code0_12,
+  code0_13,
+  code0_14,
+  code0_15,
 ];

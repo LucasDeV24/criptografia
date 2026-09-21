@@ -61,7 +61,6 @@ const CONCEPTS = [
   { id: 'classe', label: 'classes', use: /^\s*class\s+\w+/m, teach: [/\bclasse\b/i] },
 ];
 
-const order = (a, b) => a - b;
 const teaches = (k, text) => [].concat(k.teach).every((re) => re.test(text));
 
 // A ordem do curso vem de src/data/challenges/index.ts (chave = episódio)
@@ -80,7 +79,8 @@ const only = arg >= 0 ? process.argv[arg + 1].split('-').map(Number) : null;
 const taught = new Set();
 const rows = [];
 
-for (const ep of [...byEpisode.keys()].sort(order)) {
+const { COURSE_ORDER } = await import(pathToFileURL(path.join(root, 'src/data/course-order.ts')).href);
+for (const ep of COURSE_ORDER.filter((e) => byEpisode.has(e))) {
   for (const c of byEpisode.get(ep)) {
     if (c.type === 'theory') {
       for (const k of CONCEPTS) if (teaches(k, `${c.title}\n${c.description}\n${c.content}`)) taught.add(k.id);

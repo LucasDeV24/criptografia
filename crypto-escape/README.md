@@ -3,8 +3,10 @@
 Plataforma interativa para aprender **programação e cibersegurança** resolvendo desafios no navegador
 (JavaScript e Python), com laboratórios práticos de "hacker do bem" 100% simulados.
 
-- **Base de programação (episódios 0 a 7):** exercícios em que o aluno escreve funções, validadas por
-  **testes visíveis e ocultos** (casos de borda).
+- **Base de programação (episódios 0 a 7):** 75 exercícios em que o aluno escreve funções, validadas por
+  **testes visíveis e ocultos** (casos de borda), em escada de dificuldade.
+- **Terminal e Linux (episódio 47):** módulo separado, sem misturar com o código. Depois da programação e antes da
+  cibersegurança (a ordem fica em `src/data/course-order.ts`). Terminal simulado com tarefas conferidas pelo sistema.
 - **Cibersegurança (episódios 8 a 45):** criptografia, vulnerabilidades web, blue team, OSINT, automação.
 - **Modo Hacker (episódio 46):** terminal simulado e sites vulneráveis (SQL Injection, XSS, IDOR) com flags.
 - **Trilhas de carreira (`/trilhas`):** o que aprender e como entrar na área, marcando o que ainda é "em breve".
@@ -28,6 +30,7 @@ Sem as chaves do Supabase o jogo funciona normalmente; só login, sincronizaçã
 | `npm run lint` | ESLint |
 | `npm run verify:exercises` | verifica todos os exercícios com testes (veja abaixo) |
 | `npm run audit:prereqs` | acha exercícios que usam algo que nenhuma teoria anterior ensinou |
+| `npm run verify:terminal` | verifica os laboratórios do módulo de terminal e o motor do terminal simulado |
 
 ## Como o código do aluno é executado
 

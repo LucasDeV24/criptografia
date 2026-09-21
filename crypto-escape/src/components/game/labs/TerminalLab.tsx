@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Flag, RotateCcw } from 'lucide-react';
-import { COMMAND_HELP, execute, initialState, promptOf } from '@/lib/labs/terminal-engine';
+import { CheckCircle2, Circle, Flag, RotateCcw } from 'lucide-react';
+import { COMMAND_HELP, execute, initialState, promptOf, tasksDone } from '@/lib/labs/terminal-engine';
 import type { Scenario } from '@/lib/labs/terminal-engine';
 
 type Line = { kind: 'cmd' | 'out'; prompt?: string; text: string };
@@ -32,6 +32,9 @@ export default function TerminalLab({
   }, [lines]);
 
   const masked = state.pending !== null;
+  const tasks = scenario.tasks ?? [];
+  const taskFlags = tasksDone(scenario, state);
+  const tasksLeft = taskFlags.filter((d) => !d).length;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +51,9 @@ export default function TerminalLab({
       ...result.lines.map((text): Line => ({ kind: 'out', text })),
     ]);
 
-    if (!done && result.lines.some((l) => l.includes(scenario.flag))) {
+    const flagFound = !!scenario.flag && result.lines.some((l) => l.includes(scenario.flag as string));
+    const allTasksDone = tasks.length > 0 && tasksDone(scenario, result.state).every(Boolean);
+    if (!done && (flagFound || allTasksDone)) {
       setDone(true);
       onComplete?.();
     }
@@ -92,6 +97,22 @@ export default function TerminalLab({
         </button>
       </div>
 
+      {tasks.length > 0 && (
+        <div className="lab-tasks" aria-label="Tarefas do laboratório">
+          <div className="lab-tasks-title">
+            Tarefas ({tasks.length - tasksLeft}/{tasks.length})
+          </div>
+          <ul>
+            {tasks.map((t, i) => (
+              <li key={t.label} className={taskFlags[i] ? 'lab-task-done' : ''}>
+                {taskFlags[i] ? <CheckCircle2 className="icon" /> : <Circle className="icon" />}
+                <span>{t.label}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div
         className="lab-terminal"
         ref={screenRef}
@@ -103,7 +124,7 @@ export default function TerminalLab({
         {lines.map((line, i) => (
           <div
             key={i}
-            className={`lab-line ${line.kind === 'cmd' ? 'lab-cmd' : ''} ${line.text.includes('FLAG{') ? 'lab-flag-line' : ''}`}
+            className={`lab-line ${line.kind === 'cmd' ? 'lab-cmd' : ''} ${scenario.flag && line.text.includes('FLAG{') ? 'lab-flag-line' : ''}`}
           >
             {line.kind === 'cmd' && <span className="lab-prompt">{line.prompt} </span>}
             {line.text}
@@ -132,8 +153,8 @@ export default function TerminalLab({
         <div className="lab-success" role="status">
           <Flag className="icon" />
           <div>
-            <strong>Flag capturada!</strong>
-            <div className="lab-flag-code">{scenario.flag}</div>
+            <strong>{scenario.flag ? 'Flag capturada!' : 'Missão cumprida! Todas as tarefas foram concluídas.'}</strong>
+            {scenario.flag && <div className="lab-flag-code">{scenario.flag}</div>}
           </div>
         </div>
       )}

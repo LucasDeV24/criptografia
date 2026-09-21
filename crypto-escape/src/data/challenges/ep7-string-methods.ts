@@ -32,6 +32,10 @@ Ou, quando um analista lê logs:
 Ele usa \`.split(" ")\` para separar cada parte.
 
 Vamos aprender cada método!
+
+**Tirando espaços das pontas**
+• **JavaScript:** \`texto.trim()\`  •  **Python:** \`texto.strip()\`
+Removem os espaços (e quebras de linha) do **começo e do fim** do texto, sem mexer nos do meio. \`"  oi  "\` vira \`"oi"\`. É muito usado para limpar o que o usuário digitou.
   `,
 };
 
@@ -325,11 +329,191 @@ split(" ") quebra o texto em pedaços a cada espaço e devolve uma lista. Cada p
   difficulty: 'medium',
 };
 
+const ex7_dominio: CodeChallenge = {
+  id: 'strm.11',
+  type: 'code',
+  episode: 7,
+  room: '7.6',
+  title: 'Extraindo o domínio de um e-mail',
+  description: 'Use `split` para separar um e-mail no `@` e pegar só a parte do **domínio**. Analistas de segurança fazem isso para ver de quais sites vêm os e-mails suspeitos.',
+  instructions: 'Devolva o que vem depois do @. Exemplo: extrairDominio("ana@site.com") devolve "site.com". Os e-mails têm sempre um único @.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Divida no "@" e devolva a segunda parte (posição 1)
+function extrairDominio(email) {
+  // seu código aqui
+}
+`,
+    python: `# Divida no "@" e devolva a segunda parte (posição 1)
+def extrair_dominio(email):
+    # seu código aqui
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'extrairDominio', python: 'extrair_dominio' },
+    cases: [
+      { name: 'e-mail comum', args: ['ana@site.com'], expected: 'site.com' },
+      { name: 'domínio com subdomínio', args: ['bob@mail.empresa.com.br'], expected: 'mail.empresa.com.br' },
+      { name: 'usuário com ponto', args: ['a.b@x.org'], expected: 'x.org', hidden: true },
+      { name: 'usuário de uma letra', args: ['a@b.com'], expected: 'b.com', hidden: true },
+      { name: 'usuário com números', args: ['user123@teste.net'], expected: 'teste.net', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function extrairDominio(email) {
+  const partes = email.split("@");
+  return partes[1];
+}`,
+    python: `def extrair_dominio(email):
+    partes = email.split("@")
+    return partes[1]`,
+  },
+  explanation: `
+**split e a posição**
+"ana@site.com".split("@") vira ["ana", "site.com"]. A posição 0 é o usuário e a posição 1 é o domínio.
+
+**Na segurança:** ver o domínio de e-mails de phishing (como paypa1.com no lugar de paypal.com) é um passo comum de investigação.
+  `,
+  hints: [
+    'Divida o e-mail no @: email.split("@")',
+    'O resultado é uma lista de 2 itens: usuário e domínio',
+    'Devolva o item da posição 1',
+  ],
+  difficulty: 'easy',
+};
+
+const ex7_email: CodeChallenge = {
+  id: 'strm.12',
+  type: 'code',
+  episode: 7,
+  room: '7.7',
+  title: 'Validando um e-mail',
+  description: 'Combine `split`, tamanho de lista e `includes`. Um e-mail **simples** é válido quando: tem **exatamente um @**, tem algo **antes** do @ e o **domínio** (depois do @) contém um ponto.',
+  instructions: 'Devolva true se o e-mail seguir as três regras, senão false. Exemplo: validarEmail("ana@site.com") devolve true.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// 1) exatamente um "@"  (o split dá 2 partes)
+// 2) parte antes do "@" não vazia
+// 3) domínio (depois do "@") contém "."
+function validarEmail(email) {
+  // seu código aqui
+}
+`,
+    python: `# 1) exatamente um "@"  (o split dá 2 partes)
+# 2) parte antes do "@" não vazia
+# 3) domínio (depois do "@") contém "."
+def validar_email(email):
+    # seu código aqui
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'validarEmail', python: 'validar_email' },
+    cases: [
+      { name: 'e-mail válido', args: ['ana@site.com'], expected: true },
+      { name: 'sem arroba', args: ['ana.site.com'], expected: false },
+      { name: 'domínio sem ponto', args: ['ana@site'], expected: false },
+      { name: 'nada antes do arroba', args: ['@site.com'], expected: false, hidden: true },
+      { name: 'dois arrobas', args: ['a@b@c.com'], expected: false, hidden: true },
+      { name: 'ponto só antes do arroba não vale', args: ['a.b@site'], expected: false, hidden: true },
+      { name: 'texto vazio', args: [''], expected: false, hidden: true },
+      { name: 'domínio com subdomínio', args: ['x@mail.empresa.com'], expected: true, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function validarEmail(email) {
+  const partes = email.split("@");
+  if (partes.length !== 2) {
+    return false;
+  }
+  if (partes[0] === "") {
+    return false;
+  }
+  return partes[1].includes(".");
+}`,
+    python: `def validar_email(email):
+    partes = email.split("@")
+    if len(partes) != 2:
+        return False
+    if partes[0] == "":
+        return False
+    return "." in partes[1]`,
+  },
+  explanation: `
+**Validar em etapas**
+Cada regra vira um teste que devolve false cedo. Só quem passa por todas chega ao return final, que confere o ponto no domínio.
+
+**Cuidado com o ponto:** em "a.b@site" o ponto está ANTES do arroba, então não conta: o domínio ("site") não tem ponto. Por isso olhamos só a parte depois do @.
+
+**Realidade:** validar e-mail de verdade é bem mais complexo (existem regras e exceções na especificação). Para segurança, a validação real acontece confirmando o endereço por um link enviado ao usuário.
+  `,
+  hints: [
+    'Divida no @ e confira o tamanho da lista: precisa ter exatamente 2 partes',
+    'A primeira parte (posição 0) não pode ser vazia',
+    'O domínio (posição 1) precisa conter um ponto: partes[1].includes(".")  (Python: "." in partes[1])',
+  ],
+  difficulty: 'medium',
+};
+
+const ex7_normalizar: CodeChallenge = {
+  id: 'strm.13',
+  type: 'code',
+  episode: 7,
+  room: '7.8',
+  title: 'Normalizando um nome de usuário',
+  description: 'Usuários digitam de tudo: espaços sobrando, maiúsculas. **Normalizar** é deixar o texto no formato padrão antes de comparar. Aqui: sem espaços nas pontas e tudo em minúsculo.',
+  instructions: 'Devolva o texto sem espaços no começo e no fim, em letras minúsculas. Exemplo: normalizarUsuario("  ANA  ") devolve "ana".',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Tire os espaços das pontas (trim) e converta para minúsculas
+function normalizarUsuario(texto) {
+  // seu código aqui
+}
+`,
+    python: `# Tire os espaços das pontas (strip) e converta para minúsculas
+def normalizar_usuario(texto):
+    # seu código aqui
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'normalizarUsuario', python: 'normalizar_usuario' },
+    cases: [
+      { name: 'espaços e maiúsculas', args: ['  ANA  '], expected: 'ana' },
+      { name: 'já normalizado', args: ['bob'], expected: 'bob' },
+      { name: 'texto vazio', args: [''], expected: '', hidden: true },
+      { name: 'só espaços', args: ['   '], expected: '', hidden: true },
+      { name: 'espaço no meio é mantido', args: [' Ana Maria '], expected: 'ana maria', hidden: true },
+      { name: 'maiúsculas misturadas', args: ['ReD TeaM'], expected: 'red team', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function normalizarUsuario(texto) {
+  return texto.trim().toLowerCase();
+}`,
+    python: `def normalizar_usuario(texto):
+    return texto.strip().lower()`,
+  },
+  explanation: `
+**Encadeando métodos**
+texto.trim() devolve um texto novo, e nele aplicamos .toLowerCase(). Chamar um método em cima do resultado do outro é comum e deixa o código curto.
+
+**Na segurança:** falhas clássicas nascem de comparar sem normalizar. Um sistema que trata "Admin" e "admin " como usuários diferentes pode permitir contas duplicadas ou contornar bloqueios.
+  `,
+  hints: [
+    'Primeiro tire os espaços das pontas: texto.trim()  (Python: texto.strip())',
+    'Depois converta para minúsculas: .toLowerCase()  (Python: .lower())',
+    'Encadeie os dois: texto.trim().toLowerCase()',
+  ],
+  difficulty: 'easy',
+};
+
 const code7_6: CodeChallenge = {
   id: 'strm.6',
   type: 'code',
   episode: 7,
-  room: '7.6',
+  room: '7.9',
   title: 'replace() — substituindo texto',
   description: 'Sanitizar é remover ou trocar partes perigosas. Remova **todas** as tags `<script>` e `</script>` do texto.',
   instructions: 'Devolva o texto sem nenhuma ocorrência de "<script>" nem de "</script>". Exemplo: limparScript("Olá <script>alert(1)</script>") devolve "Olá alert(1)".',
@@ -382,7 +566,7 @@ const theory7_pos: TheoryChallenge = {
   id: 'strm.10',
   type: 'theory',
   episode: 7,
-  room: '7.7',
+  room: '7.10',
   title: 'Posição e fatias de texto',
   description: 'Para separar partes de um texto você precisa saber ONDE algo está e pegar só o pedaço que interessa.',
   content: `
@@ -416,7 +600,7 @@ const code7_7: CodeChallenge = {
   id: 'strm.7',
   type: 'code',
   episode: 7,
-  room: '7.8',
+  room: '7.11',
   title: 'indexOf() — encontrando posição',
   description: 'Dados chegam como "usuario:senha". Encontre o **primeiro** ":" e separe as duas partes, mesmo se a senha também tiver ":".',
   instructions: 'Devolva um objeto {usuario, senha}, separando no PRIMEIRO ":". Exemplo: extrairCredenciais("admin:password123") devolve {usuario: "admin", senha: "password123"}.',
@@ -478,7 +662,7 @@ const code7_8: CodeChallenge = {
   id: 'strm.8',
   type: 'code',
   episode: 7,
-  room: '7.9',
+  room: '7.12',
   title: 'Desafio — analisar log completo',
   description: 'Junte tudo: divida a linha do log, verifique se o evento foi uma **FALHA** e monte o alerta de segurança.',
   instructions: 'Para "DATA EVENTO USUARIO IP": se o evento for "FALHA", devolva {alerta: true, usuario, ip}; senão, {alerta: false}.',
@@ -537,11 +721,88 @@ Um mini detector de eventos suspeitos: quebra o log, testa o campo de evento e d
   difficulty: 'hard',
 };
 
+const ex7_ip: CodeChallenge = {
+  id: 'strm.14',
+  type: 'code',
+  episode: 7,
+  room: '7.13',
+  title: 'Validando um endereço IPv4',
+  description: 'Desafio final do episódio: um IPv4 válido tem **4 partes separadas por ponto**, e cada parte é um número **de 0 a 255**. Combine `split`, conversão de texto em número, loop e comparações. As partes sempre têm só dígitos (ou um sinal de menos).',
+  instructions: 'Devolva true se o texto for um IPv4 válido, senão false. Exemplo: ipValido("192.168.0.1") devolve true.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// 1) split(".") precisa dar exatamente 4 partes
+// 2) cada parte, convertida em número (parseInt), fica entre 0 e 255
+function ipValido(ip) {
+  // seu código aqui
+}
+`,
+    python: `# 1) split(".") precisa dar exatamente 4 partes
+# 2) cada parte, convertida em número (int), fica entre 0 e 255
+def ip_valido(ip):
+    # seu código aqui
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'ipValido', python: 'ip_valido' },
+    cases: [
+      { name: 'IP comum', args: ['192.168.0.1'], expected: true },
+      { name: 'número acima de 255', args: ['256.1.1.1'], expected: false },
+      { name: 'partes a menos', args: ['1.1.1'], expected: false },
+      { name: 'tudo zero', args: ['0.0.0.0'], expected: true, hidden: true },
+      { name: 'máximo permitido', args: ['255.255.255.255'], expected: true, hidden: true },
+      { name: 'partes a mais', args: ['1.1.1.1.1'], expected: false, hidden: true },
+      { name: 'último número alto', args: ['192.168.1.300'], expected: false, hidden: true },
+      { name: 'número negativo', args: ['-1.1.1.1'], expected: false, hidden: true },
+      { name: '255 ainda é válido', args: ['10.0.0.255'], expected: true, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function ipValido(ip) {
+  const partes = ip.split(".");
+  if (partes.length !== 4) {
+    return false;
+  }
+  for (let i = 0; i < partes.length; i++) {
+    const numero = parseInt(partes[i]);
+    if (numero < 0 || numero > 255) {
+      return false;
+    }
+  }
+  return true;
+}`,
+    python: `def ip_valido(ip):
+    partes = ip.split(".")
+    if len(partes) != 4:
+        return False
+    for parte in partes:
+        numero = int(parte)
+        if numero < 0 or numero > 255:
+            return False
+    return True`,
+  },
+  explanation: `
+**Validação em duas camadas**
+Primeiro a estrutura (quantidade de partes). Depois o conteúdo de cada parte, com um loop e um return false ao primeiro problema. Só quem passa por tudo chega ao return true.
+
+**Um byte vai de 0 a 255:** cada parte de um IPv4 ocupa 1 byte (8 bits), por isso o limite é 255. Aparece em firewalls, scanners e análise de logs.
+
+**Na segurança:** validar IPs é a base de firewalls, listas de bloqueio e ferramentas como o nmap. Um validador com um erro por 1 (por exemplo, > 256) deixa passar entradas inválidas.
+  `,
+  hints: [
+    'Divida no ponto e confira que existem exatamente 4 partes',
+    'Percorra as partes e converta cada uma em número: parseInt(parte) (Python: int(parte))',
+    'Se algum número for menor que 0 ou maior que 255, devolva false. Depois do loop, devolva true',
+  ],
+  difficulty: 'hard',
+};
+
 const theory7_9: TheoryChallenge = {
   id: 'strm.9',
   type: 'theory',
   episode: 7,
-  room: '7.10',
+  room: '7.14',
   title: 'Parabéns! Você está PRONTO para cibersegurança!',
   description: 'Com métodos de string, você tem TODAS as ferramentas que um analista de segurança usa para detectar ataques.',
   content: `
@@ -582,9 +843,13 @@ export const stringMethodsChallenges: Challenge[] = [
   code7_3,
   theory7_4,
   code7_5,
+  ex7_dominio,
+  ex7_email,
+  ex7_normalizar,
   code7_6,
   theory7_pos,
   code7_7,
   code7_8,
+  ex7_ip,
   theory7_9,
 ];

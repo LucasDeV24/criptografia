@@ -248,11 +248,215 @@ A função compara as duas senhas. Se forem idênticas → permitido. Em qualque
   difficulty: 'easy',
 };
 
+const ex1_sinal: CodeChallenge = {
+  id: 'cond.9',
+  type: 'code',
+  episode: 1,
+  room: '1.5',
+  title: 'Positivo, negativo ou zero',
+  description: 'Com **if / else if / else** você pode escolher entre **três** caminhos. Classifique um número.',
+  instructions: 'Devolva "positivo", "negativo" ou "zero". Exemplo: sinalDoNumero(-3) devolve "negativo".',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Devolva "positivo", "negativo" ou "zero"
+function sinalDoNumero(n) {
+  // seu código aqui
+}
+`,
+    python: `# Devolva "positivo", "negativo" ou "zero"
+def sinal_do_numero(n):
+    # seu código aqui
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'sinalDoNumero', python: 'sinal_do_numero' },
+    cases: [
+      { name: 'positivo', args: [7], expected: 'positivo' },
+      { name: 'negativo', args: [-3], expected: 'negativo' },
+      { name: 'zero', args: [0], expected: 'zero', hidden: true },
+      { name: 'positivo pequeno', args: [1], expected: 'positivo', hidden: true },
+      { name: 'negativo pequeno', args: [-1], expected: 'negativo', hidden: true },
+      { name: 'decimal positivo', args: [0.5], expected: 'positivo', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function sinalDoNumero(n) {
+  if (n > 0) {
+    return "positivo";
+  } else if (n < 0) {
+    return "negativo";
+  } else {
+    return "zero";
+  }
+}`,
+    python: `def sinal_do_numero(n):
+    if n > 0:
+        return "positivo"
+    elif n < 0:
+        return "negativo"
+    else:
+        return "zero"`,
+  },
+  explanation: `
+**Três caminhos**
+O primeiro if trata o positivo, o else if trata o negativo e o else fica com o que sobrou: só pode ser zero.
+
+**Cuidado com o zero:** ele não é positivo nem negativo. Um teste com >= 0 no lugar de > 0 o classificaria errado.
+  `,
+  hints: [
+    'Use if para n > 0, else if para n < 0 e else para o resto',
+    'Cada caminho tem o seu return',
+    'No Python: if, elif e else, todos terminando com dois pontos',
+  ],
+  difficulty: 'easy',
+};
+
+const ex1_nota: CodeChallenge = {
+  id: 'cond.10',
+  type: 'code',
+  episode: 1,
+  room: '1.6',
+  title: 'Classificando notas',
+  description: 'Uma escala de notas tem **vários limites**. A **ordem** dos testes importa: o computador para no primeiro que for verdadeiro.',
+  instructions: 'Devolva "A" (90 ou mais), "B" (80 a 89), "C" (70 a 79), "D" (60 a 69) ou "F" (menos de 60).',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// A: >= 90 | B: >= 80 | C: >= 70 | D: >= 60 | F: abaixo de 60
+function classificarNota(nota) {
+  // seu código aqui
+}
+`,
+    python: `# A: >= 90 | B: >= 80 | C: >= 70 | D: >= 60 | F: abaixo de 60
+def classificar_nota(nota):
+    # seu código aqui
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'classificarNota', python: 'classificar_nota' },
+    cases: [
+      { name: 'nota alta', args: [95], expected: 'A' },
+      { name: 'nota média', args: [75], expected: 'C' },
+      { name: 'nota baixa', args: [30], expected: 'F' },
+      { name: 'limite do A', args: [90], expected: 'A', hidden: true },
+      { name: 'logo abaixo do A', args: [89], expected: 'B', hidden: true },
+      { name: 'limite do D', args: [60], expected: 'D', hidden: true },
+      { name: 'logo abaixo do D', args: [59], expected: 'F', hidden: true },
+      { name: 'zero', args: [0], expected: 'F', hidden: true },
+      { name: 'cem', args: [100], expected: 'A', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function classificarNota(nota) {
+  if (nota >= 90) {
+    return "A";
+  } else if (nota >= 80) {
+    return "B";
+  } else if (nota >= 70) {
+    return "C";
+  } else if (nota >= 60) {
+    return "D";
+  }
+  return "F";
+}`,
+    python: `def classificar_nota(nota):
+    if nota >= 90:
+        return "A"
+    elif nota >= 80:
+        return "B"
+    elif nota >= 70:
+        return "C"
+    elif nota >= 60:
+        return "D"
+    return "F"`,
+  },
+  explanation: `
+**Do maior para o menor**
+Se você começasse por nota >= 60, um 95 cairia no "D" e nunca chegaria ao "A". Testando do maior limite para o menor, cada teste só precisa do limite de baixo.
+
+**Limites de novo:** 90 já é "A" (>=) e 89 é "B". Os testes ocultos conferem cada fronteira.
+  `,
+  hints: [
+    'Comece pelo teste mais alto: nota >= 90',
+    'Depois use else if para 80, 70 e 60, nessa ordem',
+    'O return "F" fica no fim, para tudo que sobrou',
+  ],
+  difficulty: 'medium',
+};
+
+const ex1_entrar: CodeChallenge = {
+  id: 'cond.11',
+  type: 'code',
+  episode: 1,
+  room: '1.7',
+  title: 'Controle de acesso: idade e convite',
+  description: 'Combine **duas condições**. Uma casa noturna só deixa entrar quem tem 18 anos ou mais **e** tem convite. O segundo parâmetro é um valor verdadeiro/falso (`true`/`false` no JS, `True`/`False` no Python).',
+  instructions: 'Devolva "Entrada liberada" (maior de idade E com convite), "Precisa de convite" (maior de idade sem convite) ou "Menor de idade".',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// idade >= 18 E temConvite   -> "Entrada liberada"
+// idade >= 18 mas sem convite -> "Precisa de convite"
+// menor de 18                 -> "Menor de idade"
+function podeEntrar(idade, temConvite) {
+  // seu código aqui
+}
+`,
+    python: `# idade >= 18 E tem_convite   -> "Entrada liberada"
+# idade >= 18 mas sem convite -> "Precisa de convite"
+# menor de 18                 -> "Menor de idade"
+def pode_entrar(idade, tem_convite):
+    # seu código aqui
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'podeEntrar', python: 'pode_entrar' },
+    cases: [
+      { name: 'maior com convite', args: [20, true], expected: 'Entrada liberada' },
+      { name: 'maior sem convite', args: [25, false], expected: 'Precisa de convite' },
+      { name: 'menor de idade', args: [15, true], expected: 'Menor de idade' },
+      { name: 'exatamente 18 com convite', args: [18, true], expected: 'Entrada liberada', hidden: true },
+      { name: '17 com convite continua barrado', args: [17, true], expected: 'Menor de idade', hidden: true },
+      { name: 'menor sem convite', args: [10, false], expected: 'Menor de idade', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function podeEntrar(idade, temConvite) {
+  if (idade < 18) {
+    return "Menor de idade";
+  }
+  if (temConvite) {
+    return "Entrada liberada";
+  }
+  return "Precisa de convite";
+}`,
+    python: `def pode_entrar(idade, tem_convite):
+    if idade < 18:
+        return "Menor de idade"
+    if tem_convite:
+        return "Entrada liberada"
+    return "Precisa de convite"`,
+  },
+  explanation: `
+**Tratar o caso mais forte primeiro**
+Se a pessoa é menor de idade, nada mais importa: o convite não a deixa entrar. Por isso esse teste vem antes. Depois, só sobra decidir pelo convite.
+
+**Valores verdadeiro/falso podem ser usados direto no if:** if (temConvite) já significa "se tem convite". Também dava para escrever tudo com && (E) e ! (NÃO).
+  `,
+  hints: [
+    'Comece pelo caso "Menor de idade": se idade < 18, devolva já',
+    'Depois use if (temConvite) (Python: if tem_convite:)',
+    'O que sobrar é "Precisa de convite"',
+  ],
+  difficulty: 'medium',
+};
+
 const theory1_len: TheoryChallenge = {
   id: 'cond.8',
   type: 'theory',
   episode: 1,
-  room: '1.5',
+  room: '1.8',
   title: 'Medindo o tamanho de um texto',
   description: 'Muitas regras de segurança dependem do tamanho de uma senha. Veja como descobrir quantos caracteres um texto tem.',
   content: `
@@ -288,7 +492,7 @@ const code1_5: CodeChallenge = {
   id: 'cond.5',
   type: 'code',
   episode: 1,
-  room: '1.6',
+  room: '1.9',
   title: 'Força da senha',
   description: 'Sites avaliam a força da sua senha. Vamos fazer o mesmo, pelo tamanho: menos de 6 caracteres é **Fraca**, de 6 a 9 é **Média**, 10 ou mais é **Forte**.',
   instructions: 'Devolva "Fraca", "Média" ou "Forte" conforme o tamanho da senha. Cuidado com os limites!',
@@ -356,11 +560,81 @@ Tamanho é só um critério. Um verificador profissional também considera se a 
   difficulty: 'medium',
 };
 
+const ex1_pin: CodeChallenge = {
+  id: 'cond.12',
+  type: 'code',
+  episode: 1,
+  room: '1.10',
+  title: 'Validando um PIN',
+  description: 'Um sistema aceita apenas PINs de **exatamente 4 caracteres**, mas recusa os PINs mais óbvios ("0000" e "1234"). A ordem das verificações importa.',
+  instructions: 'Devolva "PIN inválido" (tamanho diferente de 4), "PIN fraco" ("0000" ou "1234") ou "PIN válido".',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// tamanho diferente de 4 -> "PIN inválido"
+// "0000" ou "1234"        -> "PIN fraco"
+// caso contrário          -> "PIN válido"
+function validarPin(pin) {
+  // seu código aqui
+}
+`,
+    python: `# tamanho diferente de 4 -> "PIN inválido"
+# "0000" ou "1234"        -> "PIN fraco"
+# caso contrário          -> "PIN válido"
+def validar_pin(pin):
+    # seu código aqui
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'validarPin', python: 'validar_pin' },
+    cases: [
+      { name: 'PIN bom', args: ['4821'], expected: 'PIN válido' },
+      { name: 'PIN fraco 1234', args: ['1234'], expected: 'PIN fraco' },
+      { name: 'PIN curto', args: ['123'], expected: 'PIN inválido' },
+      { name: 'PIN fraco 0000', args: ['0000'], expected: 'PIN fraco', hidden: true },
+      { name: 'PIN longo', args: ['12345'], expected: 'PIN inválido', hidden: true },
+      { name: 'PIN vazio', args: [''], expected: 'PIN inválido', hidden: true },
+      { name: 'outro PIN bom', args: ['9999'], expected: 'PIN válido', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function validarPin(pin) {
+  if (pin.length !== 4) {
+    return "PIN inválido";
+  }
+  if (pin === "0000" || pin === "1234") {
+    return "PIN fraco";
+  }
+  return "PIN válido";
+}`,
+    python: `def validar_pin(pin):
+    if len(pin) != 4:
+        return "PIN inválido"
+    if pin == "0000" or pin == "1234":
+        return "PIN fraco"
+    return "PIN válido"`,
+  },
+  explanation: `
+**Validar em camadas**
+Primeiro o formato (tamanho), depois o conteúdo (PINs óbvios). Quem valida na ordem certa evita analisar dados que já são inválidos.
+
+**OU (||, or):** basta uma das duas comparações ser verdadeira para o PIN ser fraco.
+
+**Na segurança:** listas de PINs e senhas óbvias fazem parte de políticas reais de segurança.
+  `,
+  hints: [
+    'Primeiro confira o tamanho: pin.length !== 4  (Python: len(pin) != 4)',
+    'Depois use OU para os dois PINs fracos: pin === "0000" || pin === "1234"',
+    'No Python, o OU é a palavra or',
+  ],
+  difficulty: 'medium',
+};
+
 const code1_6: CodeChallenge = {
   id: 'cond.6',
   type: 'code',
   episode: 1,
-  room: '1.7',
+  room: '1.11',
   title: 'Login com bloqueio de conta',
   description: 'Desafio final do episódio! Um login de verdade combina **usuário E senha** e ainda **bloqueia a conta** depois de muitas tentativas erradas, defesa clássica contra ataques de força bruta.',
   instructions: 'Regras: com 3 ou mais tentativas → "Conta bloqueada". Senão, usuário "admin" E senha "S3nh4!" → "Acesso permitido". Qualquer outro caso → "Acesso negado".',
@@ -435,7 +709,7 @@ const theory1_7: TheoryChallenge = {
   id: 'cond.7',
   type: 'theory',
   episode: 1,
-  room: '1.8',
+  room: '1.12',
   title: 'Parabéns! Você domina decisões',
   description: 'Você escreveu funções, tratou casos de borda e montou a lógica de um login seguro.',
   content: `
@@ -464,8 +738,12 @@ export const conditionsChallenges: Challenge[] = [
   code1_2,
   theory1_3,
   code1_4,
+  ex1_sinal,
+  ex1_nota,
+  ex1_entrar,
   theory1_len,
   code1_5,
+  ex1_pin,
   code1_6,
   theory1_7,
 ];

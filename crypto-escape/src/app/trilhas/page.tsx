@@ -16,6 +16,7 @@ type Stage = {
 
 const DEV_TRACK: Stage[] = [
   { title: 'Lógica de programação', learn: 'Variáveis, condições, funções, repetição, listas, textos e objetos. Você escreve funções que são testadas com casos de borda ocultos.', episodes: [0, 1, 2, 3, 4, 5, 6, 7] },
+  { title: 'Terminal e linha de comando', learn: 'Navegar, ler e organizar arquivos, buscar texto, combinar comandos com pipes e entender permissões. É onde o dev roda e investiga tudo.', episodes: [47] },
   { title: 'Algoritmos e estruturas', learn: 'Operadores lógicos, while, busca e ordenação, e como medir se uma solução é boa.', episodes: [20, 21, 22, 23] },
   { title: 'Código seguro', learn: 'Validar e sanitizar entradas, cabeçalhos de segurança, e não confiar no que vem do usuário.', episodes: [27, 28] },
   { title: 'Automação e regex', learn: 'Expressões regulares, scanners e scripts que automatizam tarefas.', episodes: [40, 41, 42] },
@@ -28,6 +29,7 @@ const DEV_TRACK: Stage[] = [
 ];
 
 const SEC_TRACK: Stage[] = [
+  { title: 'Terminal e Linux (base)', learn: 'Pré-requisito da segurança: pwd, ls, cd, cat, grep, find, pipes e permissões. Todo ataque e toda defesa passam por aqui.', episodes: [47] },
   { title: 'Fundamentos de segurança', learn: 'Criptografia clássica, hash e senhas, Base64 e o básico de força bruta.', episodes: [8, 9, 10, 14] },
   { title: 'Vulnerabilidades web (OWASP)', learn: 'XSS, SQL Injection, CSRF, injeção de comandos, directory traversal, IDOR e JWT.', episodes: [11, 12, 15, 16, 24, 25, 26] },
   { title: 'Modo Hacker: prática no terminal e em sites', learn: 'Terminal, nmap, ssh e laboratórios de SQLi, XSS e IDOR com flags.', episodes: [46] },
@@ -36,7 +38,7 @@ const SEC_TRACK: Stage[] = [
   { title: 'OSINT, dados ocultos e engenharia social', learn: 'Google dorks, metadados, esteganografia, phishing e como as pessoas são o elo mais fraco.', episodes: [17, 37, 38, 39] },
   { title: 'Relatórios e missão final', learn: 'Documentar achados, medir risco e conduzir um pentest do início ao fim.', episodes: [43, 44, 45] },
   { title: 'Redes (TCP/IP, DNS, HTTP)', learn: 'Como os dados viajam na rede: base para entender ataques e defesas. (O episódio 18 faz análise de tráfego, mas não ensina os fundamentos de redes.)', episodes: [] },
-  { title: 'Linux avançado e escalada de privilégios', learn: 'Permissões, serviços, sudo e como um atacante sobe de nível numa máquina.', episodes: [] },
+  { title: 'Linux avançado e escalada de privilégios', learn: 'Serviços, sudo, processos e como um atacante sobe de nível numa máquina (depois do módulo Terminal e Linux, que já cobre o básico).', episodes: [] },
   { title: 'Forense e análise de malware', learn: 'Investigar evidências, memória, arquivos e comportamento de programas suspeitos.', episodes: [] },
   { title: 'Segurança em nuvem e DevSecOps', learn: 'Configurações seguras em cloud, contêineres e segurança no pipeline.', episodes: [] },
 ];

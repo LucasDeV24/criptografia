@@ -1,5 +1,6 @@
 import { dir, file } from "./terminal-engine";
 import type { Scenario } from "./terminal-engine";
+import { TERMINAL_MODULE_SCENARIOS } from "./terminal-module-scenarios";
 
 /** Laboratório 1: primeiros passos no terminal (arquivos ocultos) */
 const RECON_FLAG = "FLAG{ls_a_revela_o_que_esta_escondido}";
@@ -147,4 +148,5 @@ export const SSH: Scenario = {
 export const SCENARIOS: Record<string, Scenario> = {
   "terminal-recon": RECON,
   "terminal-ssh": SSH,
+  ...TERMINAL_MODULE_SCENARIOS,
 };

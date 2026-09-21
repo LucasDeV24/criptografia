@@ -96,17 +96,25 @@ e em Python, ele confere que: (1) a `solution` passa em todos os testes; (2) o `
 (3) há `solution`, `explanation`, `hints` e testes ocultos (quando a função recebe argumentos); (4) uma resposta
 fixa não passa em todos os testes. Ele usa os mesmos workers do site, então o resultado é fiel.
 
-## 7. Estado atual e próximos passos
+## 7. Módulo de terminal (episódio 47)
+
+- **Separado da programação:** as salas do módulo têm só terminal (nada de editor de código) e as de programação não têm terminal. Isso evita misturar dois modos de pensar.
+- **Ordem do curso:** fica em `src/data/course-order.ts` (programação 0 a 7, depois o terminal 47, depois 8 em diante). As chaves dos episódios não mudam; só a navegação.
+- **Formato:** teoria curta, depois um laboratório. Um comando só aparece em um laboratório se foi ensinado na teoria anterior (o verificador confere).
+- **Laboratórios** (`src/lib/labs/terminal-module-scenarios.ts`): cada um tem `tasks` (lista que o aluno vê e que o sistema confere) e `solution` (comandos que resolvem, usados pelo verificador). O sistema de arquivos é editável: mkdir, touch, echo >, cp, mv, rm, chmod.
+- **Tarefas contam só comandos que funcionaram** (`ran`). Para tarefas que aceitam uma tentativa que falha de propósito, use `attempted`.
+- **Depois de um pipe** funcionam grep, wc, sort, uniq, head, tail e cut. Erros do primeiro comando aparecem na tela e não entram no pipe.
+- Rode `npm run verify:terminal` depois de mexer nesse módulo.
+
+## 8. Estado atual e próximos passos
 
 **Feito**
 - Motor de execução isolado (Web Workers), com timeout, erros com linha e testes ocultos.
 - Auditoria de pré-requisitos (`npm run audit:prereqs`): o curso todo passa com 0 conceitos usados antes de ensinados.
-- Funções ensinadas a fundo no Episódio 0 (anatomia de `def`/`function`, parâmetros, `return`, indentação, definir × chamar, `print` × `return`) antes do primeiro exercício de função.
-- Base de programação (episódios 0 a 7) no formato novo: 37 exercícios com testes visíveis e ocultos. Nos episódios 0
-  (0.4 e 0.5) as salas guiadas de "clique em Executar" foram mantidas de propósito, como apresentação do editor.
+- Programação (episódios 0 a 7): 75 exercícios com testes visíveis e ocultos, em escada de dificuldade, com as funções ensinadas a fundo no Episódio 0.
+- Módulo Terminal e Linux (episódio 47): 9 salas de teoria e 7 laboratórios com tarefas conferidas.
 - Modo Hacker: 5 laboratórios simulados (terminal, SQLi, XSS, IDOR) + teoria.
-- Página de trilhas de carreira (`/trilhas`).
-- Abas "Mundo Real" e "Ferramentas" por episódio (`src/data/context.ts`), renderizadas com RichText seguro.
+- Página de trilhas de carreira (`/trilhas`) e abas "Mundo Real"/"Ferramentas" por episódio.
 - Ranking sem exposição de dados pessoais (migração `supabase/migrations/002_privacidade_ranking.sql`).
 
 **Próximos (por prioridade)**

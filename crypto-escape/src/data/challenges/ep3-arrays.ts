@@ -312,11 +312,206 @@ Em vez de olhar só o item, o loop agora precisa da posição i. Ao achar, devol
   difficulty: 'medium',
 };
 
+const ex3_contar: CodeChallenge = {
+  id: 'arr.8',
+  type: 'code',
+  episode: 3,
+  room: '3.6',
+  title: 'Contando ocorrências',
+  description: 'Quantas vezes um item aparece na lista? É o padrão **contar**: um acumulador que sobe 1 sempre que o item passa em um teste.',
+  instructions: 'Devolva quantas vezes o alvo aparece na lista. Exemplo: contarOcorrencias([1, 2, 1, 3, 1], 1) devolve 3.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Conte quantas vezes "alvo" aparece em "lista"
+function contarOcorrencias(lista, alvo) {
+  let total = 0;
+  // percorra a lista e some 1 quando o item for igual ao alvo
+  return total;
+}
+`,
+    python: `# Conte quantas vezes "alvo" aparece em "lista"
+def contar_ocorrencias(lista, alvo):
+    total = 0
+    # percorra a lista e some 1 quando o item for igual ao alvo
+    return total
+`,
+  },
+  tests: {
+    fn: { javascript: 'contarOcorrencias', python: 'contar_ocorrencias' },
+    cases: [
+      { name: 'números repetidos', args: [[1, 2, 1, 3, 1], 1], expected: 3 },
+      { name: 'textos', args: [['a', 'b', 'a'], 'a'], expected: 2 },
+      { name: 'lista vazia', args: [[], 5], expected: 0, hidden: true },
+      { name: 'item que não existe', args: [[1, 2, 3], 9], expected: 0, hidden: true },
+      { name: 'todos iguais', args: [[5, 5, 5, 5], 5], expected: 4, hidden: true },
+      { name: 'um item só', args: [['x'], 'x'], expected: 1, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function contarOcorrencias(lista, alvo) {
+  let total = 0;
+  for (let i = 0; i < lista.length; i++) {
+    if (lista[i] === alvo) {
+      total = total + 1;
+    }
+  }
+  return total;
+}`,
+    python: `def contar_ocorrencias(lista, alvo):
+    total = 0
+    for item in lista:
+        if item == alvo:
+            total = total + 1
+    return total`,
+  },
+  explanation: `
+**Loop + if + acumulador**
+O mesmo padrão que você usou para contar letras em um texto agora funciona em listas. Quase todo problema de "quantos...?" se resolve assim.
+
+**Na segurança:** contar quantas vezes cada IP aparece em um log revela ataques de força bruta.
+  `,
+  hints: [
+    'Percorra a lista com um loop',
+    'Se o item for igual ao alvo, faça total = total + 1',
+    'Devolva o total depois do loop',
+  ],
+  difficulty: 'easy',
+};
+
+const ex3_somar: CodeChallenge = {
+  id: 'arr.9',
+  type: 'code',
+  episode: 3,
+  room: '3.7',
+  title: 'Somando uma lista',
+  description: 'Some **todos os números** de uma lista. Comece um acumulador em 0 e adicione cada item.',
+  instructions: 'Devolva a soma de todos os itens. Exemplo: somarLista([1, 2, 3]) devolve 6.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Devolva a soma de todos os números da lista
+function somarLista(numeros) {
+  let soma = 0;
+  // percorra a lista somando cada número
+  return soma;
+}
+`,
+    python: `# Devolva a soma de todos os números da lista
+def somar_lista(numeros):
+    soma = 0
+    # percorra a lista somando cada número
+    return soma
+`,
+  },
+  tests: {
+    fn: { javascript: 'somarLista', python: 'somar_lista' },
+    cases: [
+      { name: 'três números', args: [[1, 2, 3]], expected: 6 },
+      { name: 'dezenas', args: [[10, 20]], expected: 30 },
+      { name: 'lista vazia', args: [[]], expected: 0, hidden: true },
+      { name: 'números negativos', args: [[-1, 1]], expected: 0, hidden: true },
+      { name: 'um só número', args: [[5]], expected: 5, hidden: true },
+      { name: 'decimais', args: [[0.5, 0.5]], expected: 1, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function somarLista(numeros) {
+  let soma = 0;
+  for (let i = 0; i < numeros.length; i++) {
+    soma = soma + numeros[i];
+  }
+  return soma;
+}`,
+    python: `def somar_lista(numeros):
+    soma = 0
+    for numero in numeros:
+        soma = soma + numero
+    return soma`,
+  },
+  explanation: `
+**Acumulador em listas**
+Exatamente o que você fez com os números de 1 a n, só que agora os valores vêm de uma lista. Uma lista vazia dá soma 0: o loop nem roda.
+
+**Na prática:** somar valores de uma lista é a base de relatórios, como o total de tentativas de login falhas em um dia.
+  `,
+  hints: [
+    'Percorra a lista e faça soma = soma + o item atual',
+    'JavaScript: soma = soma + numeros[i]   Python: soma = soma + numero',
+    'Devolva a soma depois do loop',
+  ],
+  difficulty: 'easy',
+};
+
+const ex3_maior: CodeChallenge = {
+  id: 'arr.10',
+  type: 'code',
+  episode: 3,
+  room: '3.8',
+  title: 'O maior número da lista',
+  description: 'Descubra o **maior** valor de uma lista. Comece assumindo que o primeiro item é o maior e vá **comparando** com os demais. A lista nunca vem vazia.',
+  instructions: 'Devolva o maior número da lista. Exemplo: maiorNumero([3, 9, 2]) devolve 9.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Comece com o primeiro item como "maior" e compare com os outros
+function maiorNumero(numeros) {
+  let maior = numeros[0];
+  // percorra a lista; se um item for maior que "maior", atualize
+  return maior;
+}
+`,
+    python: `# Comece com o primeiro item como "maior" e compare com os outros
+def maior_numero(numeros):
+    maior = numeros[0]
+    # percorra a lista; se um item for maior que "maior", atualize
+    return maior
+`,
+  },
+  tests: {
+    fn: { javascript: 'maiorNumero', python: 'maior_numero' },
+    cases: [
+      { name: 'maior no meio', args: [[3, 9, 2]], expected: 9 },
+      { name: 'ordem crescente', args: [[1, 2, 3]], expected: 3 },
+      { name: 'só números negativos', args: [[-5, -2, -9]], expected: -2, hidden: true },
+      { name: 'um só número', args: [[7]], expected: 7, hidden: true },
+      { name: 'todos iguais', args: [[4, 4, 4]], expected: 4, hidden: true },
+      { name: 'maior no começo', args: [[9, 1, 1]], expected: 9, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function maiorNumero(numeros) {
+  let maior = numeros[0];
+  for (let i = 1; i < numeros.length; i++) {
+    if (numeros[i] > maior) {
+      maior = numeros[i];
+    }
+  }
+  return maior;
+}`,
+    python: `def maior_numero(numeros):
+    maior = numeros[0]
+    for numero in numeros:
+        if numero > maior:
+            maior = numero
+    return maior`,
+  },
+  explanation: `
+**Guardar o "campeão até agora"**
+A variável maior guarda o maior valor visto até o momento. A cada item, se ele for maior, ele assume o posto. No fim, ela tem o maior de todos.
+
+**Por que começar no primeiro item e não em 0?** Se todos os números forem negativos, começar em 0 devolveria 0, que nem está na lista. Os testes ocultos conferem isso.
+  `,
+  hints: [
+    'Compare cada item com a variável maior',
+    'Se o item for maior, atualize: maior = item',
+    'Comece em numeros[0] (já está no esqueleto), não em 0, por causa dos números negativos',
+  ],
+  difficulty: 'medium',
+};
+
 const code3_6: CodeChallenge = {
   id: 'arr.6',
   type: 'code',
   episode: 3,
-  room: '3.6',
+  room: '3.9',
   title: 'Contando senhas fracas',
   description: 'Uma auditoria de segurança precisa saber quantas senhas de uma lista são **fracas** (menos de 8 caracteres). Percorra a lista e conte.',
   instructions: 'Devolva quantas senhas têm menos de 8 caracteres. Exemplo: contarFracas(["123", "password", "abc"]) devolve 2.',
@@ -380,11 +575,143 @@ Este padrão aparece o tempo todo: percorrer, testar cada item e acumular um con
   difficulty: 'medium',
 };
 
+const ex3_filtrar: CodeChallenge = {
+  id: 'arr.11',
+  type: 'code',
+  episode: 3,
+  room: '3.10',
+  title: 'Filtrando uma lista',
+  description: 'Filtrar é montar uma **lista nova** só com os itens que interessam. Crie uma lista vazia e use `push` (JS) ou `append` (Python) para adicionar.',
+  instructions: 'Devolva uma nova lista só com os números MAIORES que o limite, na mesma ordem. Exemplo: filtrarMaioresQue([1, 5, 10, 15], 5) devolve [10, 15].',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Devolva só os números maiores que "limite"
+function filtrarMaioresQue(numeros, limite) {
+  const resultado = [];
+  // percorra a lista e adicione (push) os que passam no teste
+  return resultado;
+}
+`,
+    python: `# Devolva só os números maiores que "limite"
+def filtrar_maiores_que(numeros, limite):
+    resultado = []
+    # percorra a lista e adicione (append) os que passam no teste
+    return resultado
+`,
+  },
+  tests: {
+    fn: { javascript: 'filtrarMaioresQue', python: 'filtrar_maiores_que' },
+    cases: [
+      { name: 'mistura', args: [[1, 5, 10, 15], 5], expected: [10, 15] },
+      { name: 'nenhum passa', args: [[3, 4], 10], expected: [] },
+      { name: 'lista vazia', args: [[], 0], expected: [], hidden: true },
+      { name: 'igual ao limite não entra', args: [[5, 5, 6], 5], expected: [6], hidden: true },
+      { name: 'limite negativo', args: [[-1, 0, 1], -1], expected: [0, 1], hidden: true },
+      { name: 'todos passam', args: [[10, 20], 1], expected: [10, 20], hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function filtrarMaioresQue(numeros, limite) {
+  const resultado = [];
+  for (let i = 0; i < numeros.length; i++) {
+    if (numeros[i] > limite) {
+      resultado.push(numeros[i]);
+    }
+  }
+  return resultado;
+}`,
+    python: `def filtrar_maiores_que(numeros, limite):
+    resultado = []
+    for numero in numeros:
+        if numero > limite:
+            resultado.append(numero)
+    return resultado`,
+  },
+  explanation: `
+**Padrão filtrar**
+Percorra, teste cada item e só adicione à lista nova o que passa. A lista original não muda.
+
+**Limites:** "maiores que" significa estritamente maior (>). Um item igual ao limite não entra: foi o que o teste oculto conferiu.
+  `,
+  hints: [
+    'Percorra a lista e teste: numeros[i] > limite',
+    'Se passar, adicione: resultado.push(item)  (Python: resultado.append(item))',
+    'Devolva a lista resultado no final',
+  ],
+  difficulty: 'medium',
+};
+
+const ex3_fortes: CodeChallenge = {
+  id: 'arr.12',
+  type: 'code',
+  episode: 3,
+  room: '3.11',
+  title: 'Selecionando senhas fortes',
+  description: 'Use o padrão filtrar para uma auditoria de segurança: da lista de senhas, devolva só as **fortes** (8 ou mais caracteres), mantendo a ordem.',
+  instructions: 'Devolva uma lista com as senhas que têm 8 caracteres ou mais. Exemplo: senhasFortes(["abc", "password", "x"]) devolve ["password"].',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Devolva só as senhas com 8 ou mais caracteres
+function senhasFortes(senhas) {
+  const fortes = [];
+  // percorra e adicione as que passam no teste de tamanho
+  return fortes;
+}
+`,
+    python: `# Devolva só as senhas com 8 ou mais caracteres
+def senhas_fortes(senhas):
+    fortes = []
+    # percorra e adicione as que passam no teste de tamanho
+    return fortes
+`,
+  },
+  tests: {
+    fn: { javascript: 'senhasFortes', python: 'senhas_fortes' },
+    cases: [
+      { name: 'mistura', args: [['abc', 'password', '12345678', 'x']], expected: ['password', '12345678'] },
+      { name: 'todas fracas', args: [['a', 'bb']], expected: [] },
+      { name: 'lista vazia', args: [[]], expected: [], hidden: true },
+      { name: '7 caracteres é fraca', args: [['1234567']], expected: [], hidden: true },
+      { name: '8 caracteres é forte', args: [['12345678']], expected: ['12345678'], hidden: true },
+      { name: 'mantém a ordem', args: [['zzzzzzzz', 'aaaaaaaa']], expected: ['zzzzzzzz', 'aaaaaaaa'], hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function senhasFortes(senhas) {
+  const fortes = [];
+  for (let i = 0; i < senhas.length; i++) {
+    if (senhas[i].length >= 8) {
+      fortes.push(senhas[i]);
+    }
+  }
+  return fortes;
+}`,
+    python: `def senhas_fortes(senhas):
+    fortes = []
+    for senha in senhas:
+        if len(senha) >= 8:
+            fortes.append(senha)
+    return fortes`,
+  },
+  explanation: `
+**Filtrar por uma propriedade do item**
+Aqui o teste usa o tamanho de cada senha (.length / len). O padrão é o mesmo: percorrer, testar, adicionar.
+
+**Na prática:** auditorias de segurança fazem isso com milhares de contas para achar as senhas mais arriscadas.
+  `,
+  hints: [
+    'Teste o tamanho de cada senha: senhas[i].length >= 8  (Python: len(senha) >= 8)',
+    'Se passar, adicione à lista fortes com push / append',
+    'Devolva a lista fortes no final',
+  ],
+  difficulty: 'medium',
+};
+
 const theory3_7: TheoryChallenge = {
   id: 'arr.7',
   type: 'theory',
   episode: 3,
-  room: '3.7',
+  room: '3.12',
   title: 'Parabéns! Você entende listas!',
   description: 'Arrays são uma das estruturas mais importantes da programação. Você vai usá-los em TODOS os episódios de segurança.',
   content: `
@@ -413,6 +740,11 @@ export const arraysChallenges: Challenge[] = [
   theory3_3,
   code3_4,
   code3_5,
+  ex3_contar,
+  ex3_somar,
+  ex3_maior,
   code3_6,
+  ex3_filtrar,
+  ex3_fortes,
   theory3_7,
 ];

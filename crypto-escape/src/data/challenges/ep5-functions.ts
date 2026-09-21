@@ -366,11 +366,187 @@ O valor devolvido pode ser guardado numa variável ou usado em outra conta: cons
   difficulty: 'easy',
 };
 
+const ex5_par: CodeChallenge = {
+  id: 'func.10',
+  type: 'code',
+  episode: 5,
+  room: '5.8',
+  title: 'Par ou ímpar?',
+  description: 'O operador **%** (resto da divisão) revela se um número é par: **um número par dividido por 2 não deixa resto**. Devolva um valor verdadeiro/falso.',
+  instructions: 'Devolva true se o número for par e false se for ímpar. Exemplo: ehPar(4) devolve true.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Um número é par quando n % 2 é igual a 0
+function ehPar(n) {
+  // seu código aqui
+}
+`,
+    python: `# Um número é par quando n % 2 é igual a 0
+def eh_par(n):
+    # seu código aqui
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'ehPar', python: 'eh_par' },
+    cases: [
+      { name: 'par', args: [4], expected: true },
+      { name: 'ímpar', args: [7], expected: false },
+      { name: 'zero é par', args: [0], expected: true, hidden: true },
+      { name: 'par negativo', args: [-4], expected: true, hidden: true },
+      { name: 'ímpar negativo', args: [-3], expected: false, hidden: true },
+      { name: 'um', args: [1], expected: false, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function ehPar(n) {
+  return n % 2 === 0;
+}`,
+    python: `def eh_par(n):
+    return n % 2 == 0`,
+  },
+  explanation: `
+**Resto da divisão**
+n % 2 dá 0 para números pares e 1 (ou -1 no JavaScript, para negativos) para ímpares. Por isso comparamos com 0, e não com 1: assim funciona para negativos nas duas linguagens.
+
+**Uma comparação já é um valor true/false**, então o return pode devolvê-la direto, sem if.
+  `,
+  hints: [
+    'Calcule o resto da divisão por 2: n % 2',
+    'Compare o resultado com 0',
+    'return n % 2 === 0   (Python: return n % 2 == 0)',
+  ],
+  difficulty: 'easy',
+};
+
+const ex5_desconto: CodeChallenge = {
+  id: 'func.11',
+  type: 'code',
+  episode: 5,
+  room: '5.9',
+  title: 'Calculando um desconto',
+  description: 'Funções com **vários parâmetros** e uma conta. Um desconto de 20% em um preço de 50 é 50 × 20 / 100 = 10, e o preço final é 50 − 10 = 40.',
+  instructions: 'Devolva o preço depois do desconto percentual. Exemplo: calcularDesconto(200, 10) devolve 180.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// preço final = preco - (preco * percentual / 100)
+function calcularDesconto(preco, percentual) {
+  // seu código aqui
+}
+`,
+    python: `# preço final = preco - (preco * percentual / 100)
+def calcular_desconto(preco, percentual):
+    # seu código aqui
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'calcularDesconto', python: 'calcular_desconto' },
+    cases: [
+      { name: '10% de 200', args: [200, 10], expected: 180 },
+      { name: '50% de 50', args: [50, 50], expected: 25 },
+      { name: 'sem desconto', args: [100, 0], expected: 100, hidden: true },
+      { name: 'desconto de 25%', args: [80, 25], expected: 60, hidden: true },
+      { name: 'desconto total', args: [100, 100], expected: 0, hidden: true },
+      { name: 'preço zero', args: [0, 10], expected: 0, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function calcularDesconto(preco, percentual) {
+  const desconto = preco * percentual / 100;
+  return preco - desconto;
+}`,
+    python: `def calcular_desconto(preco, percentual):
+    desconto = preco * percentual / 100
+    return preco - desconto`,
+  },
+  explanation: `
+**Passo a passo com variáveis**
+Primeiro calcule o valor do desconto, depois subtraia do preço. Separar em passos deixa a conta mais fácil de ler e de conferir.
+
+**A ordem dos parâmetros importa:** calcularDesconto(200, 10) e calcularDesconto(10, 200) dão resultados bem diferentes.
+  `,
+  hints: [
+    'O desconto em dinheiro é preco * percentual / 100',
+    'Guarde em uma variável e depois subtraia do preço',
+    'return preco - desconto',
+  ],
+  difficulty: 'easy',
+};
+
+const ex5_quadruplo: CodeChallenge = {
+  id: 'func.12',
+  type: 'code',
+  episode: 5,
+  room: '5.10',
+  title: 'Funções chamando funções',
+  description: 'Uma função pode **chamar outra função**. A função `dobro` já está pronta no esqueleto. Crie `quadruplo` **usando** o `dobro`: o quádruplo é o dobro do dobro.',
+  instructions: 'Devolva o quádruplo do número, chamando a função dobro duas vezes. Exemplo: quadruplo(3) devolve 12.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Esta função já está pronta:
+function dobro(n) {
+  return n * 2;
+}
+
+// Agora crie quadruplo USANDO dobro (o dobro do dobro)
+function quadruplo(n) {
+  // seu código aqui
+}
+`,
+    python: `# Esta função já está pronta:
+def dobro(n):
+    return n * 2
+
+# Agora crie quadruplo USANDO dobro (o dobro do dobro)
+def quadruplo(n):
+    # seu código aqui
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'quadruplo', python: 'quadruplo' },
+    cases: [
+      { name: 'quádruplo de 3', args: [3], expected: 12 },
+      { name: 'quádruplo de 10', args: [10], expected: 40 },
+      { name: 'zero', args: [0], expected: 0, hidden: true },
+      { name: 'negativo', args: [-2], expected: -8, hidden: true },
+      { name: 'decimal', args: [2.5], expected: 10, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function dobro(n) {
+  return n * 2;
+}
+
+function quadruplo(n) {
+  return dobro(dobro(n));
+}`,
+    python: `def dobro(n):
+    return n * 2
+
+def quadruplo(n):
+    return dobro(dobro(n))`,
+  },
+  explanation: `
+**Compondo funções**
+dobro(dobro(3)): primeiro roda o de dentro, dobro(3) = 6, e depois o de fora, dobro(6) = 12. Funções pequenas que se combinam são a base de programas grandes e fáceis de manter.
+
+**Na segurança:** validadores reais são montados assim: uma função para o tamanho, outra para caracteres proibidos, e uma que chama as duas.
+  `,
+  hints: [
+    'Chame a função dobro dentro de quadruplo',
+    'O de dentro roda primeiro: dobro(n). Depois aplique dobro no resultado',
+    'return dobro(dobro(n))',
+  ],
+  difficulty: 'medium',
+};
+
 const code5_8: CodeChallenge = {
   id: 'func.8',
   type: 'code',
   episode: 5,
-  room: '5.8',
+  room: '5.11',
   title: 'Função de segurança — avaliar senha',
   description: 'Uma política de senhas exige **8 ou mais caracteres**. Crie uma função que avalia a senha e devolve o veredito.',
   instructions: 'Devolva "Senha forte" se tiver 8 ou mais caracteres, senão "Senha fraca".',
@@ -423,11 +599,86 @@ Combinar funções com if é o dia a dia de qualquer programador. A função esc
   difficulty: 'medium',
 };
 
+const ex5_fizz: CodeChallenge = {
+  id: 'func.13',
+  type: 'code',
+  episode: 5,
+  room: '5.12',
+  title: 'FizzBuzz: um clássico das entrevistas',
+  description: 'O FizzBuzz é um exercício famoso em entrevistas de emprego. Combina **decisões**, **resto da divisão** e **a ordem dos testes**.',
+  instructions: 'Devolva "FizzBuzz" se n for múltiplo de 3 E de 5, "Fizz" se for múltiplo só de 3, "Buzz" se for múltiplo só de 5, e o próprio número nos outros casos.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// múltiplo de 15  -> "FizzBuzz"
+// múltiplo de 3   -> "Fizz"
+// múltiplo de 5   -> "Buzz"
+// outros          -> o próprio número n
+function fizzBuzz(n) {
+  // seu código aqui
+}
+`,
+    python: `# múltiplo de 15  -> "FizzBuzz"
+# múltiplo de 3   -> "Fizz"
+# múltiplo de 5   -> "Buzz"
+# outros          -> o próprio número n
+def fizz_buzz(n):
+    # seu código aqui
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'fizzBuzz', python: 'fizz_buzz' },
+    cases: [
+      { name: 'múltiplo de 3', args: [9], expected: 'Fizz' },
+      { name: 'múltiplo de 5', args: [10], expected: 'Buzz' },
+      { name: 'múltiplo de 3 e 5', args: [15], expected: 'FizzBuzz' },
+      { name: 'nenhum dos dois', args: [7], expected: 7 },
+      { name: 'número 1', args: [1], expected: 1, hidden: true },
+      { name: 'trinta', args: [30], expected: 'FizzBuzz', hidden: true },
+      { name: 'múltiplo de 3 pequeno', args: [3], expected: 'Fizz', hidden: true },
+      { name: 'múltiplo de 5 pequeno', args: [5], expected: 'Buzz', hidden: true },
+      { name: 'zero é múltiplo de todos', args: [0], expected: 'FizzBuzz', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function fizzBuzz(n) {
+  if (n % 15 === 0) {
+    return "FizzBuzz";
+  } else if (n % 3 === 0) {
+    return "Fizz";
+  } else if (n % 5 === 0) {
+    return "Buzz";
+  }
+  return n;
+}`,
+    python: `def fizz_buzz(n):
+    if n % 15 == 0:
+        return "FizzBuzz"
+    elif n % 3 == 0:
+        return "Fizz"
+    elif n % 5 == 0:
+        return "Buzz"
+    return n`,
+  },
+  explanation: `
+**A ordem é tudo**
+Se você testasse "múltiplo de 3" primeiro, o 15 responderia "Fizz" e nunca chegaria ao "FizzBuzz". O caso mais específico (múltiplo de 15) precisa vir primeiro.
+
+**Múltiplo de 3 e de 5 = múltiplo de 15.** Também dava para testar as duas condições com E (&& / and).
+  `,
+  hints: [
+    'Comece pelo caso mais específico: n % 15 === 0',
+    'Depois use else if para n % 3 e n % 5',
+    'No fim, devolva o próprio n',
+  ],
+  difficulty: 'medium',
+};
+
 const theory5_9: TheoryChallenge = {
   id: 'func.9',
   type: 'theory',
   episode: 5,
-  room: '5.9',
+  room: '5.13',
   title: 'Parabéns! Você domina funções!',
   description: 'Agora você sabe criar blocos de código reutilizáveis — uma habilidade profissional.',
   content: `
@@ -460,6 +711,10 @@ export const functionsChallenges: Challenge[] = [
   code5_5,
   theory5_6,
   code5_7,
+  ex5_par,
+  ex5_desconto,
+  ex5_quadruplo,
   code5_8,
+  ex5_fizz,
   theory5_9,
 ];

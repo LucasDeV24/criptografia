@@ -70,6 +70,8 @@ const EPISODE_META = [
   { title: 'Certificação', desc: 'Próximos passos e carreira', icon: Award, color: '#f59e0b' },
   // Módulo 10: Modo Hacker (46)
   { title: 'Modo Hacker', desc: 'Terminal e sites vulneráveis simulados', icon: Terminal, color: 'var(--matrix-green)' },
+  // Módulo 2: Terminal e Linux (47), vem depois da programação
+  { title: 'Terminal e Linux', desc: 'Comandos, arquivos, logs, pipes e permissões', icon: Terminal, color: 'var(--cyber-cyan)' },
 ];
 
 export default function EpisodesPage() {
@@ -119,6 +121,19 @@ export default function EpisodesPage() {
 
         <section className="mb-12">
           <h2 className="text-sm font-medium text-[var(--cyber-cyan)] uppercase tracking-wider mb-1">Módulo 2</h2>
+          <p className="text-lg text-[var(--ghost-white)] font-semibold mb-1">Terminal e Linux</p>
+          <p className="text-sm text-[var(--muted-gray)] mb-6">
+            Separado da programação: aqui você só usa o terminal. Recomendado antes da Cibersegurança e liberado desde o início.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {EPISODE_META.slice(47, 48).map((ep, idx) => (
+              <EpisodeCard key={idx + 47} ep={ep} idx={idx + 47} completedRooms={completedRooms} />
+            ))}
+          </div>
+        </section>
+
+        <section className="mb-12">
+          <h2 className="text-sm font-medium text-[var(--cyber-cyan)] uppercase tracking-wider mb-1">Módulo 3</h2>
           <p className="text-lg text-[var(--ghost-white)] font-semibold mb-6">Cibersegurança</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {EPISODE_META.slice(8, 20).map((ep, idx) => (
@@ -128,7 +143,7 @@ export default function EpisodesPage() {
         </section>
 
         <section className="mb-12">
-          <h2 className="text-sm font-medium text-[var(--matrix-green)] uppercase tracking-wider mb-1">Módulo 3</h2>
+          <h2 className="text-sm font-medium text-[var(--matrix-green)] uppercase tracking-wider mb-1">Módulo 4</h2>
           <p className="text-lg text-[var(--ghost-white)] font-semibold mb-6">Lógica e Algoritmos</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {EPISODE_META.slice(20, 24).map((ep, idx) => (
@@ -138,7 +153,7 @@ export default function EpisodesPage() {
         </section>
 
         <section className="mb-12">
-          <h2 className="text-sm font-medium text-[var(--warning-amber)] uppercase tracking-wider mb-1">Módulo 4</h2>
+          <h2 className="text-sm font-medium text-[var(--warning-amber)] uppercase tracking-wider mb-1">Módulo 5</h2>
           <p className="text-lg text-[var(--ghost-white)] font-semibold mb-6">Segurança Web Avançada</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {EPISODE_META.slice(24, 29).map((ep, idx) => (
@@ -148,7 +163,7 @@ export default function EpisodesPage() {
         </section>
 
         <section className="mb-12">
-          <h2 className="text-sm font-medium text-[var(--cyber-cyan)] uppercase tracking-wider mb-1">Módulo 5</h2>
+          <h2 className="text-sm font-medium text-[var(--cyber-cyan)] uppercase tracking-wider mb-1">Módulo 6</h2>
           <p className="text-lg text-[var(--ghost-white)] font-semibold mb-6">Criptografia Moderna</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {EPISODE_META.slice(29, 33).map((ep, idx) => (
@@ -158,7 +173,7 @@ export default function EpisodesPage() {
         </section>
 
         <section className="mb-12">
-          <h2 className="text-sm font-medium text-[var(--error-red)] uppercase tracking-wider mb-1">Módulo 6</h2>
+          <h2 className="text-sm font-medium text-[var(--error-red)] uppercase tracking-wider mb-1">Módulo 7</h2>
           <p className="text-lg text-[var(--ghost-white)] font-semibold mb-6">Blue Team e Defesa</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {EPISODE_META.slice(33, 37).map((ep, idx) => (
@@ -168,7 +183,7 @@ export default function EpisodesPage() {
         </section>
 
         <section className="mb-12">
-          <h2 className="text-sm font-medium text-[#a855f7] uppercase tracking-wider mb-1">Módulo 7</h2>
+          <h2 className="text-sm font-medium text-[#a855f7] uppercase tracking-wider mb-1">Módulo 8</h2>
           <p className="text-lg text-[var(--ghost-white)] font-semibold mb-6">OSINT e Engenharia Social</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {EPISODE_META.slice(37, 40).map((ep, idx) => (
@@ -178,7 +193,7 @@ export default function EpisodesPage() {
         </section>
 
         <section className="mb-12">
-          <h2 className="text-sm font-medium text-[var(--cyber-cyan)] uppercase tracking-wider mb-1">Módulo 8</h2>
+          <h2 className="text-sm font-medium text-[var(--cyber-cyan)] uppercase tracking-wider mb-1">Módulo 9</h2>
           <p className="text-lg text-[var(--ghost-white)] font-semibold mb-6">Regex e Automação</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {EPISODE_META.slice(40, 44).map((ep, idx) => (
@@ -188,7 +203,7 @@ export default function EpisodesPage() {
         </section>
 
         <section className="mb-12">
-          <h2 className="text-sm font-medium text-[#f59e0b] uppercase tracking-wider mb-1">Módulo 9</h2>
+          <h2 className="text-sm font-medium text-[#f59e0b] uppercase tracking-wider mb-1">Módulo 10</h2>
           <p className="text-lg text-[var(--ghost-white)] font-semibold mb-6">Missão Final</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {EPISODE_META.slice(44, 46).map((ep, idx) => (
@@ -198,7 +213,7 @@ export default function EpisodesPage() {
         </section>
 
         <section>
-          <h2 className="text-sm font-medium text-[var(--matrix-green)] uppercase tracking-wider mb-1">Módulo 10</h2>
+          <h2 className="text-sm font-medium text-[var(--matrix-green)] uppercase tracking-wider mb-1">Módulo 11</h2>
           <p className="text-lg text-[var(--ghost-white)] font-semibold mb-6">Modo Hacker</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {EPISODE_META.slice(46, 47).map((ep, idx) => (

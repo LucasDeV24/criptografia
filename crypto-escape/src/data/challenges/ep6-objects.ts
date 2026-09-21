@@ -103,11 +103,62 @@ Em vez de posições numéricas (como nas listas), você acessa os dados pelo NO
   difficulty: 'easy',
 };
 
+const ex6_criar: CodeChallenge = {
+  id: 'obj.10',
+  type: 'code',
+  episode: 6,
+  room: '6.2',
+  title: 'Criando um objeto',
+  description: 'Até aqui você **leu** objetos. Agora **crie** um: uma função que monta e devolve os dados de um usuário novo.',
+  instructions: 'Devolva um objeto com as chaves nome, email e ativo (sempre verdadeiro). Exemplo: criarUsuario("Ana", "ana@x.com") devolve {nome: "Ana", email: "ana@x.com", ativo: true}.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Devolva { nome: ..., email: ..., ativo: true }
+function criarUsuario(nome, email) {
+  // seu código aqui
+}
+`,
+    python: `# Devolva {"nome": ..., "email": ..., "ativo": True}
+def criar_usuario(nome, email):
+    # seu código aqui
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'criarUsuario', python: 'criar_usuario' },
+    cases: [
+      { name: 'Ana', args: ['Ana', 'ana@x.com'], expected: { nome: 'Ana', email: 'ana@x.com', ativo: true } },
+      { name: 'Carlos', args: ['Carlos', 'carlos@site.com'], expected: { nome: 'Carlos', email: 'carlos@site.com', ativo: true } },
+      { name: 'campos vazios', args: ['', ''], expected: { nome: '', email: '', ativo: true }, hidden: true },
+      { name: 'sempre ativo', args: ['Bia', 'bia@y.com'], expected: { nome: 'Bia', email: 'bia@y.com', ativo: true }, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function criarUsuario(nome, email) {
+  return { nome: nome, email: email, ativo: true };
+}`,
+    python: `def criar_usuario(nome, email):
+    return {"nome": nome, "email": email, "ativo": True}`,
+  },
+  explanation: `
+**Montando um objeto**
+Cada par chave: valor entra entre chaves. O valor de "nome" vem do parâmetro nome, e assim por diante. "ativo" é fixo: true (JavaScript) e True (Python).
+
+**Na prática:** APIs e bancos de dados criam objetos assim ao cadastrar um usuário novo.
+  `,
+  hints: [
+    'JavaScript: return { nome: nome, email: email, ativo: true };',
+    'Python: return {"nome": nome, "email": email, "ativo": True}',
+    'No Python as chaves vão entre aspas, e o verdadeiro se escreve True',
+  ],
+  difficulty: 'easy',
+};
+
 const code6_2: CodeChallenge = {
   id: 'obj.2',
   type: 'code',
   episode: 6,
-  room: '6.2',
+  room: '6.3',
   title: 'Acessando propriedades',
   description: 'Extraia um dado específico de dentro de um objeto: o e-mail do usuário.',
   instructions: 'Devolva o e-mail do usuário. Exemplo: pegarEmail({nome: "Carlos", email: "carlos@security.com"}) devolve "carlos@security.com".',
@@ -158,7 +209,7 @@ const theory6_3: TheoryChallenge = {
   id: 'obj.3',
   type: 'theory',
   episode: 6,
-  room: '6.3',
+  room: '6.4',
   title: 'JSON — a linguagem da internet',
   description: 'JSON (JavaScript Object Notation) é o formato que a internet inteira usa para trocar dados.',
   content: `
@@ -188,6 +239,12 @@ Quando você faz login, o servidor pode responder:
 \`\`\`
 
 Entender objetos/JSON é ESSENCIAL para os próximos episódios de segurança!
+
+**O valor "nada": null e None**
+Quando uma busca não encontra nada, é comum devolver um valor especial que significa "nada aqui": \`null\` no JavaScript e \`None\` no Python. No JSON também aparece como \`null\`.
+
+**Objetos podem guardar listas**
+O valor de uma chave pode ser uma lista: \`{ "nome": "Ana", "permissoes": ["ler", "escrever"] }\`. Para chegar nela, leia a chave e depois percorra a lista como sempre.
   `,
 };
 
@@ -195,7 +252,7 @@ const code6_4: CodeChallenge = {
   id: 'obj.4',
   type: 'code',
   episode: 6,
-  room: '6.4',
+  room: '6.5',
   title: 'Interpretando uma resposta de API',
   description: 'Quando você faz login em um site, o servidor responde com um objeto JSON. Interprete essa resposta.',
   instructions: 'Se o "status" for "sucesso", devolva "Login OK: " + usuario. Senão devolva "Login falhou".',
@@ -252,7 +309,7 @@ const code6_5: CodeChallenge = {
   id: 'obj.5',
   type: 'code',
   episode: 6,
-  room: '6.5',
+  room: '6.6',
   title: 'Verificando permissões',
   description: 'Sistemas guardam o **papel** (role) de cada usuário. Decida o nível de acesso pelo role.',
   instructions: 'Devolva "Acesso total" para role "admin", "Acesso limitado" para "usuario" e "Sem acesso" para qualquer outro.',
@@ -313,7 +370,7 @@ const code6_6: CodeChallenge = {
   id: 'obj.6',
   type: 'code',
   episode: 6,
-  room: '6.6',
+  room: '6.7',
   title: 'Lista de objetos — quem é admin?',
   description: 'Bancos de dados devolvem **listas de objetos**. Percorra a lista de usuários e encontre os administradores.',
   instructions: 'Devolva uma lista com os NOMES dos usuários cujo role é "admin", na ordem em que aparecem.',
@@ -380,11 +437,135 @@ Percorra a lista, teste uma propriedade de cada objeto e guarde só o que intere
   difficulty: 'medium',
 };
 
+const ex6_buscar: CodeChallenge = {
+  id: 'obj.11',
+  type: 'code',
+  episode: 6,
+  room: '6.8',
+  title: 'Buscando um usuário pelo ID',
+  description: 'Em uma lista de objetos, encontre o usuário com um certo `id` e **devolva o objeto inteiro**. Se ninguém tiver esse id, devolva "nada": `null` (JavaScript) ou `None` (Python).',
+  instructions: 'Devolva o primeiro usuário cujo id seja igual ao pedido, ou null/None. Exemplo: buscarUsuario([{id: 1, nome: "Ana"}, {id: 2, nome: "Bia"}], 2) devolve {id: 2, nome: "Bia"}.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Devolva o objeto do usuário com esse id, ou null se não achar
+function buscarUsuario(usuarios, id) {
+  // seu código aqui
+}
+`,
+    python: `# Devolva o dicionário do usuário com esse id, ou None se não achar
+def buscar_usuario(usuarios, id):
+    # seu código aqui
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'buscarUsuario', python: 'buscar_usuario' },
+    cases: [
+      { name: 'acha o usuário 2', args: [[{ id: 1, nome: 'Ana' }, { id: 2, nome: 'Bia' }], 2], expected: { id: 2, nome: 'Bia' } },
+      { name: 'id que não existe', args: [[{ id: 1, nome: 'Ana' }], 9], expected: null },
+      { name: 'lista vazia', args: [[], 1], expected: null, hidden: true },
+      { name: 'primeiro da lista', args: [[{ id: 5, nome: 'X' }, { id: 6, nome: 'Y' }], 5], expected: { id: 5, nome: 'X' }, hidden: true },
+      { name: 'devolve o primeiro quando repete', args: [[{ id: 1, nome: 'A' }, { id: 1, nome: 'B' }], 1], expected: { id: 1, nome: 'A' }, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function buscarUsuario(usuarios, id) {
+  for (let i = 0; i < usuarios.length; i++) {
+    if (usuarios[i].id === id) {
+      return usuarios[i];
+    }
+  }
+  return null;
+}`,
+    python: `def buscar_usuario(usuarios, id):
+    for usuario in usuarios:
+        if usuario["id"] == id:
+            return usuario
+    return None`,
+  },
+  explanation: `
+**Busca em lista de objetos**
+Mesmo padrão da busca em listas: percorrer, comparar e devolver ao achar. A diferença é que você compara uma CHAVE do objeto (usuario.id) e devolve o objeto inteiro.
+
+**null / None:** é a forma clara de dizer "não achei". Quem chama a função deve verificar isso antes de usar o resultado.
+
+**Na segurança:** esta busca por id é exatamente o que uma API vulnerável a IDOR faz sem checar se quem pediu tem permissão para ver aquele usuário.
+  `,
+  hints: [
+    'Percorra a lista e compare usuario.id com o id pedido',
+    'Ao achar, devolva o objeto inteiro (não só o id)',
+    'Depois do loop, devolva null (Python: None)',
+  ],
+  difficulty: 'medium',
+};
+
+const ex6_saldos: CodeChallenge = {
+  id: 'obj.12',
+  type: 'code',
+  episode: 6,
+  room: '6.9',
+  title: 'Somando saldos de contas',
+  description: 'Percorra uma lista de contas (objetos) e some o campo `saldo` de todas. Junta **lista de objetos** com o **acumulador**.',
+  instructions: 'Devolva a soma dos saldos. Exemplo: somarSaldos([{titular: "A", saldo: 100}, {titular: "B", saldo: 50}]) devolve 150.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Some o campo "saldo" de cada conta
+function somarSaldos(contas) {
+  let total = 0;
+  // percorra as contas
+  return total;
+}
+`,
+    python: `# Some a chave "saldo" de cada conta
+def somar_saldos(contas):
+    total = 0
+    # percorra as contas
+    return total
+`,
+  },
+  tests: {
+    fn: { javascript: 'somarSaldos', python: 'somar_saldos' },
+    cases: [
+      { name: 'duas contas', args: [[{ titular: 'A', saldo: 100 }, { titular: 'B', saldo: 50 }]], expected: 150 },
+      { name: 'uma conta', args: [[{ titular: 'A', saldo: 30 }]], expected: 30 },
+      { name: 'lista vazia', args: [[]], expected: 0, hidden: true },
+      { name: 'saldo negativo compensa', args: [[{ titular: 'A', saldo: -20 }, { titular: 'B', saldo: 20 }]], expected: 0, hidden: true },
+      { name: 'três contas', args: [[{ titular: 'A', saldo: 1 }, { titular: 'B', saldo: 2 }, { titular: 'C', saldo: 3 }]], expected: 6, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function somarSaldos(contas) {
+  let total = 0;
+  for (let i = 0; i < contas.length; i++) {
+    total = total + contas[i].saldo;
+  }
+  return total;
+}`,
+    python: `def somar_saldos(contas):
+    total = 0
+    for conta in contas:
+        total = total + conta["saldo"]
+    return total`,
+  },
+  explanation: `
+**Loop + acessar chave + acumulador**
+A cada conta, leia o campo saldo e some ao total. É o mesmo que somar uma lista de números, só que o número está dentro de cada objeto.
+
+**Na prática:** relatórios financeiros e de auditoria são feitos assim, agregando campos de milhares de registros.
+  `,
+  hints: [
+    'Percorra a lista de contas',
+    'JavaScript: contas[i].saldo   Python: conta["saldo"]',
+    'Some cada saldo em total e devolva no final',
+  ],
+  difficulty: 'easy',
+};
+
 const theory6_cont: TheoryChallenge = {
   id: 'obj.9',
   type: 'theory',
   episode: 6,
-  room: '6.7',
+  room: '6.10',
   title: 'Objetos como contadores',
   description: 'Um objeto também serve para contar quantas vezes algo aparece: a chave é o item e o valor é a contagem.',
   content: `
@@ -430,7 +611,7 @@ const code6_7: CodeChallenge = {
   id: 'obj.7',
   type: 'code',
   episode: 6,
-  room: '6.8',
+  room: '6.11',
   title: 'Contando papéis — relatório de acesso',
   description: 'Um relatório de acesso conta quantos usuários existem em cada papel. Construa um **objeto** com essas contagens.',
   instructions: 'Devolva um objeto/dicionário no formato {role: quantidade}. Exemplo: para 1 admin e 2 usuarios devolve {"admin": 1, "usuario": 2}.',
@@ -502,11 +683,72 @@ A chave é o role; o valor é a contagem. Na primeira vez que um role aparece, e
   difficulty: 'hard',
 };
 
+const ex6_perm: CodeChallenge = {
+  id: 'obj.13',
+  type: 'code',
+  episode: 6,
+  room: '6.12',
+  title: 'O usuário tem essa permissão?',
+  description: 'Cada usuário tem uma **lista de permissões** dentro do objeto. Verifique se ele tem uma permissão específica: leia a lista e **procure** nela.',
+  instructions: 'Devolva true se a permissão estiver na lista de permissões do usuário, senão false. Exemplo: temPermissao({nome: "Ana", permissoes: ["ler", "escrever"]}, "ler") devolve true.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// usuario = { nome: "...", permissoes: ["ler", "escrever"] }
+function temPermissao(usuario, permissao) {
+  // percorra usuario.permissoes procurando a permissão
+}
+`,
+    python: `# usuario = {"nome": "...", "permissoes": ["ler", "escrever"]}
+def tem_permissao(usuario, permissao):
+    # percorra usuario["permissoes"] procurando a permissão
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'temPermissao', python: 'tem_permissao' },
+    cases: [
+      { name: 'tem a permissão', args: [{ nome: 'Ana', permissoes: ['ler', 'escrever'] }, 'ler'], expected: true },
+      { name: 'não tem', args: [{ nome: 'Ana', permissoes: ['ler', 'escrever'] }, 'apagar'], expected: false },
+      { name: 'lista vazia', args: [{ nome: 'Bia', permissoes: [] }, 'ler'], expected: false, hidden: true },
+      { name: 'maiúscula é diferente', args: [{ nome: 'Ana', permissoes: ['ler'] }, 'LER'], expected: false, hidden: true },
+      { name: 'última da lista', args: [{ nome: 'C', permissoes: ['ler', 'escrever', 'apagar'] }, 'apagar'], expected: true, hidden: true },
+      { name: 'só uma permissão', args: [{ nome: 'D', permissoes: ['admin'] }, 'admin'], expected: true, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function temPermissao(usuario, permissao) {
+  for (let i = 0; i < usuario.permissoes.length; i++) {
+    if (usuario.permissoes[i] === permissao) {
+      return true;
+    }
+  }
+  return false;
+}`,
+    python: `def tem_permissao(usuario, permissao):
+    for p in usuario["permissoes"]:
+        if p == permissao:
+            return True
+    return False`,
+  },
+  explanation: `
+**Objeto que contém uma lista**
+Primeiro leia a chave (usuario.permissoes) e depois percorra a lista, com o padrão de busca que você já conhece: return true ao achar, return false no fim.
+
+**Na segurança:** controle de acesso baseado em permissões funciona assim. A regra de ouro é negar por padrão: se a permissão não está na lista, a resposta é false.
+  `,
+  hints: [
+    'Percorra a lista usuario.permissoes (Python: usuario["permissoes"])',
+    'Se um item for igual à permissão pedida, devolva true na hora',
+    'Depois do loop, devolva false',
+  ],
+  difficulty: 'medium',
+};
+
 const theory6_8: TheoryChallenge = {
   id: 'obj.8',
   type: 'theory',
   episode: 6,
-  room: '6.9',
+  room: '6.13',
   title: 'Parabéns! Você domina objetos e JSON!',
   description: 'Agora você entende como dados são organizados na internet. Isso é a base de APIs, JWT e muito mais.',
   content: `
@@ -531,12 +773,16 @@ Vamos aprender **métodos avançados de string** — includes, split, replace. E
 export const objectsChallenges: Challenge[] = [
   theory6_0,
   code6_1,
+  ex6_criar,
   code6_2,
   theory6_3,
   code6_4,
   code6_5,
   code6_6,
+  ex6_buscar,
+  ex6_saldos,
   theory6_cont,
   code6_7,
+  ex6_perm,
   theory6_8,
 ];

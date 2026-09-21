@@ -45,6 +45,8 @@ import { reportChallenges } from './ep43-report';
 import { pentestFinalChallenges } from './ep44-pentest-final';
 import { certificationChallenges } from './ep45-certification';
 import { labChallenges } from './ep46-labs';
+import { terminalChallenges } from './ep47-terminal';
+import { COURSE_ORDER } from '../course-order';
 import type { Challenge } from '@/types/challenge';
 
 export const challengesByEpisode: Record<number, Challenge[]> = {
@@ -105,6 +107,8 @@ export const challengesByEpisode: Record<number, Challenge[]> = {
   45: certificationChallenges,
   // Módulo 10: Modo Hacker (laboratórios práticos)
   46: labChallenges,
+  // Módulo "Terminal e Linux": vem depois da programação (ver COURSE_ORDER)
+  47: terminalChallenges,
 };
 
 export function getChallenge(episode: number, room: string): Challenge | undefined {
@@ -113,7 +117,25 @@ export function getChallenge(episode: number, room: string): Challenge | undefin
   return episodeChallenges.find((c) => c.room === room);
 }
 
-export function getNextChallenge(episode: number, room: string): { episode: number; room: string } | null {
+type Position = { episode: number; room: string } | null;
+
+/** Primeira sala do episódio seguinte na ordem do curso */
+function firstOfNextEpisode(episode: number): Position {
+  const pos = COURSE_ORDER.indexOf(episode);
+  const next = pos >= 0 ? COURSE_ORDER[pos + 1] : undefined;
+  const list = next !== undefined ? challengesByEpisode[next] : undefined;
+  return next !== undefined && list?.length ? { episode: next, room: list[0].room } : null;
+}
+
+/** Última sala do episódio anterior na ordem do curso */
+function lastOfPreviousEpisode(episode: number): Position {
+  const pos = COURSE_ORDER.indexOf(episode);
+  const prev = pos > 0 ? COURSE_ORDER[pos - 1] : undefined;
+  const list = prev !== undefined ? challengesByEpisode[prev] : undefined;
+  return prev !== undefined && list?.length ? { episode: prev, room: list[list.length - 1].room } : null;
+}
+
+export function getNextChallenge(episode: number, room: string): Position {
   const episodeChallenges = challengesByEpisode[episode];
   if (!episodeChallenges) return null;
 
@@ -121,19 +143,12 @@ export function getNextChallenge(episode: number, room: string): { episode: numb
   if (currentIndex === -1) return null;
 
   if (currentIndex < episodeChallenges.length - 1) {
-    const next = episodeChallenges[currentIndex + 1];
-    return { episode, room: next.room };
+    return { episode, room: episodeChallenges[currentIndex + 1].room };
   }
-
-  const nextEpisode = challengesByEpisode[episode + 1];
-  if (nextEpisode?.length) {
-    return { episode: episode + 1, room: nextEpisode[0].room };
-  }
-
-  return null;
+  return firstOfNextEpisode(episode);
 }
 
-export function getPreviousChallenge(episode: number, room: string): { episode: number; room: string } | null {
+export function getPreviousChallenge(episode: number, room: string): Position {
   const episodeChallenges = challengesByEpisode[episode];
   if (!episodeChallenges) return null;
 
@@ -141,14 +156,7 @@ export function getPreviousChallenge(episode: number, room: string): { episode: 
   if (currentIndex === -1) return null;
 
   if (currentIndex > 0) {
-    const prev = episodeChallenges[currentIndex - 1];
-    return { episode, room: prev.room };
+    return { episode, room: episodeChallenges[currentIndex - 1].room };
   }
-
-  const prevEpisode = challengesByEpisode[episode - 1];
-  if (prevEpisode?.length) {
-    return { episode: episode - 1, room: prevEpisode[prevEpisode.length - 1].room };
-  }
-
-  return null;
+  return lastOfPreviousEpisode(episode);
 }

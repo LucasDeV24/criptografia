@@ -182,11 +182,138 @@ Com n = 0 o loop não roda e o resultado continua 1, exatamente o valor definido
   difficulty: 'easy',
 };
 
+const ex2_potencia: CodeChallenge = {
+  id: 'loop.8',
+  type: 'code',
+  episode: 2,
+  room: '2.3',
+  title: 'Potência com loop',
+  description: 'Elevar um número a uma potência é **multiplicar a base por ela mesma várias vezes**: 2 elevado a 3 é 2 × 2 × 2 = 8. Use o padrão acumulador, começando em 1.',
+  instructions: 'Devolva a base elevada ao expoente (um número inteiro, 0 ou maior). Exemplo: potencia(2, 3) devolve 8.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Multiplique "base" por ela mesma "expoente" vezes
+function potencia(base, expoente) {
+  let resultado = 1;
+  // escreva um loop que repete "expoente" vezes
+  return resultado;
+}
+`,
+    python: `# Multiplique "base" por ela mesma "expoente" vezes
+def potencia(base, expoente):
+    resultado = 1
+    # escreva um loop que repete "expoente" vezes
+    return resultado
+`,
+  },
+  tests: {
+    fn: { javascript: 'potencia', python: 'potencia' },
+    cases: [
+      { name: '2 elevado a 3', args: [2, 3], expected: 8 },
+      { name: '5 ao quadrado', args: [5, 2], expected: 25 },
+      { name: 'qualquer número elevado a 0 vale 1', args: [9, 0], expected: 1, hidden: true },
+      { name: 'expoente 1', args: [7, 1], expected: 7, hidden: true },
+      { name: '2 elevado a 10', args: [2, 10], expected: 1024, hidden: true },
+      { name: 'base zero', args: [0, 5], expected: 0, hidden: true },
+      { name: '10 ao cubo', args: [10, 3], expected: 1000, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function potencia(base, expoente) {
+  let resultado = 1;
+  for (let i = 0; i < expoente; i++) {
+    resultado = resultado * base;
+  }
+  return resultado;
+}`,
+    python: `def potencia(base, expoente):
+    resultado = 1
+    for i in range(expoente):
+        resultado = resultado * base
+    return resultado`,
+  },
+  explanation: `
+**Repetir uma multiplicação**
+O loop roda "expoente" vezes e, em cada volta, multiplica o resultado pela base. Como o acumulador da multiplicação começa em 1, o expoente 0 devolve 1 sem entrar no loop.
+
+**Na criptografia:** potências gigantes são a base de algoritmos como o RSA (você verá mais adiante).
+  `,
+  hints: [
+    'O loop deve rodar "expoente" vezes: for (let i = 0; i < expoente; i++)  /  for i in range(expoente):',
+    'Dentro do loop: resultado = resultado * base',
+    'Com expoente 0 o loop não roda e o resultado continua 1',
+  ],
+  difficulty: 'medium',
+};
+
+const ex2_repetir: CodeChallenge = {
+  id: 'loop.9',
+  type: 'code',
+  episode: 2,
+  room: '2.4',
+  title: 'Repetindo um texto',
+  description: 'O acumulador também funciona com **texto**: comece com um texto vazio e vá juntando pedaços a cada volta.',
+  instructions: 'Devolva o texto repetido várias vezes. Exemplo: repetirTexto("ab", 3) devolve "ababab".',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Junte "texto" a si mesmo "vezes" vezes
+function repetirTexto(texto, vezes) {
+  let resultado = "";
+  // escreva um loop que repete "vezes" vezes
+  return resultado;
+}
+`,
+    python: `# Junte "texto" a si mesmo "vezes" vezes
+def repetir_texto(texto, vezes):
+    resultado = ""
+    # escreva um loop que repete "vezes" vezes
+    return resultado
+`,
+  },
+  tests: {
+    fn: { javascript: 'repetirTexto', python: 'repetir_texto' },
+    cases: [
+      { name: 'ab três vezes', args: ['ab', 3], expected: 'ababab' },
+      { name: 'traço cinco vezes', args: ['-', 5], expected: '-----' },
+      { name: 'zero vezes dá texto vazio', args: ['oi', 0], expected: '', hidden: true },
+      { name: 'uma vez', args: ['ha', 1], expected: 'ha', hidden: true },
+      { name: 'texto vazio repetido', args: ['', 4], expected: '', hidden: true },
+      { name: 'com espaço', args: ['a ', 3], expected: 'a a a ', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function repetirTexto(texto, vezes) {
+  let resultado = "";
+  for (let i = 0; i < vezes; i++) {
+    resultado = resultado + texto;
+  }
+  return resultado;
+}`,
+    python: `def repetir_texto(texto, vezes):
+    resultado = ""
+    for i in range(vezes):
+        resultado = resultado + texto
+    return resultado`,
+  },
+  explanation: `
+**Acumulador de texto**
+Começa em "" (texto vazio) e a cada volta recebe mais um pedaço. Zero voltas deixam o resultado vazio.
+
+**Em segurança:** repetir textos é a base de payloads de teste (strings enormes para testar limites) e de listas de senhas geradas.
+  `,
+  hints: [
+    'Faça o loop rodar "vezes" vezes, como no exercício da potência',
+    'Dentro do loop: resultado = resultado + texto',
+    'Com 0 vezes o loop não roda e o resultado continua "" (vazio)',
+  ],
+  difficulty: 'easy',
+};
+
 const theory2_3: TheoryChallenge = {
   id: 'loop.3',
   type: 'theory',
   episode: 2,
-  room: '2.3',
+  room: '2.5',
   title: 'Loop com textos',
   description: 'Loops não servem só para números! Podemos percorrer cada letra de um texto.',
   content: `
@@ -235,7 +362,7 @@ const code2_4: CodeChallenge = {
   id: 'loop.4',
   type: 'code',
   episode: 2,
-  room: '2.4',
+  room: '2.6',
   title: 'Percorrendo um texto: contando letras',
   description: 'Percorra um texto **letra por letra** e conte quantas vezes uma letra específica aparece. Maiúscula e minúscula são diferentes.',
   instructions: 'Devolva quantas vezes a letra aparece no texto. Exemplo: contarLetra("banana", "a") devolve 3.',
@@ -297,11 +424,197 @@ Este é um dos padrões mais usados: percorrer, testar cada item com um if e acu
   difficulty: 'medium',
 };
 
+const ex2_mascarar: CodeChallenge = {
+  id: 'loop.10',
+  type: 'code',
+  episode: 2,
+  room: '2.7',
+  title: 'Mascarando uma senha',
+  description: 'Sistemas nunca mostram a senha na tela: mostram asteriscos. Crie um texto com **um asterisco para cada letra** da senha.',
+  instructions: 'Devolva um texto só de asteriscos, com o mesmo tamanho da senha. Exemplo: mascararSenha("abc") devolve "***".',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Um "*" para cada letra da senha
+function mascararSenha(senha) {
+  let mascara = "";
+  // percorra a senha letra por letra
+  return mascara;
+}
+`,
+    python: `# Um "*" para cada letra da senha
+def mascarar_senha(senha):
+    mascara = ""
+    # percorra a senha letra por letra
+    return mascara
+`,
+  },
+  tests: {
+    fn: { javascript: 'mascararSenha', python: 'mascarar_senha' },
+    cases: [
+      { name: 'três letras', args: ['abc'], expected: '***' },
+      { name: 'senha longa', args: ['senha123'], expected: '********' },
+      { name: 'senha vazia', args: [''], expected: '', hidden: true },
+      { name: 'uma letra', args: ['x'], expected: '*', hidden: true },
+      { name: 'com espaço e símbolo', args: ['a b!'], expected: '****', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function mascararSenha(senha) {
+  let mascara = "";
+  for (let i = 0; i < senha.length; i++) {
+    mascara = mascara + "*";
+  }
+  return mascara;
+}`,
+    python: `def mascarar_senha(senha):
+    mascara = ""
+    for letra in senha:
+        mascara = mascara + "*"
+    return mascara`,
+  },
+  explanation: `
+**Um passo para cada letra**
+O loop percorre a senha e, para cada letra, junta um "*". A letra em si não importa, só a quantidade.
+
+**Na segurança:** mostrar a senha em texto puro na tela é uma falha. Mesmo o tamanho dela vaza informação, e alguns sistemas mostram um número fixo de asteriscos por esse motivo.
+  `,
+  hints: [
+    'Percorra a senha letra por letra (veja a sala sobre loop com textos)',
+    'A cada volta: mascara = mascara + "*"',
+    'No Python: for letra in senha:',
+  ],
+  difficulty: 'easy',
+};
+
+const ex2_tem: CodeChallenge = {
+  id: 'loop.11',
+  type: 'code',
+  episode: 2,
+  room: '2.8',
+  title: 'O texto tem essa letra?',
+  description: 'Percorra o texto e **pare assim que achar** a letra, com `return`. É o padrão de **busca**: se o loop terminar sem achar nada, a resposta é falso.',
+  instructions: 'Devolva true se a letra aparece no texto, senão false. Exemplo: temLetra("banana", "n") devolve true.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Devolva true se "letra" aparece em "texto", senão false
+function temLetra(texto, letra) {
+  // percorra o texto; ao achar a letra, devolva true na hora
+  // se o loop terminar sem achar, devolva false
+}
+`,
+    python: `# Devolva True se "letra" aparece em "texto", senão False
+def tem_letra(texto, letra):
+    # percorra o texto; ao achar a letra, devolva True na hora
+    # se o loop terminar sem achar, devolva False
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'temLetra', python: 'tem_letra' },
+    cases: [
+      { name: 'tem', args: ['banana', 'n'], expected: true },
+      { name: 'não tem', args: ['banana', 'z'], expected: false },
+      { name: 'texto vazio', args: ['', 'a'], expected: false, hidden: true },
+      { name: 'maiúscula é diferente', args: ['Banana', 'b'], expected: false, hidden: true },
+      { name: 'uma letra só', args: ['a', 'a'], expected: true, hidden: true },
+      { name: 'última letra', args: ['abc', 'c'], expected: true, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function temLetra(texto, letra) {
+  for (let i = 0; i < texto.length; i++) {
+    if (texto[i] === letra) {
+      return true;
+    }
+  }
+  return false;
+}`,
+    python: `def tem_letra(texto, letra):
+    for caractere in texto:
+        if caractere == letra:
+            return True
+    return False`,
+  },
+  explanation: `
+**Busca com return antecipado**
+O return true encerra a função no primeiro acerto. O return false fica DEPOIS do loop: só chega lá quem percorreu tudo sem achar.
+
+**Erro comum:** colocar return false dentro do loop. A função responderia "não" logo na primeira letra diferente.
+  `,
+  hints: [
+    'Percorra o texto e compare cada caractere com a letra',
+    'Se forem iguais, devolva true (Python: True) imediatamente',
+    'O return false (Python: False) fica fora do loop, no fim',
+  ],
+  difficulty: 'medium',
+};
+
+const ex2_pos: CodeChallenge = {
+  id: 'loop.12',
+  type: 'code',
+  episode: 2,
+  room: '2.9',
+  title: 'Em que posição está a letra?',
+  description: 'Agora devolva a **posição** (começando em 0) da primeira vez que a letra aparece, ou -1 se ela não aparecer. Aqui você precisa do índice do loop.',
+  instructions: 'Devolva a posição da primeira ocorrência, ou -1. Exemplo: posicaoDaLetra("banana", "n") devolve 2.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Devolva a posição da primeira "letra" em "texto", ou -1
+function posicaoDaLetra(texto, letra) {
+  // percorra com o índice i (de 0 até texto.length - 1)
+}
+`,
+    python: `# Devolva a posição da primeira "letra" em "texto", ou -1
+def posicao_da_letra(texto, letra):
+    # percorra com o índice i: for i in range(len(texto)):
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'posicaoDaLetra', python: 'posicao_da_letra' },
+    cases: [
+      { name: 'banana e n', args: ['banana', 'n'], expected: 2 },
+      { name: 'letra que não existe', args: ['banana', 'z'], expected: -1 },
+      { name: 'primeira posição', args: ['abc', 'a'], expected: 0, hidden: true },
+      { name: 'texto vazio', args: ['', 'a'], expected: -1, hidden: true },
+      { name: 'devolve a primeira ocorrência', args: ['abcabc', 'c'], expected: 2, hidden: true },
+      { name: 'maiúscula é diferente', args: ['Ab', 'a'], expected: -1, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function posicaoDaLetra(texto, letra) {
+  for (let i = 0; i < texto.length; i++) {
+    if (texto[i] === letra) {
+      return i;
+    }
+  }
+  return -1;
+}`,
+    python: `def posicao_da_letra(texto, letra):
+    for i in range(len(texto)):
+        if texto[i] == letra:
+            return i
+    return -1`,
+  },
+  explanation: `
+**Usando o índice**
+O loop com índice (i) dá a posição de cada letra. Ao achar, devolva i. Como o return sai da função, a PRIMEIRA ocorrência é a que vale.
+
+**O -1:** posições válidas começam em 0, então -1 nunca se confunde com uma posição real. É a convenção para "não encontrado" (a mesma que o indexOf do JavaScript usa).
+  `,
+  hints: [
+    'Use o índice do loop: for (let i = 0; i < texto.length; i++)  /  for i in range(len(texto)):',
+    'Se texto[i] for igual à letra, devolva i',
+    'Depois do loop, devolva -1',
+  ],
+  difficulty: 'medium',
+};
+
 const code2_5: CodeChallenge = {
   id: 'loop.5',
   type: 'code',
   episode: 2,
-  room: '2.5',
+  room: '2.10',
   title: 'Invertendo um texto',
   description: 'Construir um texto letra por letra é a base da criptografia. Inverta um texto: "HACK" vira "KCAH".',
   instructions: 'Devolva o texto de trás para frente. Exemplo: inverter("HACK") devolve "KCAH".',
@@ -364,7 +677,7 @@ const code2_6: CodeChallenge = {
   id: 'loop.6',
   type: 'code',
   episode: 2,
-  room: '2.6',
+  room: '2.11',
   title: 'Simulando força bruta',
   description: 'Um atacante tenta todos os PINs numéricos em ordem (0, 1, 2...), mas desiste depois de `maximo` tentativas. Simule esse ataque com um loop.',
   instructions: 'Devolva em qual tentativa o PIN foi descoberto (a primeira tentativa é o 0), ou -1 se o atacante desistir antes. Ele tenta os valores de 0 até maximo-1.',
@@ -434,7 +747,7 @@ const theory2_7: TheoryChallenge = {
   id: 'loop.7',
   type: 'theory',
   episode: 2,
-  room: '2.7',
+  room: '2.12',
   title: 'Parabéns! Você domina loops!',
   description: 'Agora você sabe fazer o computador repetir ações — uma habilidade essencial para cibersegurança.',
   content: `
@@ -461,8 +774,13 @@ export const loopsChallenges: Challenge[] = [
   theory2_0,
   code2_1,
   code2_2,
+  ex2_potencia,
+  ex2_repetir,
   theory2_3,
   code2_4,
+  ex2_mascarar,
+  ex2_tem,
+  ex2_pos,
   code2_5,
   code2_6,
   theory2_7,

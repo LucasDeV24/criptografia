@@ -56,6 +56,13 @@ export interface TheoryChallenge extends BaseChallenge {
 export type LabId =
   | "terminal-recon"
   | "terminal-ssh"
+  | "term-nav"
+  | "term-paths"
+  | "term-read"
+  | "term-files"
+  | "term-search"
+  | "term-pipes"
+  | "term-perm"
   | "web-sqli"
   | "web-xss"
   | "web-idor";
