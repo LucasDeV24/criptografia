@@ -72,22 +72,32 @@ const code: CodeChallenge = {
 O código salvo do aluno só é reaproveitado se ainda contiver o nome da função nova, para não carregar
 respostas do formato antigo.
 
-## 6. Estado atual e próximos passos
+## 6. Verificação automática
+
+Depois de criar ou migrar exercícios, rode `npm run verify:exercises`. Para cada exercício com `tests`, em JavaScript
+e em Python, ele confere que: (1) a `solution` passa em todos os testes; (2) o `starterCode` não passa sozinho;
+(3) há `solution`, `explanation`, `hints` e testes ocultos (quando a função recebe argumentos); (4) uma resposta
+fixa não passa em todos os testes. Ele usa os mesmos workers do site, então o resultado é fiel.
+
+## 7. Estado atual e próximos passos
 
 **Feito**
 - Motor de execução isolado (Web Workers), com timeout, erros com linha e testes ocultos.
-- Episódio 1 (Condições) no formato novo, como modelo.
+- Base de programação (episódios 0 a 7) no formato novo: 37 exercícios com testes visíveis e ocultos. Nos episódios 0
+  (0.4 e 0.5) as salas guiadas de "clique em Executar" foram mantidas de propósito, como apresentação do editor.
 - Modo Hacker: 5 laboratórios simulados (terminal, SQLi, XSS, IDOR) + teoria.
 - Página de trilhas de carreira (`/trilhas`).
+- Abas "Mundo Real" e "Ferramentas" por episódio (`src/data/context.ts`), renderizadas com RichText seguro.
+- Ranking sem exposição de dados pessoais (migração `supabase/migrations/002_privacidade_ranking.sql`).
 
 **Próximos (por prioridade)**
-1. Migrar os episódios 0, 2, 3, 4, 5, 6, 7 (base de programação) para testes de função.
-2. Migrar os desafios de segurança (20–45) que hoje são só saída.
-3. Novas trilhas do desenvolvedor: HTML/CSS/DOM, HTTP e APIs, SQL, Git/GitHub, testes.
-4. Mais laboratórios: escalada de privilégios no Linux, JWT, command injection, quebra de hash, análise de tráfego.
-5. Mini-projetos de portfólio com testes (ex.: verificador de senhas, scanner de portas).
-6. Revisão do conteúdo por um profissional de segurança (fatos, fontes, exemplos reais).
-7. Base técnica: testes automatizados da validação, ranking com integridade no servidor, correção de exposição de e-mails no Supabase.
+1. Migrar os episódios 20 a 45 (lógica, web, cripto, blue team, OSINT, automação) para testes de função.
+   Os episódios 8 a 19 (Cibersegurança) também ainda validam só a saída.
+2. Novas trilhas do desenvolvedor: HTML/CSS/DOM, HTTP e APIs, SQL, Git/GitHub, testes.
+3. Mais laboratórios: escalada de privilégios no Linux, JWT, command injection, quebra de hash, análise de tráfego.
+4. Mini-projetos de portfólio com testes (ex.: verificador de senhas, scanner de portas).
+5. Revisão do conteúdo por um profissional de segurança (fatos, fontes, exemplos reais).
+6. Ranking com integridade no servidor (hoje o cliente grava o próprio progresso).
 
 **Como acompanhar no site:** a página `/trilhas` marca cada etapa como *Disponível* ou *Em breve*.
 Ao criar conteúdo novo, atualize a lista de episódios da etapa correspondente.

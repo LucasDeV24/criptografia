@@ -1,15 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeft, Lock, CheckCircle, Shield, Code2, Database, Terminal, Key, Trophy,
-  Globe, Search, Network, Wifi, FileCode, AlertTriangle,
+  Globe, Search, Wifi, FileCode, AlertTriangle,
   GitBranch, Repeat, List, Type, Braces, TextCursorInput, Puzzle,
   Filter, RefreshCw, ArrowUpDown, FolderOpen, Binary, KeyRound, Hash, ShieldAlert, Activity,
   Eye, FileSearch, Users, Regex, Radar, Zap, ClipboardList, Crosshair, Award,
 } from 'lucide-react';
-import { getProgress, TOTAL_ROOMS } from '@/lib/progress';
+import { TOTAL_ROOMS } from '@/lib/progress';
+import { useProgress } from '@/lib/useProgress';
 import { challengesByEpisode } from '@/data/challenges';
 
 const EPISODE_META = [
@@ -73,11 +73,7 @@ const EPISODE_META = [
 ];
 
 export default function EpisodesPage() {
-  const [completedRooms, setCompletedRooms] = useState<string[]>([]);
-
-  useEffect(() => {
-    setCompletedRooms(getProgress().completedRooms);
-  }, []);
+  const completedRooms = useProgress().completedRooms;
 
   return (
     <main className="min-h-screen p-8">

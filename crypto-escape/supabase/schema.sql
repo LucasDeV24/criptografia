@@ -35,8 +35,9 @@ create index if not exists progress_completed_count on public.progress (
 alter table public.profiles enable row level security;
 alter table public.progress enable row level security;
 
-create policy "Profiles são públicos para leitura" on public.profiles
-  for select using (true);
+-- Cada usuário lê só o próprio perfil (o ranking usa a view "ranking", mais abaixo)
+create policy "Usuário lê o próprio perfil" on public.profiles
+  for select using (auth.uid() = id);
 
 create policy "Usuário pode atualizar próprio perfil" on public.profiles
   for update using (auth.uid() = id);
@@ -44,8 +45,8 @@ create policy "Usuário pode atualizar próprio perfil" on public.profiles
 create policy "Usuário pode inserir próprio perfil" on public.profiles
   for insert with check (auth.uid() = id);
 
-create policy "Progresso: todos podem ler (ranking)" on public.progress
-  for select using (true);
+create policy "Progresso: usuário lê o seu" on public.progress
+  for select using (auth.uid() = user_id);
 
 create policy "Progresso: usuário atualiza só o seu" on public.progress
   for update using (auth.uid() = user_id);
@@ -78,3 +79,16 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
+
+-- View pública do ranking: só nome, avatar e contagens (sem e-mail nem código dos alunos)
+create or replace view public.ranking as
+select
+  p.user_id,
+  coalesce(pr.full_name, 'Anônimo') as full_name,
+  pr.avatar_url,
+  jsonb_array_length(p.completed_rooms) as completed_count,
+  p.total_attempts
+from public.progress p
+join public.profiles pr on pr.id = p.user_id;
+
+grant select on public.ranking to anon, authenticated;

@@ -15,7 +15,7 @@ type Stage = {
 };
 
 const DEV_TRACK: Stage[] = [
-  { title: 'Lógica de programação', learn: 'Variáveis, condições, funções, repetição, listas e textos. Pensar em casos de borda.', episodes: [0, 1, 2, 3, 4, 5, 6, 7] },
+  { title: 'Lógica de programação', learn: 'Variáveis, condições, funções, repetição, listas, textos e objetos. Você escreve funções que são testadas com casos de borda ocultos.', episodes: [0, 1, 2, 3, 4, 5, 6, 7] },
   { title: 'Algoritmos e estruturas', learn: 'Operadores lógicos, while, busca e ordenação, e como medir se uma solução é boa.', episodes: [20, 21, 22, 23] },
   { title: 'Código seguro', learn: 'Validar e sanitizar entradas, cabeçalhos de segurança, e não confiar no que vem do usuário.', episodes: [27, 28] },
   { title: 'Automação e regex', learn: 'Expressões regulares, scanners e scripts que automatizam tarefas.', episodes: [40, 41, 42] },

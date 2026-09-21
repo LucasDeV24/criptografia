@@ -54,9 +54,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 completedRooms: [...new Set([...local.completedRooms, ...remote.completedRooms])],
                 currentEpisode: Math.max(local.currentEpisode, remote.currentEpisode),
                 currentRoom: local.completedRooms.length >= remote.completedRooms.length ? local.currentRoom : remote.currentRoom,
-                totalTimeSeconds: local.totalTimeSeconds + remote.totalTimeSeconds,
-                firstTrySuccesses: local.firstTrySuccesses + remote.firstTrySuccesses,
-                totalAttempts: local.totalAttempts + remote.totalAttempts,
+                totalTimeSeconds: Math.max(local.totalTimeSeconds, remote.totalTimeSeconds),
+                firstTrySuccesses: Math.max(local.firstTrySuccesses, remote.firstTrySuccesses),
+                totalAttempts: Math.max(local.totalAttempts, remote.totalAttempts),
               };
               saveProgress(merged);
               const { data } = await supabase.from('progress').select('user_codes').eq('user_id', u.id).single();
@@ -91,9 +91,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             completedRooms: [...new Set([...local.completedRooms, ...remote.completedRooms])],
             currentEpisode: Math.max(local.currentEpisode, remote.currentEpisode),
             currentRoom: local.currentRoom,
-            totalTimeSeconds: local.totalTimeSeconds + remote.totalTimeSeconds,
-            firstTrySuccesses: local.firstTrySuccesses + remote.firstTrySuccesses,
-            totalAttempts: local.totalAttempts + remote.totalAttempts,
+            totalTimeSeconds: Math.max(local.totalTimeSeconds, remote.totalTimeSeconds),
+            firstTrySuccesses: Math.max(local.firstTrySuccesses, remote.firstTrySuccesses),
+            totalAttempts: Math.max(local.totalAttempts, remote.totalAttempts),
           };
           saveProgress(merged);
         }

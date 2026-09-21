@@ -40,14 +40,42 @@ function getDefaultProgress(): PlayerProgress {
   };
 }
 
-export function getProgress(): PlayerProgress {
-  if (typeof window === 'undefined') return getDefaultProgress();
+export function parseProgress(raw: string | null): PlayerProgress {
+  if (!raw) return getDefaultProgress();
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return getDefaultProgress();
     return { ...getDefaultProgress(), ...JSON.parse(raw) };
   } catch {
     return getDefaultProgress();
+  }
+}
+
+export function getProgress(): PlayerProgress {
+  if (typeof window === 'undefined') return getDefaultProgress();
+  try {
+    return parseProgress(localStorage.getItem(STORAGE_KEY));
+  } catch {
+    return getDefaultProgress();
+  }
+}
+
+// --- Assinatura para o hook useProgress (useSyncExternalStore) ---
+const PROGRESS_EVENT = 'crypto-escape-progress-changed';
+
+export function subscribeProgress(callback: () => void): () => void {
+  window.addEventListener('storage', callback);
+  window.addEventListener(PROGRESS_EVENT, callback);
+  return () => {
+    window.removeEventListener('storage', callback);
+    window.removeEventListener(PROGRESS_EVENT, callback);
+  };
+}
+
+/** Texto salvo do progresso (estável enquanto nada muda, exigido pelo useSyncExternalStore) */
+export function getProgressSnapshot(): string {
+  try {
+    return localStorage.getItem(STORAGE_KEY) ?? '';
+  } catch {
+    return '';
   }
 }
 
@@ -56,6 +84,7 @@ export function saveProgress(progress: PlayerProgress): void {
   try {
     progress.lastPlayedAt = new Date().toISOString();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    window.dispatchEvent(new Event(PROGRESS_EVENT));
     triggerSync();
   } catch {
     // storage full or blocked
@@ -64,9 +93,15 @@ export function saveProgress(progress: PlayerProgress): void {
 
 export function markRoomComplete(roomId: string): void {
   const progress = getProgress();
-  if (!progress.completedRooms.includes(roomId)) {
-    progress.completedRooms.push(roomId);
-  }
+  if (progress.completedRooms.includes(roomId)) return; // já concluída: não regrava (evita re-renderizações e sincronizações à toa)
+  progress.completedRooms.push(roomId);
+  saveProgress(progress);
+}
+
+/** Soma segundos de estudo ao tempo total (chamado a cada 30 s com a página visível) */
+export function addPlayTime(seconds: number): void {
+  const progress = getProgress();
+  progress.totalTimeSeconds += seconds;
   saveProgress(progress);
 }
 

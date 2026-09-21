@@ -1,23 +1,17 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Terminal, Code, Shield, Book, Trophy, LogIn, UserPlus, LogOut } from 'lucide-react';
-import { getProgress, TOTAL_ROOMS } from '@/lib/progress';
+import { TOTAL_ROOMS } from '@/lib/progress';
+import { useProgress } from '@/lib/useProgress';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function Home() {
   const { user, loading: authLoading, signingOut, signOut } = useAuth();
-  const [completed, setCompleted] = useState(0);
-  const [currentEp, setCurrentEp] = useState(0);
-  const [currentRoom, setCurrentRoom] = useState('0.1');
-
-  useEffect(() => {
-    const p = getProgress();
-    setCompleted(p.completedRooms.length);
-    setCurrentEp(p.currentEpisode);
-    setCurrentRoom(p.currentRoom);
-  }, []);
+  const progress = useProgress();
+  const completed = progress.completedRooms.length;
+  const currentEp = progress.currentEpisode;
+  const currentRoom = progress.currentRoom;
 
   const hasProgress = completed > 0;
   const percentage = Math.round((completed / TOTAL_ROOMS) * 100);

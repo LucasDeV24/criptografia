@@ -4,7 +4,7 @@
 
 function formatArg(a) {
   if (typeof a === 'object' && a !== null) {
-    try { return JSON.stringify(a); } catch (_) { return String(a); }
+    try { return JSON.stringify(a); } catch { return String(a); }
   }
   return String(a);
 }
@@ -20,7 +20,7 @@ function deepEqual(a, b) {
 
 function show(v) {
   let s;
-  try { s = v === undefined ? 'undefined' : JSON.stringify(v); } catch (_) { s = String(v); }
+  try { s = v === undefined ? 'undefined' : JSON.stringify(v); } catch { s = String(v); }
   return s && s.length > 200 ? s.slice(0, 200) + '…' : s;
 }
 

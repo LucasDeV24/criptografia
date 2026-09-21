@@ -29,6 +29,30 @@ export default function RankingPage() {
     setError(null);
     try {
       const supabase = createClient();
+
+      // Caminho preferido: view "ranking" (só nome, avatar e contagens; ver supabase/migrations/002)
+      const { data: viewData, error: viewError } = await supabase
+        .from('ranking')
+        .select('user_id, full_name, avatar_url, completed_count, total_attempts')
+        .order('completed_count', { ascending: false })
+        .order('total_attempts', { ascending: true })
+        .limit(50);
+      if (!viewError && viewData) {
+        setRows(
+          viewData.map((r, i) => ({
+            rank: i + 1,
+            user_id: r.user_id,
+            full_name: r.full_name ?? 'Anônimo',
+            avatar_url: r.avatar_url ?? null,
+            completed: r.completed_count ?? 0,
+            total_attempts: r.total_attempts ?? 0,
+          }))
+        );
+        setLoading(false);
+        return;
+      }
+
+      // Alternativa (antes de rodar a migração 002): lê as tabelas diretamente
       const { data: progressData, error: progressError } = await supabase
         .from('progress')
         .select('user_id, completed_rooms, total_attempts');

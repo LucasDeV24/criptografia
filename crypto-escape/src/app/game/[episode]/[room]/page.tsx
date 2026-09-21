@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getChallenge, getNextChallenge, getPreviousChallenge } from '@/data/challenges';
 import ChallengeRoom from '@/components/game/ChallengeRoom';
 import { ArrowLeft, ArrowRight, Lock, Home } from 'lucide-react';
-import { markRoomComplete, updateCurrentPosition, isRoomComplete } from '@/lib/progress';
+import { markRoomComplete, updateCurrentPosition, addPlayTime } from '@/lib/progress';
+import { useProgress } from '@/lib/useProgress';
 
 export default function GameRoomPage() {
   const params = useParams();
@@ -14,17 +15,24 @@ export default function GameRoomPage() {
   const episode = Number(params.episode);
   const room = String(params.room);
 
-  const [challengeCompleted, setChallengeCompleted] = useState(false);
-
   const challenge = getChallenge(episode, room);
   const next = getNextChallenge(episode, room);
   const prev = getPreviousChallenge(episode, room);
 
+  const progress = useProgress();
+  const challengeCompleted = challenge ? progress.completedRooms.includes(challenge.id) : false;
+
   useEffect(() => {
-    const alreadyDone = challenge ? isRoomComplete(challenge.id) : false;
-    setChallengeCompleted(alreadyDone);
     updateCurrentPosition(episode, room);
   }, [episode, room]);
+
+  // Tempo de estudo: soma 30 s a cada meio minuto com a página visível
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (document.visibilityState === 'visible') addPlayTime(30);
+    }, 30000);
+    return () => clearInterval(id);
+  }, []);
 
   if (!challenge) {
     return (
@@ -38,7 +46,6 @@ export default function GameRoomPage() {
   }
 
   const handleComplete = () => {
-    setChallengeCompleted(true);
     markRoomComplete(challenge.id);
   };
 
