@@ -48,8 +48,9 @@ export default function GameRoomPage() {
     }
   };
 
-  const isCodeChallenge = challenge.type === 'code';
-  const canNavigate = !isCodeChallenge || challengeCompleted;
+  // Desafios de código e laboratórios precisam ser resolvidos para avançar; teorias não
+  const requiresCompletion = challenge.type !== 'theory';
+  const canNavigate = !requiresCompletion || challengeCompleted;
 
   return (
     <div className="min-h-screen">

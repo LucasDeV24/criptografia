@@ -1,6 +1,7 @@
 const STORAGE_KEY = 'crypto-escape-progress';
 
-export const TOTAL_ROOMS = 268;
+// Total de salas em src/data/challenges (contagem de campos "room"). Atualize ao adicionar salas.
+export const TOTAL_ROOMS = 266;
 
 export type ProgressSyncCallback = () => void;
 let progressSyncCallback: ProgressSyncCallback | null = null;
@@ -84,6 +85,27 @@ export function trackLanguageUse(lang: 'javascript' | 'python'): void {
   const progress = getProgress();
   progress.favoriteLanguage[lang]++;
   saveProgress(progress);
+}
+
+const PREFERRED_LANGUAGE_KEY = 'crypto-escape-preferred-language';
+
+export function getPreferredLanguage(): 'javascript' | 'python' | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const lang = localStorage.getItem(PREFERRED_LANGUAGE_KEY);
+    return lang === 'javascript' || lang === 'python' ? lang : null;
+  } catch {
+    return null;
+  }
+}
+
+export function setPreferredLanguage(lang: 'javascript' | 'python'): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(PREFERRED_LANGUAGE_KEY, lang);
+  } catch {
+    // storage full or blocked
+  }
 }
 
 export function trackAttempt(firstTry: boolean): void {

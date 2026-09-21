@@ -1,12 +1,22 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useSyncExternalStore } from 'react';
 import { useRouter } from 'next/navigation';
-import CodeChallenge from './CodeChallenge';
-import type { Challenge, CodeChallenge as CodeChallengeType, TheoryChallenge } from '@/types/challenge';
+import dynamic from 'next/dynamic';
+import LabChallenge from './labs/LabChallenge';
+import type { Challenge, CodeChallenge as CodeChallengeType, LabChallenge as LabChallengeType, TheoryChallenge } from '@/types/challenge';
 import { BookOpen, Lightbulb, ArrowRight, Globe, Wrench, Book } from 'lucide-react';
 import { getNextChallenge } from '@/data/challenges';
-import { markRoomComplete } from '@/lib/progress';
+import { markRoomComplete, isRoomComplete } from '@/lib/progress';
+
+const noopSubscribe = () => () => {};
+
+// O editor depende do navegador (linguagem preferida salva, Monaco): renderizar só no cliente
+// evita diferença entre o HTML do servidor e o do navegador (erro de hidratação).
+const CodeChallenge = dynamic(() => import('./CodeChallenge'), {
+  ssr: false,
+  loading: () => <div className="code-challenge-loading">Carregando editor…</div>,
+});
 
 type TabType = 'challenge' | 'theory' | 'real-world' | 'tools';
 
@@ -27,6 +37,22 @@ export default function ChallengeRoom({
   const [hintLevel, setHintLevel] = useState(0);
   const isCodeChallenge = challenge.type === 'code';
   const isTheoryChallenge = challenge.type === 'theory';
+  const isLabChallenge = challenge.type === 'lab';
+
+  // Em exercícios com testes, a explicação (que pode entregar a resposta) só aparece depois de resolver
+  const completedBefore = useSyncExternalStore(
+    noopSubscribe,
+    () => isRoomComplete(challenge.id),
+    () => false
+  );
+  const [solvedNow, setSolvedNow] = useState(false);
+  const explanationLocked =
+    isCodeChallenge && !!(challenge as CodeChallengeType).tests && !completedBefore && !solvedNow;
+
+  const handleCodeComplete = () => {
+    setSolvedNow(true);
+    onComplete?.();
+  };
 
   useEffect(() => {
     if (isTheoryChallenge) {
@@ -103,7 +129,9 @@ export default function ChallengeRoom({
           <div className="tab-content theory-tab">
             <h2>📚 Conceitos Técnicos</h2>
             <div className="theory-content">
-              {challenge.explanation ? (
+              {explanationLocked ? (
+                <p>🔒 A explicação completa é liberada depois que você resolver o desafio. Tente primeiro: é assim que se aprende de verdade!</p>
+              ) : challenge.explanation ? (
                 <>
                   {challenge.explanation.split('\n\n').map((para, i) => {
                     const formatted = para
@@ -195,13 +223,13 @@ export default function ChallengeRoom({
           </div>
         )}
 
-        {isCodeChallenge && (challenge as CodeChallengeType).instructions && (
+        {(isCodeChallenge || isLabChallenge) && (challenge as CodeChallengeType | LabChallengeType).instructions && (
           <div className="instructions-box">
-            <strong>Objetivo:</strong> {(challenge as CodeChallengeType).instructions}
+            <strong>Objetivo:</strong> {(challenge as CodeChallengeType | LabChallengeType).instructions}
           </div>
         )}
 
-        {challenge.explanation && (
+        {challenge.explanation && !explanationLocked && (
           <div className="explanation-section">
             <button
               type="button"
@@ -240,7 +268,16 @@ export default function ChallengeRoom({
 
         {isCodeChallenge && (
           <CodeChallenge
+            key={challenge.id}
             challenge={challenge as CodeChallengeType}
+            onComplete={handleCodeComplete}
+          />
+        )}
+
+        {isLabChallenge && (
+          <LabChallenge
+            key={challenge.id}
+            challenge={challenge as LabChallengeType}
             onComplete={onComplete}
           />
         )}

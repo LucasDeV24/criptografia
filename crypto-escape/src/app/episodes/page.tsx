@@ -68,6 +68,8 @@ const EPISODE_META = [
   // Módulo 9: Missão Final (44-45)
   { title: 'Pentest Final', desc: 'Missão completa do zero', icon: Crosshair, color: '#f59e0b' },
   { title: 'Certificação', desc: 'Próximos passos e carreira', icon: Award, color: '#f59e0b' },
+  // Módulo 10: Modo Hacker (46)
+  { title: 'Modo Hacker', desc: 'Terminal e sites vulneráveis simulados', icon: Terminal, color: 'var(--matrix-green)' },
 ];
 
 export default function EpisodesPage() {
@@ -86,10 +88,16 @@ export default function EpisodesPage() {
               <ArrowLeft className="w-4 h-4" />
               Voltar
             </Link>
-            <Link href="/ranking" className="inline-flex items-center gap-2 text-[var(--muted-gray)] hover:text-[var(--matrix-green)] transition-colors">
-              <Trophy className="w-4 h-4" />
-              Ranking
-            </Link>
+            <div className="flex items-center gap-6">
+              <Link href="/trilhas" className="inline-flex items-center gap-2 text-[var(--muted-gray)] hover:text-[var(--matrix-green)] transition-colors">
+                <Award className="w-4 h-4" />
+                Trilhas
+              </Link>
+              <Link href="/ranking" className="inline-flex items-center gap-2 text-[var(--muted-gray)] hover:text-[var(--matrix-green)] transition-colors">
+                <Trophy className="w-4 h-4" />
+                Ranking
+              </Link>
+            </div>
           </div>
           <h1 className="text-4xl font-bold text-[var(--ghost-white)] mb-4">Episódios</h1>
           <p className="text-[var(--muted-gray)] text-lg">
@@ -183,12 +191,22 @@ export default function EpisodesPage() {
           </div>
         </section>
 
-        <section>
+        <section className="mb-12">
           <h2 className="text-sm font-medium text-[#f59e0b] uppercase tracking-wider mb-1">Módulo 9</h2>
           <p className="text-lg text-[var(--ghost-white)] font-semibold mb-6">Missão Final</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {EPISODE_META.slice(44, 46).map((ep, idx) => (
               <EpisodeCard key={idx + 44} ep={ep} idx={idx + 44} completedRooms={completedRooms} />
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h2 className="text-sm font-medium text-[var(--matrix-green)] uppercase tracking-wider mb-1">Módulo 10</h2>
+          <p className="text-lg text-[var(--ghost-white)] font-semibold mb-6">Modo Hacker</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {EPISODE_META.slice(46, 47).map((ep, idx) => (
+              <EpisodeCard key={idx + 46} ep={ep} idx={idx + 46} completedRooms={completedRooms} />
             ))}
           </div>
         </section>

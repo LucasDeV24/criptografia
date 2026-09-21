@@ -44,6 +44,7 @@ import { automationChallenges } from './ep42-automation';
 import { reportChallenges } from './ep43-report';
 import { pentestFinalChallenges } from './ep44-pentest-final';
 import { certificationChallenges } from './ep45-certification';
+import { labChallenges } from './ep46-labs';
 import type { Challenge } from '@/types/challenge';
 
 export const challengesByEpisode: Record<number, Challenge[]> = {
@@ -102,6 +103,8 @@ export const challengesByEpisode: Record<number, Challenge[]> = {
   // Módulo 9: Missão Final
   44: pentestFinalChallenges,
   45: certificationChallenges,
+  // Módulo 10: Modo Hacker (laboratórios práticos)
+  46: labChallenges,
 };
 
 export function getChallenge(episode: number, room: string): Challenge | undefined {
