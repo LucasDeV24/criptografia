@@ -34,6 +34,9 @@ Combinam wordlist + regras:
 Ferramentas como Hydra, Medusa, Hashcat fazem isso automaticamente.
 
 Vamos criar nosso próprio script de força bruta!
+
+**Lembrete**
+A função de hash "MD5 simplificado" dos exercícios é a mesma caixa-preta do episódio de Hash e Senhas: uma função pronta que transforma um texto em um código fixo. Não é o MD5 real, e você só precisa **chamá-la**.
   `,
 };
 

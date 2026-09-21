@@ -35,6 +35,9 @@ Diferente de criptografia (que embaralha), esteganografia ESCONDE.
 • Ransomware esconde chave em imagem
 
 Vamos aprender técnicas práticas!
+
+**Ferramenta nova neste episódio**
+• **Tirar espaços das pontas:** \`texto.trim()\` (JavaScript) e \`texto.strip()\` (Python) removem espaços e quebras de linha do **começo e do fim** do texto, sem mexer nos do meio. Por exemplo, "  oi  " vira "oi".
   `,
 };
 

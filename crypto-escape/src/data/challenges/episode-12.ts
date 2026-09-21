@@ -35,6 +35,9 @@ Analisar logs, tráfego de rede e identificar:
 **Você tem 6 salas para completar a investigação.**
 
 Boa sorte, Analista! 🔍
+
+**Lembrete das ferramentas usadas**
+Neste projeto você vai reusar o que viu antes: \`Object.keys\` / \`.items()\` para percorrer objetos, template strings e f-strings para montar mensagens, e \`join\` para juntar listas em texto.
   `,
 };
 

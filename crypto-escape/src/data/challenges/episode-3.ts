@@ -26,6 +26,10 @@ Base64 permite enviar QUALQUER coisa usando só esses caracteres.
 • Do bem: decodificam para analisar ameaças
 
 Vamos aprender a decodificar!
+
+**Ferramentas novas neste episódio**
+• **\`import\` no Python:** o Python traz muitos **módulos** (bibliotecas) prontos, mas para usar um deles você o **importa** no topo do código. Aqui usaremos o módulo \`base64\`: escreva \`import base64\` e depois chame as funções dele com o nome do módulo na frente, como \`base64.b64decode(...)\` e \`base64.b64encode(...)\`.
+• **No JavaScript** as funções \`atob()\` (decodifica Base64) e \`btoa()\` (codifica) já vêm prontas, sem precisar de import.
   `,
 };
 

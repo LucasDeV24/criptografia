@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "verify:exercises": "node scripts/verify-exercises.mjs"
+    "verify:exercises": "node --experimental-transform-types scripts/verify-exercises.mjs",
+    "audit:prereqs": "node --experimental-transform-types scripts/audit-prerequisites.mjs"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",

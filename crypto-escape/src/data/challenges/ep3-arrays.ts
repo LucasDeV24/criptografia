@@ -9,18 +9,24 @@ const theory3_0: TheoryChallenge = {
   description: 'Neste episódio você vai aprender a guardar VÁRIOS dados de uma vez. Hackers usam listas o tempo todo!',
   content: `
 **O que é um array (lista)?**
-Uma variável guarda UM valor. Um array guarda VÁRIOS valores de uma vez.
+Uma variável guarda UM valor. Um array guarda VÁRIOS valores de uma vez. No JavaScript se chama **array**; no Python, **lista**.
 
 **Exemplo:**
 • Variável: \`senha = "1234"\` → guarda 1 senha
-• Array: \`senhas = ["1234", "admin", "qwerty"]\` → guarda 3 senhas
+• Array: \`senhas = ["1234", "admin", "qwerty"]\` → guarda 3 senhas (entre colchetes, separadas por vírgula)
 
-**Como acessar os itens:**
+**Como acessar os itens (pela posição):**
 • \`senhas[0]\` → "1234" (primeiro item)
 • \`senhas[1]\` → "admin" (segundo item)
 • \`senhas[2]\` → "qwerty" (terceiro item)
 
 Lembre: sempre começa no **0**!
+
+**Criando uma lista vazia e adicionando itens**
+• **JavaScript:** \`const senhas = [];\` e depois \`senhas.push("abc");\`
+• **Python:** \`senhas = []\` e depois \`senhas.append("abc")\`
+
+\`push\` (JS) e \`append\` (Python) colocam o item **no fim** da lista. Depois de adicionar "a" e depois "b", a lista fica \`["a", "b"]\`.
 
 **Por que isso importa em cibersegurança?**
 Hackers usam listas de senhas comuns (chamadas **wordlists**) para tentar invadir sistemas. Você vai aprender a usar e se defender contra isso!
@@ -139,14 +145,30 @@ const theory3_3: TheoryChallenge = {
   title: 'Loop + Array = poder!',
   description: 'Quando combinamos loops com arrays, podemos percorrer TODOS os itens da lista automaticamente.',
   content: `
-**Combinando o que aprendemos:**
-Com um loop, podemos verificar cada item de uma lista:
+**Quantos itens tem a lista?**
+• **JavaScript:** \`senhas.length\` (sem parênteses)
+• **Python:** \`len(senhas)\`
 
+Para \`["a", "b", "c"]\` o tamanho é 3. Uma lista vazia \`[]\` tem tamanho 0. A última posição é sempre o tamanho menos 1.
+
+**Percorrendo uma lista**
+JavaScript:
 \`\`\`
-para cada senha na lista:
-    se senha == "1234":
-        mostrar "Senha encontrada!"
+for (let i = 0; i < senhas.length; i++) {
+  const senha = senhas[i];
+}
 \`\`\`
+Python:
+\`\`\`
+for senha in senhas:
+    ...
+\`\`\`
+Se você precisar da **posição** no Python, use \`for i in range(len(senhas)):\` e depois \`senhas[i]\`.
+
+**Três padrões que você vai usar sempre**
+• **Buscar:** percorra e, ao achar o item, devolva com \`return\` (o return interrompe a função)
+• **Contar:** um acumulador que soma 1 quando um item passa em um teste (\`if\`)
+• **Filtrar:** guardar em outra lista só os itens que interessam (\`push\` / \`append\`)
 
 **Isso é exatamente um ataque de força bruta!**
 O hacker tem uma lista de senhas comuns e testa cada uma:
@@ -159,7 +181,7 @@ Analistas de segurança também usam isso para:
 • Verificar se seus usuários usam senhas fracas
 • Testar a segurança do próprio sistema
 
-Na próxima sala você vai fazer exatamente isso!
+Nas próximas salas você vai fazer exatamente isso!
   `,
 };
 

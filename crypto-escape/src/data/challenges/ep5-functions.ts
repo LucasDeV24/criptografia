@@ -5,35 +5,41 @@ const theory5_0: TheoryChallenge = {
   type: 'theory',
   episode: 5,
   room: '5.0',
-  title: 'Episódio 5 — Funções: organizando seu código',
-  description: 'Funções são blocos de código reutilizáveis. Em vez de repetir o mesmo código, você cria uma função e chama quando precisar!',
+  title: 'Episódio 5 — Funções: indo mais fundo',
+  description: 'Você escreve funções desde o Episódio 0. Agora vamos entendê-las a fundo e ver quando e por que usá-las.',
   content: `
-**O que é uma função?**
-É como uma "receita" que você cria uma vez e usa quantas vezes quiser.
-
-**Exemplo do dia a dia:**
-Imagine que você precisa verificar senhas em 10 lugares diferentes do sistema.
-Sem função: copiar e colar o mesmo código 10 vezes.
-Com função: criar uma vez e chamar 10 vezes.
-
-**Como criar uma função:**
-• **JavaScript:**
+**Recapitulando a anatomia**
 \`\`\`
-function saudacao() {
-  console.log("Olá!");
+function dobro(numero) {      // JavaScript
+  return numero * 2;
 }
 \`\`\`
-
-• **Python:**
 \`\`\`
-def saudacao():
-    print("Olá!")
+def dobro(numero):            # Python
+    return numero * 2
 \`\`\`
+• O **nome** (\`dobro\`), os **parâmetros** entre parênteses (\`numero\`) e o **corpo**
+• O \`return\` devolve o resultado para quem chamou a função
+• No Python, o \`:\` no fim do \`def\` e o recuo do corpo são obrigatórios
 
-**Como chamar (usar) uma função:**
-Basta escrever o nome com parênteses: \`saudacao()\`
+**Por que usar funções?**
+É como uma "receita" que você cria uma vez e usa quantas vezes quiser. Imagine verificar senhas em 10 lugares do sistema:
+• Sem função: copiar e colar o mesmo código 10 vezes (e corrigir 10 vezes se houver um erro)
+• Com função: criar uma vez e **chamar** 10 vezes
 
-Na próxima sala vamos ver isso na prática!
+**Funções sem parâmetros**
+Nem toda função recebe entradas. Ela pode devolver sempre o mesmo valor:
+\`\`\`
+function boasVindas() {
+  return "Bem-vindo!";
+}
+\`\`\`
+Para chamar, escreva o nome com parênteses **vazios**: \`boasVindas()\`. Os parênteses são obrigatórios, mesmo sem parâmetros.
+
+**Definir × chamar**
+Definir a função só a cria. O código dentro dela só roda quando você a **chama**. Nos desafios, o sistema faz as chamadas por você.
+
+Nas próximas salas você vai praticar funções com nenhum, um e vários parâmetros.
   `,
 };
 
@@ -143,24 +149,22 @@ const theory5_3: TheoryChallenge = {
   title: 'Funções com parâmetros',
   description: 'Parâmetros são informações que você PASSA para a função. Como entregar ingredientes para uma receita.',
   content: `
-**Sem parâmetro:**
-\`\`\`
-function saudacao() {
-  console.log("Olá!");
-}
-saudacao(); // sempre mostra "Olá!"
-\`\`\`
+**Parâmetro × argumento**
+• **Parâmetro:** o nome que aparece na **definição** da função, como \`nome\` em \`function saudacao(nome)\`. É uma variável que só existe dentro da função.
+• **Argumento:** o valor que você passa na **chamada**, como \`"Ana"\` em \`saudacao("Ana")\`.
 
-**Com parâmetro:**
+**Exemplo (JavaScript)**
 \`\`\`
 function saudacao(nome) {
-  console.log("Olá, " + nome + "!");
+  return "Olá, " + nome + "!";
 }
-saudacao("Ana");  // mostra "Olá, Ana!"
-saudacao("Carlos"); // mostra "Olá, Carlos!"
+saudacao("Ana");      // devolve "Olá, Ana!"
+saudacao("Carlos");   // devolve "Olá, Carlos!"
 \`\`\`
+O parâmetro \`nome\` muda a cada chamada: da primeira vez vale "Ana", da segunda "Carlos".
 
-O **parâmetro** \`nome\` é como uma variável que muda a cada chamada.
+**Vários parâmetros**
+Separe-os por vírgula: \`function identificar(nome, cargo)\`. A **ordem** importa: o primeiro argumento vai para o primeiro parâmetro, o segundo para o segundo. \`identificar("Ana", "Admin")\` e \`identificar("Admin", "Ana")\` dão resultados diferentes!
 
 **Por que isso importa na segurança?**
 Funções de verificação recebem dados como parâmetro:
@@ -168,7 +172,7 @@ Funções de verificação recebem dados como parâmetro:
 • \`analisarLog(linhaDeLog)\`
 • \`detectarAtaque(requisicao)\`
 
-Na próxima sala vamos praticar!
+Nas próximas salas você vai praticar!
   `,
 };
 
@@ -280,28 +284,31 @@ const theory5_6: TheoryChallenge = {
   episode: 5,
   room: '5.6',
   title: 'Funções que retornam valores',
-  description: 'Funções podem devolver (retornar) um resultado usando **return**.',
+  description: 'O return é o coração de uma função: é ele que entrega o resultado para quem chamou.',
   content: `
-**Sem return** — a função só FAZ algo (imprime):
-\`\`\`
-function saudacao() {
-  console.log("Olá!");
-}
-\`\`\`
+**Função que só FAZ algo × função que DEVOLVE algo**
+• Uma função que só **imprime** mostra o resultado na tela para uma pessoa, e o valor some.
+• Uma função que usa **return** **devolve** o valor, e o programa pode guardá-lo e usá-lo depois.
 
-**Com return** — a função DEVOLVE um valor:
 \`\`\`
 function dobro(numero) {
   return numero * 2;
 }
-const resultado = dobro(5); // resultado = 10
+const resultado = dobro(5);     // resultado guarda 10
+const outro = dobro(resultado); // usa o resultado em outra conta: 20
 \`\`\`
+
+**O return encerra a função**
+Assim que o \`return\` roda, a função termina. Qualquer código escrito depois dele, dentro da função, **não é executado**. Isso é útil para buscas: ao achar o item, você devolve na hora.
+
+**E sem return?**
+A função devolve "nada": \`undefined\` no JavaScript e \`None\` no Python. Quando um teste mostra "recebido undefined", quase sempre faltou o \`return\`.
 
 **Por que return é importante?**
 Em segurança, funções retornam resultados:
-• \`verificarSenha("1234")\` → retorna **true** ou **false**
-• \`decodificar("Khoor")\` → retorna **"Hello"**
-• \`contarTentativas(logs)\` → retorna **um número**
+• \`verificarSenha("1234")\` → devolve **true** ou **false**
+• \`decodificar("Khoor")\` → devolve **"Hello"**
+• \`contarTentativas(logs)\` → devolve **um número**
 
 O **return** permite guardar o resultado e usar depois!
   `,

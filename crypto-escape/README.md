@@ -27,6 +27,7 @@ Sem as chaves do Supabase o jogo funciona normalmente; só login, sincronizaçã
 | `npm run build` | build de produção |
 | `npm run lint` | ESLint |
 | `npm run verify:exercises` | verifica todos os exercícios com testes (veja abaixo) |
+| `npm run audit:prereqs` | acha exercícios que usam algo que nenhuma teoria anterior ensinou |
 
 ## Como o código do aluno é executado
 

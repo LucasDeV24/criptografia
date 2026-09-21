@@ -28,6 +28,10 @@ Uma mini-linguagem para descrever padrões de texto.
 • IP: \\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}
 • Email: \\w+@\\w+\\.\\w+
 • Telefone BR: \\(\\d{2}\\)\\s?\\d{4,5}-\\d{4}
+
+**Ferramentas novas neste episódio**
+• **\`import re\` (Python):** o módulo \`re\` traz as funções de expressão regular. Importe no topo do código e use, por exemplo, \`re.findall(padrao, texto)\`, que devolve uma **lista com todas** as ocorrências. Escreva o padrão como texto "cru", com um \`r\` antes das aspas (\`r"\\d+"\`), para o Python não interpretar a barra invertida.
+• **No JavaScript**, o padrão vai entre barras: \`texto.match(/\\d+/g)\`. O \`g\` no fim quer dizer "todas as ocorrências". O resultado é um array, ou \`null\` se nada for encontrado.
   `,
 };
 

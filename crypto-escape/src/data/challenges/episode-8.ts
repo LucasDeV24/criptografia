@@ -34,6 +34,11 @@ Como o servidor sabe quem você é?
 APIs mal protegidas = portas abertas para hackers!
 
 Vamos aprender a testar e explorar APIs!
+
+**Ferramentas novas neste episódio**
+• **\`import json\` (Python):** o módulo \`json\` converte entre objetos e texto JSON. \`json.dumps(objeto)\` transforma um dicionário em texto JSON; \`json.loads(texto)\` faz o caminho inverso. Como todo módulo do Python, ele precisa ser importado no topo do código.
+• **No JavaScript**, \`JSON.stringify(objeto)\` e \`JSON.parse(texto)\` fazem o mesmo, sem precisar de import.
+• **\`.find()\` e a seta \`=>\` (JavaScript):** \`lista.find(item => item.id === 2)\` devolve o primeiro item que passa no teste. A seta \`item => ...\` é uma função curta: \`item\` é cada elemento da lista e o que vem depois é o teste. No Python, use um \`for\` com \`if\`.
   `,
 };
 

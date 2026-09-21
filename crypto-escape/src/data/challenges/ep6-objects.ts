@@ -9,18 +9,31 @@ const theory6_0: TheoryChallenge = {
   description: 'Objetos são a forma como dados REAIS são organizados na internet. APIs, tokens e logs usam esse formato.',
   content: `
 **O que é um objeto?**
-Um objeto guarda dados organizados com **nome: valor** (chave-valor).
+Um objeto guarda dados organizados com **nome: valor** (chave-valor). No Python, o nome é **dicionário**.
 
-**Exemplo — dados de um usuário:**
+**Exemplo: dados de um usuário**
+JavaScript:
 \`\`\`
-{
+const usuario = {
   nome: "Ana",
   idade: 25,
   admin: false
+};
+\`\`\`
+Python (as chaves vão entre aspas):
+\`\`\`
+usuario = {
+  "nome": "Ana",
+  "idade": 25,
+  "admin": False
 }
 \`\`\`
 
-**Comparação:**
+**Lendo um valor pela chave**
+• **JavaScript:** \`usuario.nome\` ou \`usuario["nome"]\` → "Ana"
+• **Python:** \`usuario["nome"]\` → "Ana" (no Python só existe a forma com colchetes e aspas)
+
+**Comparação**
 • Variável: guarda UM valor → \`nome = "Ana"\`
 • Array: guarda VÁRIOS valores sem nome → \`["Ana", 25, false]\`
 • Objeto: guarda VÁRIOS valores COM nome → \`{ nome: "Ana", idade: 25 }\`
@@ -28,11 +41,12 @@ Um objeto guarda dados organizados com **nome: valor** (chave-valor).
 **Por que isso importa?**
 Quando você faz login em um site, o servidor responde com algo assim:
 \`\`\`
-{ usuario: "ana", role: "admin", token: "abc123" }
+{ "usuario": "ana", "role": "admin", "token": "abc123" }
 \`\`\`
+Tokens JWT, respostas de APIs, logs de segurança: tudo usa esse formato.
 
-Tokens JWT, respostas de APIs, logs de segurança — tudo usa esse formato.
-Na próxima sala vamos criar nosso primeiro objeto!
+**Nos exercícios**
+Suas funções vão **receber** objetos como parâmetro e ler os valores pelas chaves.
   `,
 };
 
@@ -366,11 +380,57 @@ Percorra a lista, teste uma propriedade de cada objeto e guarde só o que intere
   difficulty: 'medium',
 };
 
+const theory6_cont: TheoryChallenge = {
+  id: 'obj.9',
+  type: 'theory',
+  episode: 6,
+  room: '6.7',
+  title: 'Objetos como contadores',
+  description: 'Um objeto também serve para contar quantas vezes algo aparece: a chave é o item e o valor é a contagem.',
+  content: `
+**Criando e atualizando chaves**
+Você pode começar com um objeto vazio e criar ou trocar chaves quando quiser:
+• **JavaScript:** \`const contagem = {};\` e depois \`contagem["maçã"] = 1;\`
+• **Python:** \`contagem = {}\` e depois \`contagem["maçã"] = 1\`
+
+Atribuir a uma chave que já existe **troca** o valor; atribuir a uma nova **cria** a chave.
+
+**O problema: a chave pode não existir ainda**
+Na primeira vez que você vê um item, ele ainda não está no objeto. Ler uma chave que não existe:
+• No **JavaScript** devolve \`undefined\`
+• No **Python** dá um erro (\`KeyError\`)
+
+**Duas formas seguras de lidar com isso**
+• **JavaScript:** \`(contagem[fruta] || 0) + 1\`. O \`||\` usa o 0 quando o valor é \`undefined\`.
+• **Python:** \`contagem.get(fruta, 0) + 1\`. O \`.get(chave, padrao)\` devolve o valor padrão (0) se a chave não existir.
+
+**O padrão de contagem completo**
+Contando quantas vezes cada fruta aparece em uma lista:
+\`\`\`
+const contagem = {};
+for (let i = 0; i < frutas.length; i++) {
+  const fruta = frutas[i];
+  contagem[fruta] = (contagem[fruta] || 0) + 1;
+}
+\`\`\`
+Python:
+\`\`\`
+contagem = {}
+for fruta in frutas:
+    contagem[fruta] = contagem.get(fruta, 0) + 1
+\`\`\`
+Para \`["maçã", "uva", "maçã"]\` o resultado é \`{"maçã": 2, "uva": 1}\`.
+
+**Na segurança**
+Contar quantas vezes cada IP ou usuário aparece em um log revela ataques: um IP com milhares de tentativas de login é força bruta.
+  `,
+};
+
 const code6_7: CodeChallenge = {
   id: 'obj.7',
   type: 'code',
   episode: 6,
-  room: '6.7',
+  room: '6.8',
   title: 'Contando papéis — relatório de acesso',
   description: 'Um relatório de acesso conta quantos usuários existem em cada papel. Construa um **objeto** com essas contagens.',
   instructions: 'Devolva um objeto/dicionário no formato {role: quantidade}. Exemplo: para 1 admin e 2 usuarios devolve {"admin": 1, "usuario": 2}.',
@@ -446,7 +506,7 @@ const theory6_8: TheoryChallenge = {
   id: 'obj.8',
   type: 'theory',
   episode: 6,
-  room: '6.8',
+  room: '6.9',
   title: 'Parabéns! Você domina objetos e JSON!',
   description: 'Agora você entende como dados são organizados na internet. Isso é a base de APIs, JWT e muito mais.',
   content: `
@@ -476,6 +536,7 @@ export const objectsChallenges: Challenge[] = [
   code6_4,
   code6_5,
   code6_6,
+  theory6_cont,
   code6_7,
   theory6_8,
 ];

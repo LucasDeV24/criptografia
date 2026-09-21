@@ -33,6 +33,10 @@ JWT é um token auto-contido que carrega informações do usuário.
 • Sem validação de expiração
 
 Vamos explorar!
+
+**Ferramentas novas neste episódio**
+• Você vai usar \`import base64\` e \`import json\` no Python (módulos prontos, importados no topo do código, como nos episódios de Base64 e de APIs). Se precisar rever, volte a essas salas.
+• No JavaScript, continue usando \`atob()\`/\`btoa()\` e \`JSON.parse()\`/\`JSON.stringify()\`, que não precisam de import.
   `,
 };
 

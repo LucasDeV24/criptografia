@@ -14,9 +14,9 @@ const theory0_1: TheoryChallenge = {
 • Escolher entre JavaScript ou Python
 • Ir avançando no seu ritmo
 
-**Não sabe programar?** Tudo bem! Nas próximas salas vamos te guiar passo a passo.
+**Não sabe programar?** Tudo bem! Nas próximas salas vamos te guiar passo a passo. **Nenhum conceito aparece em um desafio sem antes ter sido explicado.** Se algo parecer novo, releia a sala de teoria anterior.
 
-**Isso tem haver com cibersegurança?** Sim! Hackers do bem usam código para proteger sistemas, descobrir vulnerabilidades e decifrar mensagens.
+**Isso tem a ver com cibersegurança?** Sim! Hackers do bem usam código para proteger sistemas, descobrir vulnerabilidades e decifrar mensagens.
 
 Clique em **Continuar** para avançar.
   `,
@@ -126,26 +126,49 @@ const theory0_6: TheoryChallenge = {
   type: 'theory',
   episode: 0,
   room: '0.6',
-  title: 'Variáveis e funções — seus primeiros blocos',
-  description: 'Variáveis são "caixas" onde guardamos informações. Funções são blocos de código com nome, que recebem entradas e devolvem um resultado.',
+  title: 'Variáveis e juntando textos',
+  description: 'Variáveis são "caixas com nome" onde o programa guarda informações. Vamos ver como criar e usar uma, e como juntar textos.',
   content: `
-**Variáveis**
-Guardar um nome em uma caixa chamada "usuario":
+**O que é uma variável?**
+Uma variável guarda uma informação para você usar depois. Pense em uma caixa com uma etiqueta: a etiqueta é o **nome**, e o que está dentro é o **valor**.
 
 • **JavaScript:** \`const usuario = "Ana";\`
 • **Python:** \`usuario = "Ana"\`
 
-Depois você usa o que está dentro pelo nome da caixa.
+**Lendo a linha do JavaScript, peça por peça**
+• \`const\` → "vou criar uma variável" (existe também \`let\`, que deixa trocar o valor depois)
+• \`usuario\` → o nome que você escolhe para a caixa
+• \`=\` → "guarde aqui" (não é o "igual" da matemática!)
+• \`"Ana"\` → o valor guardado; um texto sempre vai **entre aspas**
+• \`;\` → marca o fim da instrução (no Python não se usa)
 
-**Funções (uma prévia)**
-Uma função **recebe entradas** e **devolve uma saída** com \`return\`:
+No Python não existe a palavra \`const\`: basta o nome, o \`=\` e o valor.
 
-• **JavaScript:** \`function dobro(n) { return n * 2; }\`
-• **Python:** \`def dobro(n): return n * 2\`
+**Regras para nomes**
+Sem espaços, sem começar com número. Use nomes que expliquem o conteúdo: \`nome\`, \`senha\`, \`total\`.
 
-A partir das próximas salas, você vai **escrever funções**. O sistema chama a sua função com vários valores e confere se o resultado está certo, inclusive em **testes ocultos**.
+**Usando a variável**
+Escreva o nome da caixa, **sem aspas**, para usar o que está dentro:
+• **JavaScript:** \`console.log(usuario);\` → mostra Ana
+• **Python:** \`print(usuario)\` → mostra Ana
 
-**Importante:** a função precisa **devolver** o valor com \`return\`. Só imprimir na tela (\`console.log\`/\`print\`) não conta.
+Com aspas, \`console.log("usuario")\` mostraria a palavra usuario, e não o conteúdo!
+
+**Tipos de valor**
+• **Texto** (string): entre aspas, como "Ana"
+• **Número:** sem aspas, como 25 ou 2.5
+• **Verdadeiro/falso** (booleano): \`true\` / \`false\` no JavaScript, \`True\` / \`False\` no Python
+
+**Juntando textos (concatenação)**
+O sinal **+** junta textos: \`"Olá" + " " + "Ana"\` vira \`"Olá Ana"\`. O espaço também é um texto: sem o \`" "\` do meio o resultado seria "OláAna".
+
+Também funciona com variáveis: \`saudacao + " " + nome\`.
+
+**Juntando texto com número (conversão de tipo)**
+• **JavaScript:** o \`+\` converte o número sozinho: \`"Idade: " + 25\` dá "Idade: 25".
+• **Python:** misturar texto e número com \`+\` dá **erro**. Converta o número em texto com \`str()\`: \`"Idade: " + str(25)\` dá "Idade: 25".
+
+Também existe o caminho inverso, converter texto em número: \`int("25")\` (Python) e \`parseInt("25")\` (JavaScript) devolvem o número 25.
   `,
 };
 
@@ -155,16 +178,250 @@ const code0_7: CodeChallenge = {
   episode: 0,
   room: '0.7',
   title: 'Criando sua primeira variável',
-  description: 'Escreva uma função que calcula o total de uma compra. Guarde o resultado em uma **variável** chamada `total` e devolva com return.',
-  instructions: 'Complete a função: total = preço × quantidade, e devolva o total.',
+  description: 'Hora de praticar! Crie uma **variável** chamada `nome` com o valor "Ana" e mostre o conteúdo dela na tela.',
+  instructions: 'Crie a variável nome com o texto Ana e imprima o conteúdo dela (sem aspas em volta de nome).',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Guarde preco * quantidade em uma variável "total" e devolva.
+    javascript: `// 1) Crie uma variável chamada nome com o valor "Ana"
+// 2) Mostre o conteúdo dela com console.log
+
+
+`,
+    python: `# 1) Crie uma variável chamada nome com o valor "Ana"
+# 2) Mostre o conteúdo dela com print
+
+
+`,
+  },
+  expectedOutput: 'Ana',
+  explanation: `
+**O que aconteceu?**
+Você guardou um texto em uma variável e depois usou o NOME da variável (sem aspas) para mostrar o conteúdo. Com aspas, apareceria a palavra "nome".
+  `,
+  hints: [
+    'Passo 1: const nome = "Ana";   (Python: nome = "Ana")',
+    'Passo 2: console.log(nome);   (Python: print(nome))',
+    'Não coloque aspas em volta de nome no console.log/print, senão aparece a palavra nome',
+  ],
+  difficulty: 'easy',
+};
+
+const code0_8: CodeChallenge = {
+  id: '0.8',
+  type: 'code',
+  episode: 0,
+  room: '0.8',
+  title: 'Juntando textos',
+  description: 'Você pode juntar (concatenar) textos com **+**. As variáveis já estão criadas: falta juntar `saudacao`, um espaço e `nome`, e mostrar o resultado.',
+  instructions: 'Imprima: Olá Ana (juntando a variável saudacao, um espaço e a variável nome).',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `const saudacao = "Olá";
+const nome = "Ana";
+
+// Junte saudacao + " " + nome e mostre com console.log
+
+`,
+    python: `saudacao = "Olá"
+nome = "Ana"
+
+# Junte saudacao + " " + nome e mostre com print
+
+`,
+  },
+  expectedOutput: 'Olá Ana',
+  explanation: `
+**Concatenação**
+O + junta os três pedaços: o conteúdo de saudacao, um texto com um espaço, e o conteúdo de nome. Sem o espaço no meio o resultado seria "OláAna".
+  `,
+  hints: [
+    'Use o sinal + entre as três partes',
+    'JavaScript: console.log(saudacao + " " + nome);',
+    'Python: print(saudacao + " " + nome)',
+  ],
+  difficulty: 'easy',
+};
+
+const theory0_9: TheoryChallenge = {
+  id: '0.9',
+  type: 'theory',
+  episode: 0,
+  room: '0.9',
+  title: 'Funções: a receita do programador',
+  description: 'A partir da próxima sala você vai escrever funções. Aqui está tudo o que precisa saber, linha por linha.',
+  content: `
+**Por que funções?**
+Até aqui você escreveu instruções soltas. Uma **função** é um bloco de código com um **nome**, que você escreve uma vez e usa quantas vezes quiser. Pense em uma máquina de suco: você coloca laranjas (entrada), ela trabalha e devolve suco (saída).
+
+**entrada → função faz o trabalho → saída**
+
+**A anatomia de uma função (JavaScript)**
+\`\`\`
+function dobro(numero) {
+  return numero * 2;
+}
+\`\`\`
+• \`function\` → a palavra que significa "vou criar uma função"
+• \`dobro\` → o **nome** da função (você escolhe; deve dizer o que ela faz)
+• \`(numero)\` → o **parâmetro**: o nome que a entrada recebe DENTRO da função. Pode haver vários, separados por vírgula: \`(preco, quantidade)\`
+• \`{ ... }\` → as chaves cercam o **corpo**: as instruções que a função executa
+• \`return numero * 2;\` → **devolve** o resultado para quem chamou a função e encerra a função
+
+**A anatomia de uma função (Python)**
+\`\`\`
+def dobro(numero):
+    return numero * 2
+\`\`\`
+• \`def\` → vem de "define" (definir): a palavra que cria uma função
+• \`dobro\` → o nome; \`(numero)\` → o parâmetro
+• \`:\` (dois pontos) → obrigatório no fim da linha: quer dizer "o corpo vem a seguir"
+• **Indentação** → em Python NÃO existem chaves. As linhas do corpo ficam **recuadas** (4 espaços) e esse recuo é o que diz "isto pertence à função". Sem o recuo, dá erro!
+
+**Definir é diferente de chamar**
+Escrever a função só a ENSINA ao computador; nada acontece ainda. Para usá-la, você a **chama** pelo nome, com os valores entre parênteses:
+\`\`\`
+dobro(5)     // resultado: 10
+dobro(21)    // resultado: 42
+\`\`\`
+Passo a passo do \`dobro(5)\`:
+1. O valor 5 vai para o parâmetro \`numero\` (agora numero vale 5)
+2. O corpo roda: \`numero * 2\` dá 10
+3. O \`return\` devolve o 10 para quem chamou
+
+Nos desafios, **o sistema chama a sua função** por você, várias vezes, com valores diferentes.
+
+**return × print (muito importante!)**
+• \`print\` / \`console.log\` **mostra** algo na tela para uma pessoa ler. Depois disso, o valor "some".
+• \`return\` **devolve** o valor para o programa, que pode guardá-lo ou usá-lo em outra conta.
+
+Se você só imprimir, o resultado da função será \`undefined\` (JavaScript) ou \`None\` (Python). Os dois querem dizer "nada foi devolvido".
+
+**O esqueleto que vem nos exercícios**
+\`\`\`
+function saudar(nome) {
+  // seu código aqui
+}
+\`\`\`
+\`\`\`
+def saudar(nome):
+    # seu código aqui
+    pass
+\`\`\`
+Você troca o comentário pelo seu código. Em Python, o \`pass\` significa "não faz nada" e só segura o lugar: **apague-o** quando escrever sua linha.
+
+**Nomes exatos**
+O desafio diz qual nome usar. Escreva exatamente igual. No JavaScript costuma-se usar \`camelCase\` (\`calcularTotal\`) e no Python \`snake_case\` (\`calcular_total\`).
+  `,
+};
+
+const theory0_10: TheoryChallenge = {
+  id: '0.10',
+  type: 'theory',
+  episode: 0,
+  room: '0.10',
+  title: 'Como o sistema confere o seu código',
+  description: 'Os próximos desafios são corrigidos por testes automáticos. Entenda como ler os resultados.',
+  content: `
+**Como funciona a correção**
+Ao clicar em **Executar testes**, o sistema chama a SUA função várias vezes, cada vez com valores diferentes, e compara o valor devolvido com o esperado.
+
+**Exemplos e testes ocultos**
+• No topo do exercício aparecem **exemplos**. \`saudar("Ana") → "Olá Ana"\` quer dizer: "chamando a função com "Ana", espero receber "Olá Ana"".
+• Existem também **testes ocultos**: casos que você não vê (texto vazio, número zero, limites). Servem para conferir se a sua lógica funciona em TODAS as situações, e não só nos exemplos.
+• Cada teste mostra ✓ (passou) ou ✗ (falhou). Nos testes visíveis que falham, você vê o que era esperado e o que a sua função devolveu.
+
+**Lendo os resultados**
+• \`recebido undefined\` (ou \`None\`) → você esqueceu o \`return\`
+• \`deu erro: ... (linha 3)\` → há um erro no código, e a linha aponta onde
+• Um teste oculto falhou → pense nos limites: e se for vazio? zero? maiúscula? um espaço sobrando?
+
+**Ajudas que você tem**
+• As **dicas** aparecem uma de cada vez, da mais leve para a mais completa
+• Depois de 3 tentativas erradas, você pode ver a **solução de referência**
+• Ao acertar, a **explicação** é liberada
+• Errar faz parte: ler o erro e corrigir é como programadores trabalham todos os dias
+
+**Antes de clicar em Executar testes, confira:**
+1. O nome da função está exatamente como o desafio pediu?
+2. Você usou \`return\` (e não só print)?
+3. No Python, o corpo está recuado e a linha do \`def\` termina com \`:\`?
+  `,
+};
+
+const code0_11: CodeChallenge = {
+  id: '0.11',
+  type: 'code',
+  episode: 0,
+  room: '0.11',
+  title: 'Sua primeira função',
+  description: 'Ela recebe um `nome` e devolve uma saudação. Use o `dobro` da sala anterior como modelo: o esqueleto já está pronto, você só escreve a linha do `return`.',
+  instructions: 'Devolva "Olá " seguido do nome. Exemplo: saudar("Ana") devolve "Olá Ana".',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Modelo da sala anterior:
+//   function dobro(numero) { return numero * 2; }
+//
+// Agora a sua: devolva "Olá " + nome
+function saudar(nome) {
+  // troque esta linha pelo seu return
+}
+`,
+    python: `# Modelo da sala anterior:
+#   def dobro(numero):
+#       return numero * 2
+#
+# Agora a sua: devolva "Olá " + nome
+def saudar(nome):
+    # troque esta linha (e o pass) pelo seu return
+    pass
+`,
+  },
+  tests: {
+    fn: { javascript: 'saudar', python: 'saudar' },
+    cases: [
+      { name: 'nome simples', args: ['Ana'], expected: 'Olá Ana' },
+      { name: 'outro nome', args: ['Hacker'], expected: 'Olá Hacker' },
+      { name: 'nome vazio', args: [''], expected: 'Olá ', hidden: true },
+      { name: 'nome composto', args: ['Maria Clara'], expected: 'Olá Maria Clara', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function saudar(nome) {
+  return "Olá " + nome;
+}`,
+    python: `def saudar(nome):
+    return "Olá " + nome`,
+  },
+  explanation: `
+**O que você fez**
+Definiu uma função com um parâmetro (nome) e devolveu um texto montado com ele. Quando o sistema chama saudar("Ana"), o valor "Ana" entra no parâmetro nome, o corpo roda e o return devolve "Olá Ana".
+
+**Detalhe:** com nome vazio, o resultado é "Olá " (com o espaço no fim). Os testes ocultos conferem exatamente isso.
+  `,
+  hints: [
+    'O corpo da função tem uma única linha: return seguido do texto "Olá " juntado com o nome',
+    'JavaScript: return "Olá " + nome;    Python: return "Olá " + nome',
+    'No Python, a linha do return precisa estar recuada (4 espaços) e você deve apagar o pass',
+  ],
+  difficulty: 'easy',
+};
+
+const code0_12: CodeChallenge = {
+  id: '0.12',
+  type: 'code',
+  episode: 0,
+  room: '0.12',
+  title: 'Função com dois parâmetros',
+  description: 'Funções podem receber **vários** parâmetros, separados por vírgula. A **ordem** importa: o primeiro valor da chamada vai para o primeiro parâmetro. Calcule o total de uma compra guardando o resultado em uma variável.',
+  instructions: 'Devolva o total: preço × quantidade. Exemplo: calcularTotal(10, 3) devolve 30.',
+  languages: ['javascript', 'python'],
+  starterCode: {
+    javascript: `// Guarde preco * quantidade em uma variável "total" e devolva com return.
 function calcularTotal(preco, quantidade) {
   // seu código aqui
 }
 `,
-    python: `# Guarde preco * quantidade em uma variável "total" e devolva.
+    python: `# Guarde preco * quantidade em uma variável "total" e devolva com return.
 def calcular_total(preco, quantidade):
     # seu código aqui
     pass
@@ -196,60 +453,9 @@ Você guardou o resultado de uma conta em uma variável e devolveu esse valor co
 **Erro comum:** esquecer o return. Sem ele, a função devolve "nada" (undefined / None) e o teste mostra "recebido undefined".
   `,
   hints: [
-    'Crie a variável: const total = preco * quantidade;  (Python: total = preco * quantidade)',
+    'Crie a variável: const total = preco * quantidade;   (Python: total = preco * quantidade)',
     'Depois devolva o valor: return total;',
     'Se aparecer "recebido undefined" (ou None), falta o return',
-  ],
-  difficulty: 'easy',
-};
-
-const code0_8: CodeChallenge = {
-  id: '0.8',
-  type: 'code',
-  episode: 0,
-  room: '0.8',
-  title: 'Juntando textos',
-  description: 'Você pode juntar (concatenar) textos com **+**: "Olá" + " " + "mundo" vira "Olá mundo". Escreva uma função que monta uma saudação.',
-  instructions: 'Devolva "Olá " seguido do nome. Exemplo: saudar("Ana") devolve "Olá Ana".',
-  languages: ['javascript', 'python'],
-  starterCode: {
-    javascript: `// Devolva "Olá " + nome
-function saudar(nome) {
-  // seu código aqui
-}
-`,
-    python: `# Devolva "Olá " + nome
-def saudar(nome):
-    # seu código aqui
-    pass
-`,
-  },
-  tests: {
-    fn: { javascript: 'saudar', python: 'saudar' },
-    cases: [
-      { name: 'nome simples', args: ['Ana'], expected: 'Olá Ana' },
-      { name: 'outro nome', args: ['Hacker'], expected: 'Olá Hacker' },
-      { name: 'nome vazio', args: [''], expected: 'Olá ', hidden: true },
-      { name: 'nome composto', args: ['Maria Clara'], expected: 'Olá Maria Clara', hidden: true },
-    ],
-  },
-  solution: {
-    javascript: `function saudar(nome) {
-  return "Olá " + nome;
-}`,
-    python: `def saudar(nome):
-    return "Olá " + nome`,
-  },
-  explanation: `
-**Concatenação**
-O sinal + junta textos. O espaço faz parte do texto: "Olá " (com espaço) + nome. Sem ele, você teria "OláAna".
-
-**Detalhe:** com nome vazio, o resultado é "Olá " (com o espaço no final). Os testes ocultos conferem exatamente isso.
-  `,
-  hints: [
-    'Some o texto "Olá " com o nome: "Olá " + nome',
-    'Não esqueça do espaço depois de "Olá"',
-    'return "Olá " + nome',
   ],
   difficulty: 'easy',
 };
@@ -263,4 +469,8 @@ export const episode0Challenges: Challenge[] = [
   theory0_6,
   code0_7,
   code0_8,
+  theory0_9,
+  theory0_10,
+  code0_11,
+  code0_12,
 ];

@@ -28,6 +28,9 @@ const theory0: TheoryChallenge = {
 • Python — scripts, automação, ferramentas
 • Bash — automação de sistema Linux
 • PowerShell — automação Windows
+
+**Lembrete**
+Como no episódio de Regex, no Python você importa o módulo com \`import re\` no topo do código e usa \`re.findall(padrao, texto)\` para achar todas as ocorrências de um padrão.
   `,
 };
 

@@ -30,6 +30,20 @@ Query vira: \`SELECT * FROM users WHERE user='admin' OR '1'='1' AND pass='Y'\`
 • Ganhar acesso admin
 
 Vamos aprender a identificar e explorar!
+
+**Ferramentas novas neste episódio**
+• **Buscar em uma lista com \`.find()\` (JavaScript):** \`usuarios.find(u => u.usuario === "admin")\` devolve o **primeiro** item da lista que passa no teste, ou \`undefined\` se nenhum passar.
+• **A seta \`=>\` (função curta):** \`u => u.usuario === "admin"\` é uma função sem nome. \`u\` é o parâmetro (cada item da lista, um de cada vez) e o que vem depois da seta é o que ela devolve. É o mesmo que \`function (u) { return u.usuario === "admin"; }\`.
+• **No Python** você percorre a lista com \`for\` e testa cada item com \`if\`, como já fez nos episódios anteriores.
+• **Montando textos com valores (template string e f-string):** em vez de juntar pedaços com \`+\`, você pode escrever o texto já com os valores dentro. No **JavaScript** use crases e \`\${valor}\`; no **Python** use um \`f\` antes das aspas e \`{valor}\`. Os dois dão "Olá, Ana!" quando nome vale "Ana":
+\`\`\`
+const nome = "Ana";
+console.log(\`Olá, \${nome}!\`);    // JavaScript (crases)
+\`\`\`
+\`\`\`
+nome = "Ana"
+print(f"Olá, {nome}!")           # Python (f antes das aspas)
+\`\`\`
   `,
 };
 

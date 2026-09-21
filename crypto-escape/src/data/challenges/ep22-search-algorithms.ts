@@ -20,6 +20,12 @@ Divide a lista ao meio a cada passo (lista precisa estar ordenada).
 **Analogia:**
 • Linear: procurar um nome no dicionário página por página
 • Binária: abrir no meio, ver se é antes ou depois, dividir de novo
+
+**Ferramenta nova neste episódio: o meio de uma faixa**
+Para achar a posição do meio entre \`inicio\` e \`fim\`, faça \`(inicio + fim) / 2\`, mas isso pode dar um número quebrado: (0 + 9) / 2 = 4,5. Precisamos descartar a parte decimal:
+• **JavaScript:** \`Math.floor((inicio + fim) / 2)\`. O \`Math.floor\` arredonda para baixo.
+• **Python:** \`(inicio + fim) // 2\`. O \`//\` é a divisão inteira, que já descarta a parte decimal.
+Nos dois casos, o meio entre 0 e 9 é a posição 4.
   `,
 };
 

@@ -72,6 +72,23 @@ const code: CodeChallenge = {
 O código salvo do aluno só é reaproveitado se ainda contiver o nome da função nova, para não carregar
 respostas do formato antigo.
 
+## Regra de ouro: nada aparece antes de ser ensinado
+
+Um exercício **só pode usar** o que uma sala de teoria anterior **explicou** (ou o que ele mesmo explica).
+Isso vale para sintaxe (`def`, `:`, indentação), funções (`len`, `range`), métodos (`push`, `.get`),
+operadores (`%`, `=>`) e módulos (`import`). Se um conceito novo aparece, escreva **antes**:
+
+1. uma sala de teoria curta (ou um bloco "Ferramentas novas neste episódio" na teoria de abertura);
+2. mostrando o código nas duas linguagens, com cada parte explicada ("peça por peça");
+3. e só então o exercício que o usa.
+
+Código que o aluno recebe pronto e não precisa entender (por exemplo, o "hash simulado") deve ser avisado como
+**caixa-preta**: "você só precisa chamar esta função".
+
+Rode `npm run audit:prereqs` depois de mexer em conteúdo. Ele percorre o curso na ordem e lista os exercícios que
+usam um conceito que nenhuma teoria anterior explicou. É uma heurística por texto: se aparecer um conceito novo,
+inclua a regra dele em `scripts/audit-prerequisites.mjs`.
+
 ## 6. Verificação automática
 
 Depois de criar ou migrar exercícios, rode `npm run verify:exercises`. Para cada exercício com `tests`, em JavaScript
@@ -83,6 +100,8 @@ fixa não passa em todos os testes. Ele usa os mesmos workers do site, então o 
 
 **Feito**
 - Motor de execução isolado (Web Workers), com timeout, erros com linha e testes ocultos.
+- Auditoria de pré-requisitos (`npm run audit:prereqs`): o curso todo passa com 0 conceitos usados antes de ensinados.
+- Funções ensinadas a fundo no Episódio 0 (anatomia de `def`/`function`, parâmetros, `return`, indentação, definir × chamar, `print` × `return`) antes do primeiro exercício de função.
 - Base de programação (episódios 0 a 7) no formato novo: 37 exercícios com testes visíveis e ocultos. Nos episódios 0
   (0.4 e 0.5) as salas guiadas de "clique em Executar" foram mantidas de propósito, como apresentação do editor.
 - Modo Hacker: 5 laboratórios simulados (terminal, SQLi, XSS, IDOR) + teoria.

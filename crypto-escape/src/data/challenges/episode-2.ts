@@ -23,6 +23,11 @@ Tentam "quebrar" hashes para descobrir senhas. Isso se chama "cracking".
 Entendem isso para criar sistemas mais seguros e testar vulnerabilidades.
 
 Vamos aprender como funciona!
+
+**Ferramentas novas neste episódio**
+• **Hash simulado (uma "caixa-preta"):** nos exercícios você recebe pronta uma função de hash **simplificada**, criada só para estudo. Ela NÃO é um hash de verdade, como MD5 ou SHA-256. Você não precisa entender a conta por dentro: o que importa é o que ela faz. Ela transforma qualquer texto em um código de tamanho fixo, sempre o mesmo para a mesma entrada, e não dá para "desfazer" a conta.
+• **Trechos como \`Math.abs(...)\` e \`.toString(16)\`:** aparecem dentro dessa função pronta. \`Math.abs\` tira o sinal negativo de um número e \`.toString(16)\` escreve o número em hexadecimal. Você só precisa **chamar** a função.
+• **\`break\` e \`continue\` em loops:** dentro de um loop, \`break\` **encerra** o loop na hora (útil quando você já achou o que procurava, como a senha certa) e \`continue\` **pula** o resto da volta atual e segue para a próxima volta.
   `,
 };
 

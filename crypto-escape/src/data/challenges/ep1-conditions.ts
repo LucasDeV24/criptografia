@@ -6,7 +6,7 @@ const theory1_0: TheoryChallenge = {
   episode: 1,
   room: '1.0',
   title: 'Episódio 1 — Comparações e Decisões',
-  description: 'Neste episódio você vai fazer o computador tomar decisões. Também vai aprender a escrever funções, que é como programadores organizam o código de verdade.',
+  description: 'Neste episódio você vai fazer o computador tomar decisões: comparar valores e escolher o que fazer.',
   content: `
 **Por que decisões importam?**
 Todo sistema de segurança precisa decidir:
@@ -14,19 +14,18 @@ Todo sistema de segurança precisa decidir:
 • A senha está errada? → Bloqueia acesso
 
 **Comparações**
-Uma comparação devolve **verdadeiro** (true / True) ou **falso** (false / False):
+Uma comparação devolve **verdadeiro** (\`true\` / \`True\`) ou **falso** (\`false\` / \`False\`):
 • \`==\` → "é igual a?"   (no JavaScript, prefira \`===\`, que também compara o tipo)
 • \`!=\` → "é diferente de?"
 • \`>\` e \`<\` → maior e menor
 • \`>=\` e \`<=\` → maior ou igual, menor ou igual
 
-**Funções: como você vai resolver os desafios**
-Uma função é um bloco de código com nome. Ela **recebe entradas** (parâmetros) e **devolve uma saída** com \`return\`.
+Cuidado: um \`=\` sozinho **guarda** um valor em uma variável. Para **comparar**, use dois (\`==\`) ou três (\`===\`).
 
-• **JavaScript:** \`function dobro(n) { return n * 2; }\`
-• **Python:** \`def dobro(n): return n * 2\`
+**Lembrete: os desafios são funções**
+Como você viu no Episódio 0, cada desafio pede que você complete uma **função**: um bloco com nome (\`function\` no JavaScript, \`def\` no Python), que recebe **parâmetros** e devolve um resultado com \`return\`. O sistema chama a sua função com vários valores, inclusive **casos ocultos**.
 
-Nos desafios, você escreve a função e o sistema a testa com vários casos, inclusive **casos ocultos**. Assim você aprende a pensar em todas as situações, como um dev de verdade.
+Se precisar rever a anatomia de uma função, volte à sala **0.9 — Funções: a receita do programador**.
 
 **Atenção:** a função precisa **devolver** o resultado com \`return\`. Só imprimir na tela (\`console.log\`/\`print\`) não conta.
   `,
@@ -249,11 +248,47 @@ A função compara as duas senhas. Se forem idênticas → permitido. Em qualque
   difficulty: 'easy',
 };
 
+const theory1_len: TheoryChallenge = {
+  id: 'cond.8',
+  type: 'theory',
+  episode: 1,
+  room: '1.5',
+  title: 'Medindo o tamanho de um texto',
+  description: 'Muitas regras de segurança dependem do tamanho de uma senha. Veja como descobrir quantos caracteres um texto tem.',
+  content: `
+**Tamanho de um texto**
+Para saber quantos caracteres um texto tem:
+• **JavaScript:** \`senha.length\` (sem parênteses, é uma propriedade do texto)
+• **Python:** \`len(senha)\` (aqui é uma função, com parênteses)
+
+**Exemplos**
+• "abc" tem tamanho 3
+• "" (texto vazio) tem tamanho 0
+• Espaços contam: "a b" tem tamanho 3
+
+**Usando o tamanho em uma decisão**
+JavaScript:
+\`\`\`
+if (senha.length < 6) {
+  return "curta";
+}
+\`\`\`
+Python:
+\`\`\`
+if len(senha) < 6:
+    return "curta"
+\`\`\`
+
+**Atenção aos limites!**
+"Menos de 6" (\`< 6\`) e "6 ou menos" (\`<= 6\`) dão resultados diferentes quando a senha tem exatamente 6 caracteres. Os testes ocultos do próximo desafio conferem isso.
+  `,
+};
+
 const code1_5: CodeChallenge = {
   id: 'cond.5',
   type: 'code',
   episode: 1,
-  room: '1.5',
+  room: '1.6',
   title: 'Força da senha',
   description: 'Sites avaliam a força da sua senha. Vamos fazer o mesmo, pelo tamanho: menos de 6 caracteres é **Fraca**, de 6 a 9 é **Média**, 10 ou mais é **Forte**.',
   instructions: 'Devolva "Fraca", "Média" ou "Forte" conforme o tamanho da senha. Cuidado com os limites!',
@@ -325,7 +360,7 @@ const code1_6: CodeChallenge = {
   id: 'cond.6',
   type: 'code',
   episode: 1,
-  room: '1.6',
+  room: '1.7',
   title: 'Login com bloqueio de conta',
   description: 'Desafio final do episódio! Um login de verdade combina **usuário E senha** e ainda **bloqueia a conta** depois de muitas tentativas erradas, defesa clássica contra ataques de força bruta.',
   instructions: 'Regras: com 3 ou mais tentativas → "Conta bloqueada". Senão, usuário "admin" E senha "S3nh4!" → "Acesso permitido". Qualquer outro caso → "Acesso negado".',
@@ -400,7 +435,7 @@ const theory1_7: TheoryChallenge = {
   id: 'cond.7',
   type: 'theory',
   episode: 1,
-  room: '1.7',
+  room: '1.8',
   title: 'Parabéns! Você domina decisões',
   description: 'Você escreveu funções, tratou casos de borda e montou a lógica de um login seguro.',
   content: `
@@ -429,6 +464,7 @@ export const conditionsChallenges: Challenge[] = [
   code1_2,
   theory1_3,
   code1_4,
+  theory1_len,
   code1_5,
   code1_6,
   theory1_7,

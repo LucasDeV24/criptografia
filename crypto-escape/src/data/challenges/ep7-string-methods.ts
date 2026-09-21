@@ -8,11 +8,17 @@ const theory7_0: TheoryChallenge = {
   title: 'Episódio 7 — Métodos de String avançados',
   description: 'Neste episódio você vai aprender métodos que analistas de segurança usam DIARIAMENTE para detectar ataques.',
   content: `
-**O que vamos aprender:**
-• \`.includes()\` → texto contém algo? (detectar XSS, SQL Injection)
-• \`.indexOf()\` → onde está algo no texto? (encontrar payloads)
-• \`.split()\` → dividir texto em partes (analisar logs)
-• \`.replace()\` → substituir partes do texto (sanitizar input)
+**O que vamos aprender (JavaScript / Python)**
+• **Contém algo?** \`texto.includes("x")\` / \`"x" in texto\` → devolve true/false (detectar XSS, SQL Injection)
+• **Onde está?** \`texto.indexOf("x")\` / \`texto.index("x")\` → posição da primeira ocorrência (encontrar payloads)
+• **Dividir:** \`texto.split(" ")\` (igual nas duas) → divide em partes (analisar logs)
+• **Substituir:** \`texto.replace("a", "b")\` → troca partes do texto (sanitizar entradas)
+
+**Detalhe do replace**
+No JavaScript, \`replace\` troca só a **primeira** ocorrência; para trocar **todas**, use \`replaceAll\`. No Python, \`replace\` já troca todas.
+
+**Você já conhece**
+\`.toLowerCase()\` / \`.lower()\` para converter em minúsculas: útil para comparar sem se importar com maiúsculas.
 
 **Por que isso é essencial?**
 Quando um hacker tenta um ataque XSS, ele envia algo como:
@@ -21,7 +27,7 @@ Quando um hacker tenta um ataque XSS, ele envia algo como:
 O sistema de segurança faz:
 \`if (input.includes("<script>")) → BLOQUEAR\`
 
-Ou quando um analista lê logs:
+Ou, quando um analista lê logs:
 \`"2024-01-15 10:30:00 LOGIN admin 192.168.1.1"\`
 Ele usa \`.split(" ")\` para separar cada parte.
 
@@ -372,11 +378,45 @@ No JavaScript, replace troca só a primeira ocorrência; replaceAll troca todas.
   difficulty: 'medium',
 };
 
+const theory7_pos: TheoryChallenge = {
+  id: 'strm.10',
+  type: 'theory',
+  episode: 7,
+  room: '7.7',
+  title: 'Posição e fatias de texto',
+  description: 'Para separar partes de um texto você precisa saber ONDE algo está e pegar só o pedaço que interessa.',
+  content: `
+**Onde está? indexOf e index**
+• **JavaScript:** \`texto.indexOf(":")\`
+• **Python:** \`texto.index(":")\`
+
+Devolvem a **posição** (começando em 0) da **primeira** ocorrência. Em \`"admin:123"\`, o ":" está na posição 5.
+
+Se o texto não existir: o JavaScript devolve **-1**; o Python **dá erro** (\`ValueError\`). Por isso, quando não tiver certeza, confira antes com \`includes\` / \`in\`.
+
+**Fatias: pegando um pedaço**
+• **JavaScript:** \`texto.slice(inicio, fim)\`
+• **Python:** \`texto[inicio:fim]\`
+
+O **início entra** e o **fim NÃO entra**. Em \`"admin:123"\`:
+• \`slice(0, 5)\` / \`texto[0:5]\` → "admin"
+• Sem o fim, vai até o final: \`slice(6)\` / \`texto[6:]\` → "123"
+• No Python, sem o início, começa do zero: \`texto[:5]\` → "admin"
+
+**Separando usuário e senha**
+1. Ache a posição do ":" → 5
+2. O usuário é do 0 até essa posição (sem incluí-la): \`slice(0, 5)\`
+3. A senha começa **depois** do ":", ou seja, na posição 5 + 1 = 6, e vai até o final: \`slice(6)\`
+
+Repare que tudo isso depende de contar posições a partir do 0.
+  `,
+};
+
 const code7_7: CodeChallenge = {
   id: 'strm.7',
   type: 'code',
   episode: 7,
-  room: '7.7',
+  room: '7.8',
   title: 'indexOf() — encontrando posição',
   description: 'Dados chegam como "usuario:senha". Encontre o **primeiro** ":" e separe as duas partes, mesmo se a senha também tiver ":".',
   instructions: 'Devolva um objeto {usuario, senha}, separando no PRIMEIRO ":". Exemplo: extrairCredenciais("admin:password123") devolve {usuario: "admin", senha: "password123"}.',
@@ -438,7 +478,7 @@ const code7_8: CodeChallenge = {
   id: 'strm.8',
   type: 'code',
   episode: 7,
-  room: '7.8',
+  room: '7.9',
   title: 'Desafio — analisar log completo',
   description: 'Junte tudo: divida a linha do log, verifique se o evento foi uma **FALHA** e monte o alerta de segurança.',
   instructions: 'Para "DATA EVENTO USUARIO IP": se o evento for "FALHA", devolva {alerta: true, usuario, ip}; senão, {alerta: false}.',
@@ -501,7 +541,7 @@ const theory7_9: TheoryChallenge = {
   id: 'strm.9',
   type: 'theory',
   episode: 7,
-  room: '7.9',
+  room: '7.10',
   title: 'Parabéns! Você está PRONTO para cibersegurança!',
   description: 'Com métodos de string, você tem TODAS as ferramentas que um analista de segurança usa para detectar ataques.',
   content: `
@@ -543,6 +583,7 @@ export const stringMethodsChallenges: Challenge[] = [
   theory7_4,
   code7_5,
   code7_6,
+  theory7_pos,
   code7_7,
   code7_8,
   theory7_9,

@@ -42,6 +42,14 @@ TUDO na internet são pacotes:
 Captura e analisa pacotes em tempo real.
 
 Vamos simular análise de pacotes!
+
+**Ferramenta nova neste episódio**
+• **Arredondar um número:** \`Math.round(x)\` (JavaScript) e \`round(x)\` (Python) arredondam para o inteiro mais próximo. Por exemplo, 2,6 vira 3.
+
+**Ferramentas novas neste episódio**
+• **Percorrer uma lista direto:** no JavaScript, \`for (const item of lista) { ... }\` entrega cada item sem precisar de índice (é o mesmo que o \`for item in lista\` do Python). Para ter a posição junto com o item no Python, use \`for i, item in enumerate(lista):\`.
+• **Juntar uma lista em um texto:** JavaScript \`lista.join(", ")\` (o método é da lista) e Python \`", ".join(lista)\` (o método é do separador). No Python, os itens precisam ser texto: use \`str()\` nos números.
+• **Percorrer um objeto/dicionário:** JavaScript \`Object.keys(obj)\` devolve a lista das chaves e \`Object.entries(obj)\` os pares [chave, valor]. Python: \`obj.keys()\` e \`obj.items()\`, usados assim: \`for chave, valor in obj.items():\`.
   `,
 };
 

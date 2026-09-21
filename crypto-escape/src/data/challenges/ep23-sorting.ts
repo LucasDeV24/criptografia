@@ -19,6 +19,10 @@ Repete até não haver mais trocas.
 **Complexidade — O(n²) vs O(n log n):**
 • Bubble sort: O(n²) — lento para listas grandes
 • Algoritmos profissionais (merge sort, quick sort): O(n log n) — muito mais rápidos
+
+**Ferramenta nova neste episódio: ordenar lista de objetos**
+• **JavaScript:** \`lista.sort(function (a, b) { return b.gravidade - a.gravidade; })\`. A função recebe dois itens e devolve um número: se for **positivo**, o segundo vem antes. Com \`b.gravidade - a.gravidade\`, a ordem fica **decrescente** (maior primeiro).
+• **Python:** \`lista.sort(key=lambda a: a["gravidade"], reverse=True)\`. O \`lambda a: a["gravidade"]\` é uma **função curta** que devolve o valor pelo qual ordenar (\`a\` é cada item), e \`reverse=True\` inverte para decrescente.
   `,
 };
 

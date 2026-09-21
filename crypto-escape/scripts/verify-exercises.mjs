@@ -47,7 +47,18 @@ for (const file of fs.readdirSync(challengesDir).filter((f) => f.endsWith('.ts')
   }
 }
 
+// TOTAL_ROOMS (src/lib/progress.ts) precisa bater com o número real de salas
+let allRooms = 0;
+for (const file of fs.readdirSync(challengesDir).filter((f) => f.endsWith('.ts') && f !== 'index.ts')) {
+  const mod = await import(pathToFileURL(path.join(challengesDir, file)).href);
+  for (const value of Object.values(mod)) if (Array.isArray(value)) allRooms += value.filter((c) => c && c.room !== undefined).length;
+}
+const declared = Number(/export const TOTAL_ROOMS = (\d+)/.exec(fs.readFileSync(path.join(root, 'src/lib/progress.ts'), 'utf8'))?.[1]);
 let failures = 0;
+if (declared !== allRooms) {
+  failures++;
+  console.log(String.fromCharCode(10007) + ' TOTAL_ROOMS em src/lib/progress.ts vale ' + declared + ', mas existem ' + allRooms + ' salas. Atualize a constante (e o texto do layout.tsx).');
+}
 const fail = (c, lang, msg) => {
   failures++;
   console.log(`  ✗ [${c.id}] ${lang}: ${msg}`);

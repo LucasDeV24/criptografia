@@ -317,11 +317,47 @@ def deslocar_letra(letra, deslocamento):
   difficulty: 'medium',
 };
 
+const theory4_mod: TheoryChallenge = {
+  id: 'str.9',
+  type: 'theory',
+  episode: 4,
+  room: '4.7',
+  title: 'Dando a volta no alfabeto: o resto da divisão (%)',
+  description: 'Na Cifra de César, o Z deslocado volta para o A. Para isso você precisa de uma nova ferramenta: o operador %.',
+  content: `
+**O problema**
+Se você deslocar o "Z" (posição 25 do alfabeto) em 3, chega na posição 28. Mas o alfabeto acaba na 25! Precisamos "dar a volta" e voltar ao "A".
+
+**O resto da divisão: %**
+O operador \`%\` (igual no JavaScript e no Python) devolve o **resto** de uma divisão:
+• \`7 % 3\` → 1 (7 dividido por 3 dá 2, e sobra 1)
+• \`10 % 5\` → 0 (divisão exata, não sobra nada)
+• \`28 % 26\` → 2
+
+Na prática: \`numero % 26\` sempre dá um resultado entre 0 e 25. Perfeito para o alfabeto!
+
+**A conta da Cifra de César, passo a passo**
+Vamos deslocar "X" em 3:
+1. Letra → número: \`ord("X")\` (Python) ou \`"X".charCodeAt(0)\` (JS) = 88
+2. Leve para a faixa 0–25 subtraindo 65 (o código do "A"): 88 − 65 = 23
+3. Some o deslocamento e dê a volta: (23 + 3) % 26 = 0
+4. Volte ao código real somando 65: 0 + 65 = 65, que é o "A"
+
+Resultado: "X" deslocado em 3 vira "A".
+
+**A fórmula completa**
+\`(codigo - 65 + deslocamento) % 26 + 65\`
+
+**E os espaços?**
+Só as letras A–Z devem ser deslocadas. Um espaço tem que ficar como está, então teste \`letra === " "\` (Python: \`letra == " "\`) antes de aplicar a conta.
+  `,
+};
+
 const code4_7: CodeChallenge = {
   id: 'str.7',
   type: 'code',
   episode: 4,
-  room: '4.7',
+  room: '4.8',
   title: 'Sua vez — a Cifra de César completa',
   description: 'Agora criptografe um texto inteiro! Desloque cada letra **A–Z** e volte para o início depois do Z (X + 3 vira A). Espaços ficam como estão.',
   instructions: 'Cifre o texto (letras MAIÚSCULAS A–Z e espaços). Exemplo: cifraDeCesar("HELLO", 3) devolve "KHOOR".',
@@ -398,7 +434,7 @@ const theory4_8: TheoryChallenge = {
   id: 'str.8',
   type: 'theory',
   episode: 4,
-  room: '4.8',
+  room: '4.9',
   title: 'Parabéns! Você está pronto para criptografia!',
   description: 'Agora você entende TUDO que precisa para fazer criptografia de verdade!',
   content: `
@@ -436,6 +472,7 @@ export const stringsChallenges: Challenge[] = [
   code4_4,
   code4_5,
   code4_6,
+  theory4_mod,
   code4_7,
   theory4_8,
 ];

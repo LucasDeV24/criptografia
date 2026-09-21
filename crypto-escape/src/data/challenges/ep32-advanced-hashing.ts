@@ -23,6 +23,9 @@ Um segredo GLOBAL adicionado a todas as senhas:
 Propositalmente LENTO para dificultar força bruta.
 MD5: 1 bilhão de tentativas/segundo
 bcrypt: ~1.000 tentativas/segundo
+
+**Lembrete**
+Como nos episódios anteriores de hash, a função de hash dos exercícios é uma **caixa-preta simplificada** (não é MD5 nem SHA-256 de verdade). O que importa aqui é o que ela faz com o **salt**: você a chama, sem precisar entender a conta por dentro.
   `,
 };
 
