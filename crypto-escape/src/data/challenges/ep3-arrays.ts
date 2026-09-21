@@ -32,26 +32,48 @@ const code3_1: CodeChallenge = {
   type: 'code',
   episode: 3,
   room: '3.1',
-  title: 'Criando sua primeira lista',
-  description: 'O código cria uma lista de frutas e mostra a primeira. **Execute** para ver!',
-  instructions: 'Execute o código e veja o resultado.',
+  title: 'Acessando o primeiro item',
+  description: 'Uma lista guarda vários valores em ordem. Cada item tem uma **posição**, e a contagem começa no **0**. Escreva uma função que devolve o primeiro item.',
+  instructions: 'Devolva o item da posição 0 da lista. Exemplo: primeiroItem(["maçã", "uva"]) devolve "maçã".',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const frutas = ["maçã", "banana", "uva"];
-
-// Mostrando o primeiro item (posição 0):
-console.log(frutas[0]);
+    javascript: `// Devolva o primeiro item da lista (posição 0)
+function primeiroItem(lista) {
+  // seu código aqui
+}
 `,
-    python: `frutas = ["maçã", "banana", "uva"]
-
-# Mostrando o primeiro item (posição 0):
-print(frutas[0])
+    python: `# Devolva o primeiro item da lista (posição 0)
+def primeiro_item(lista):
+    # seu código aqui
+    pass
 `,
   },
-  expectedOutput: 'maçã',
+  tests: {
+    fn: { javascript: 'primeiroItem', python: 'primeiro_item' },
+    cases: [
+      { name: 'lista de frutas', args: [['maçã', 'banana', 'uva']], expected: 'maçã' },
+      { name: 'lista de números', args: [[7, 8, 9]], expected: 7 },
+      { name: 'lista com um item', args: [['x']], expected: 'x', hidden: true },
+      { name: 'lista de booleanos', args: [[true, false]], expected: true, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function primeiroItem(lista) {
+  return lista[0];
+}`,
+    python: `def primeiro_item(lista):
+    return lista[0]`,
+  },
+  explanation: `
+**Posições começam em 0**
+lista[0] é o primeiro item, lista[1] o segundo, e assim por diante. Todo programador erra isso no começo: o "primeiro" está na posição zero.
+
+**Por que importa?** Quase todo ataque de força bruta usa listas de senhas (wordlists). Acessar itens pela posição é a base para percorrê-las.
+  `,
   hints: [
-    'O código já está pronto! Execute.',
-    'frutas[0] acessa o primeiro item: "maçã"',
+    'Use colchetes com o número da posição: lista[0]',
+    'Lembre: a contagem começa em 0, não em 1',
+    'return lista[0]',
   ],
   difficulty: 'easy',
 };
@@ -61,25 +83,50 @@ const code3_2: CodeChallenge = {
   type: 'code',
   episode: 3,
   room: '3.2',
-  title: 'Acessando outro item',
-  description: 'Mude o código para mostrar **"uva"** em vez de "maçã". Dica: uva está na posição **2**.',
-  instructions: 'Imprima o item na posição 2 do array (que é "uva").',
+  title: 'Acessando qualquer posição',
+  description: 'Agora a posição vem como **parâmetro**. Escreva uma função que devolve o item de uma posição qualquer da lista.',
+  instructions: 'Devolva o item que está na posição indicada. Exemplo: itemNaPosicao(["maçã", "banana", "uva"], 2) devolve "uva".',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const frutas = ["maçã", "banana", "uva"];
-
-// Imprima o item na posição 2 do array (que é "uva")
+    javascript: `// Devolva o item que está na posição "posicao"
+function itemNaPosicao(lista, posicao) {
+  // seu código aqui
+}
 `,
-    python: `frutas = ["maçã", "banana", "uva"]
-
-# Imprima o item na posição 2 do array (que é "uva")
+    python: `# Devolva o item que está na posição "posicao"
+def item_na_posicao(lista, posicao):
+    # seu código aqui
+    pass
 `,
   },
-  expectedOutput: 'uva',
+  tests: {
+    fn: { javascript: 'itemNaPosicao', python: 'item_na_posicao' },
+    cases: [
+      { name: 'posição 2', args: [['maçã', 'banana', 'uva'], 2], expected: 'uva' },
+      { name: 'posição 1', args: [['a', 'b', 'c'], 1], expected: 'b' },
+      { name: 'posição 0', args: [['a', 'b', 'c'], 0], expected: 'a', hidden: true },
+      { name: 'última posição', args: [[1, 2, 3, 4], 3], expected: 4, hidden: true },
+      { name: 'lista de um item', args: [[5], 0], expected: 5, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function itemNaPosicao(lista, posicao) {
+  return lista[posicao];
+}`,
+    python: `def item_na_posicao(lista, posicao):
+    return lista[posicao]`,
+  },
+  explanation: `
+**Posição como variável**
+Dentro dos colchetes cabe qualquer valor, inclusive uma variável: lista[posicao].
+
+**A última posição**
+Uma lista de 4 itens vai da posição 0 até a 3. A posição 4 não existe. Esse "erro por um" (off-by-one) é uma das causas mais comuns de bugs e de falhas de segurança (como leitura fora dos limites de memória).
+  `,
   hints: [
-    'Use console.log(frutas[2]) em JavaScript',
-    'Use print(frutas[2]) em Python',
-    'Posição 0 = maçã, 1 = banana, 2 = uva',
+    'A posição é um parâmetro: use lista[posicao]',
+    'return lista[posicao]',
+    'Numa lista de 4 itens, a última posição é a 3',
   ],
   difficulty: 'easy',
 };
@@ -122,32 +169,63 @@ const code3_4: CodeChallenge = {
   episode: 3,
   room: '3.4',
   title: 'Buscando na lista',
-  description: 'O código percorre uma lista de senhas e verifica se alguma é igual a "admin". **Execute** para ver!',
-  instructions: 'Percorra o array e encontre a senha igual ao alvo, imprimindo "Senha encontrada: " + a senha.',
+  description: 'Percorra uma lista de senhas e diga se o alvo está nela. É assim que funciona um ataque de dicionário.',
+  instructions: 'Devolva "Senha encontrada: X" (com a senha) se estiver na lista, senão "Senha não encontrada".',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const senhas = ["1234", "admin", "qwerty"];
-const alvo = "admin";
-
-// Percorra o array senhas usando um for
-// Compare cada item com a variável alvo
-// Se encontrar, imprima: "Senha encontrada: " + o item
+    javascript: `// Percorra a lista procurando o alvo.
+// Achou: "Senha encontrada: " + senha   |   Não achou: "Senha não encontrada"
+function buscarSenha(lista, alvo) {
+  // seu código aqui
+}
 `,
-    python: `senhas = ["1234", "admin", "qwerty"]
-alvo = "admin"
-
-# Percorra a lista senhas usando um for
-# Compare cada item com a variável alvo
-# Se encontrar, imprima: "Senha encontrada: " + o item
+    python: `# Percorra a lista procurando o alvo.
+# Achou: "Senha encontrada: " + senha   |   Não achou: "Senha não encontrada"
+def buscar_senha(lista, alvo):
+    # seu código aqui
+    pass
 `,
   },
-  expectedOutput: 'Senha encontrada: admin',
+  tests: {
+    fn: { javascript: 'buscarSenha', python: 'buscar_senha' },
+    cases: [
+      { name: 'está na lista', args: [['123456', 'admin', 'qwerty'], 'admin'], expected: 'Senha encontrada: admin' },
+      { name: 'não está na lista', args: [['123456', 'qwerty'], 'admin'], expected: 'Senha não encontrada' },
+      { name: 'lista vazia', args: [[], 'x'], expected: 'Senha não encontrada', hidden: true },
+      { name: 'diferencia maiúsculas', args: [['a', 'A'], 'A'], expected: 'Senha encontrada: A', hidden: true },
+      { name: 'último item da lista', args: [['a', 'b', 'c'], 'c'], expected: 'Senha encontrada: c', hidden: true },
+      { name: 'só maiúscula na lista', args: [['ADMIN'], 'admin'], expected: 'Senha não encontrada', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function buscarSenha(lista, alvo) {
+  for (let i = 0; i < lista.length; i++) {
+    if (lista[i] === alvo) {
+      return "Senha encontrada: " + lista[i];
+    }
+  }
+  return "Senha não encontrada";
+}`,
+    python: `def buscar_senha(lista, alvo):
+    for senha in lista:
+        if senha == alvo:
+            return "Senha encontrada: " + senha
+    return "Senha não encontrada"`,
+  },
+  explanation: `
+**Busca linear**
+Compare o alvo com cada item, do primeiro ao último. Ao achar, devolva na hora (return interrompe a função). Só depois do loop, quando nada foi achado, devolva "não encontrada".
+
+**Erro comum:** colocar o "não encontrada" DENTRO do loop, que responderia "não" já no primeiro item diferente.
+
+**Na segurança:** um ataque de dicionário faz exatamente isto com milhões de senhas.
+  `,
   hints: [
-    'Em JS: for (let i = 0; i < senhas.length; i++) { if (senhas[i] == alvo) { ... } }',
-    'Em Python: for senha in senhas: if senha == alvo: ...',
-    'Dentro do if, imprima: "Senha encontrada: " + senhas[i] (ou senha)',
+    'Percorra a lista com um loop e compare cada item com o alvo',
+    'Ao achar, faça return "Senha encontrada: " + senha',
+    'O return "Senha não encontrada" fica DEPOIS do loop',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const code3_5: CodeChallenge = {
@@ -155,35 +233,61 @@ const code3_5: CodeChallenge = {
   type: 'code',
   episode: 3,
   room: '3.5',
-  title: 'Sua vez — mude o alvo',
-  description: 'Mude a variável **alvo** para **"qwerty"** e encontre essa senha na lista.',
-  instructions: 'Mude o alvo para "qwerty" e escreva o loop para buscar no array.',
+  title: 'Em qual posição está?',
+  description: 'Agora devolva a **posição** em que o alvo aparece na lista, ou -1 se ele não estiver lá.',
+  instructions: 'Devolva o índice da primeira ocorrência do alvo, ou -1. Exemplo: posicaoDaSenha(["123456","admin","qwerty"], "qwerty") devolve 2.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const senhas = ["1234", "admin", "qwerty"];
-// Mude o alvo para "qwerty":
-const alvo = "admin";
-
-// Percorra o array senhas usando um for
-// Compare cada item com a variável alvo
-// Se encontrar, imprima: "Senha encontrada: " + o item
+    javascript: `// Devolva a posição do alvo na lista, ou -1 se não estiver
+function posicaoDaSenha(lista, alvo) {
+  // seu código aqui
+}
 `,
-    python: `senhas = ["1234", "admin", "qwerty"]
-# Mude o alvo para "qwerty":
-alvo = "admin"
-
-# Percorra a lista senhas usando um for
-# Compare cada item com a variável alvo
-# Se encontrar, imprima: "Senha encontrada: " + o item
+    python: `# Devolva a posição do alvo na lista, ou -1 se não estiver
+def posicao_da_senha(lista, alvo):
+    # seu código aqui
+    pass
 `,
   },
-  expectedOutput: 'Senha encontrada: qwerty',
+  tests: {
+    fn: { javascript: 'posicaoDaSenha', python: 'posicao_da_senha' },
+    cases: [
+      { name: 'no fim', args: [['123456', 'admin', 'qwerty'], 'qwerty'], expected: 2 },
+      { name: 'no meio', args: [['123456', 'admin', 'qwerty'], 'admin'], expected: 1 },
+      { name: 'não existe', args: [['a', 'b'], 'z'], expected: -1 },
+      { name: 'primeira posição', args: [['x', 'y'], 'x'], expected: 0, hidden: true },
+      { name: 'lista vazia', args: [[], 'a'], expected: -1, hidden: true },
+      { name: 'repetido: vale a primeira', args: [['a', 'b', 'a'], 'a'], expected: 0, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function posicaoDaSenha(lista, alvo) {
+  for (let i = 0; i < lista.length; i++) {
+    if (lista[i] === alvo) {
+      return i;
+    }
+  }
+  return -1;
+}`,
+    python: `def posicao_da_senha(lista, alvo):
+    for i in range(len(lista)):
+        if lista[i] == alvo:
+            return i
+    return -1`,
+  },
+  explanation: `
+**Usando o índice**
+Em vez de olhar só o item, o loop agora precisa da posição i. Ao achar, devolva i. Como o return sai da função na hora, a PRIMEIRA ocorrência é a que vale.
+
+**O valor -1**
+É uma convenção: "não encontrado". Como posições válidas começam em 0, o -1 nunca é confundido com uma posição real.
+  `,
   hints: [
-    'Primeiro mude alvo = "admin" para alvo = "qwerty"',
-    'Depois escreva o loop com for e o if comparando cada item com alvo',
-    'Imprima: "Senha encontrada: " + o item quando encontrar',
+    'Percorra com o índice: for (let i = 0; i < lista.length; i++)  /  for i in range(len(lista))',
+    'Se lista[i] for igual ao alvo, devolva i',
+    'Depois do loop, devolva -1',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const code3_6: CodeChallenge = {
@@ -191,29 +295,67 @@ const code3_6: CodeChallenge = {
   type: 'code',
   episode: 3,
   room: '3.6',
-  title: 'Contando itens da lista',
-  description: 'Use **.length** (JS) ou **len()** (Python) para contar quantos itens uma lista tem. **Execute** o código pronto.',
-  instructions: 'Imprima o total de senhas no formato "Total de senhas: X" usando .length ou len().',
+  title: 'Contando senhas fracas',
+  description: 'Uma auditoria de segurança precisa saber quantas senhas de uma lista são **fracas** (menos de 8 caracteres). Percorra a lista e conte.',
+  instructions: 'Devolva quantas senhas têm menos de 8 caracteres. Exemplo: contarFracas(["123", "password", "abc"]) devolve 2.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const senhasComuns = ["123456", "password", "admin", "qwerty", "letmein"];
-
-// Imprima "Total de senhas: " seguido do tamanho do array
-// Use .length para obter o tamanho
+    javascript: `// Conte as senhas com menos de 8 caracteres
+function contarFracas(senhas) {
+  let total = 0;
+  // percorra a lista e some 1 para cada senha fraca
+  return total;
+}
 `,
-    python: `senhas_comuns = ["123456", "password", "admin", "qwerty", "letmein"]
-
-# Imprima "Total de senhas: " seguido do tamanho da lista
-# Use len() para obter o tamanho (converta com str())
+    python: `# Conte as senhas com menos de 8 caracteres
+def contar_fracas(senhas):
+    total = 0
+    # percorra a lista e some 1 para cada senha fraca
+    return total
 `,
   },
-  expectedOutput: 'Total de senhas: 5',
+  tests: {
+    fn: { javascript: 'contarFracas', python: 'contar_fracas' },
+    cases: [
+      { name: 'mistura', args: [['123', 'password', 'abc', 'longsenha1']], expected: 2 },
+      { name: 'todas fracas', args: [['a', 'bb', 'ccc']], expected: 3 },
+      { name: 'lista vazia', args: [[]], expected: 0, hidden: true },
+      { name: '8 caracteres não é fraca', args: [['12345678']], expected: 0, hidden: true },
+      { name: '7 caracteres é fraca', args: [['1234567']], expected: 1, hidden: true },
+      { name: 'senha vazia é fraca', args: [['', 'abcdefgh']], expected: 1, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function contarFracas(senhas) {
+  let total = 0;
+  for (let i = 0; i < senhas.length; i++) {
+    if (senhas[i].length < 8) {
+      total = total + 1;
+    }
+  }
+  return total;
+}`,
+    python: `def contar_fracas(senhas):
+    total = 0
+    for senha in senhas:
+        if len(senha) < 8:
+            total = total + 1
+    return total`,
+  },
+  explanation: `
+**Loop + condição + acumulador**
+Este padrão aparece o tempo todo: percorrer, testar cada item e acumular um contador.
+
+**Limites:** 8 caracteres NÃO é fraca (< 8), 7 é. Repare como o valor exato do limite decide o resultado.
+
+**Na vida real:** ferramentas de auditoria fazem isto com milhares de contas para achar as senhas mais arriscadas.
+  `,
   hints: [
-    'Em JS: console.log("Total de senhas: " + senhasComuns.length)',
-    'Em Python: print("Total de senhas: " + str(len(senhas_comuns)))',
-    'O array tem 5 itens',
+    'Use um loop para visitar cada senha da lista',
+    'Dentro do loop, teste o tamanho: senha.length < 8 (Python: len(senha) < 8)',
+    'Se for fraca, some 1 em total; devolva total no final',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const theory3_7: TheoryChallenge = {

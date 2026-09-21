@@ -35,26 +35,48 @@ const code7_1: CodeChallenge = {
   episode: 7,
   room: '7.1',
   title: 'includes() — contém algo?',
-  description: 'O método **.includes()** verifica se um texto contém outro texto. Retorna **true** ou **false**. **Execute**!',
-  instructions: 'Execute e veja o includes() funcionando.',
+  description: 'Verificar se um texto **contém** outro é uma das operações mais usadas em segurança (filtros, detecção de ataques, análise de logs).',
+  instructions: 'Devolva true se o texto contiver a palavra, senão false. Exemplo: contemPalavra("senha admin", "admin") devolve true.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const email = "ana@empresa.com";
-
-console.log(email.includes("@"));
-console.log(email.includes("hacker"));
+    javascript: `// Devolva true se "texto" contém "palavra"
+function contemPalavra(texto, palavra) {
+  // seu código aqui
+}
 `,
-    python: `email = "ana@empresa.com"
-
-print("@" in email)
-print("hacker" in email)
+    python: `# Devolva True se "texto" contém "palavra"
+def contem_palavra(texto, palavra):
+    # seu código aqui
+    pass
 `,
   },
-  expectedOutput: 'true\nfalse',
+  tests: {
+    fn: { javascript: 'contemPalavra', python: 'contem_palavra' },
+    cases: [
+      { name: 'contém', args: ['senha admin', 'admin'], expected: true },
+      { name: 'não contém', args: ['ola mundo', 'admin'], expected: false },
+      { name: 'texto vazio', args: ['', 'a'], expected: false, hidden: true },
+      { name: 'maiúsculas diferem', args: ['ADMIN', 'admin'], expected: false, hidden: true },
+      { name: 'palavra no início', args: ['admin123', 'admin'], expected: true, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function contemPalavra(texto, palavra) {
+  return texto.includes(palavra);
+}`,
+    python: `def contem_palavra(texto, palavra):
+    return palavra in texto`,
+  },
+  explanation: `
+**Procurando dentro de textos**
+JavaScript: texto.includes(palavra). Python: palavra in texto. Ambos devolvem verdadeiro ou falso.
+
+**Atenção:** a busca diferencia maiúsculas: "ADMIN" não contém "admin". Filtros de segurança mal feitos falham exatamente por isso (veja a próxima sala).
+  `,
   hints: [
-    'O código já está pronto! Execute.',
-    '"ana@empresa.com" contém "@" → true',
-    '"ana@empresa.com" NÃO contém "hacker" → false',
+    'JavaScript: texto.includes(palavra)',
+    'Python: palavra in texto',
+    'A ordem em Python é "palavra in texto"',
   ],
   difficulty: 'easy',
 };
@@ -65,30 +87,56 @@ const code7_2: CodeChallenge = {
   episode: 7,
   room: '7.2',
   title: 'Detectando ataque simples',
-  description: 'Use **.includes()** para detectar se um input contém **"<script>"** — um sinal de ataque XSS! O código já está pronto.',
-  instructions: 'Use includes() para verificar se o input contém "<script>" e imprima o alerta adequado.',
+  description: 'Crie um filtro básico contra XSS: procure a tag `<script>` na entrada do usuário. Um atacante pode variar as maiúsculas, então **normalize** o texto antes de comparar.',
+  instructions: 'Devolva "ALERTA: XSS detectado!" se a entrada contiver <script> (em qualquer combinação de maiúsculas/minúsculas), senão "Input seguro".',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const input = '<script>alert("hack")</script>';
-
-// Escreva um if/else:
-// Se input contiver "<script>" (use .includes()), imprima "ALERTA: XSS detectado!"
-// Senão, imprima "Input seguro"
+    javascript: `// Detecte "<script>" em qualquer combinação de maiúsculas/minúsculas
+function detectarXss(entrada) {
+  // seu código aqui
+}
 `,
-    python: `input_usuario = '<script>alert("hack")</script>'
-
-# Escreva um if/else:
-# Se input_usuario contiver "<script>" (use "in"), imprima "ALERTA: XSS detectado!"
-# Senão, imprima "Input seguro"
+    python: `# Detecte "<script>" em qualquer combinação de maiúsculas/minúsculas
+def detectar_xss(entrada):
+    # seu código aqui
+    pass
 `,
   },
-  expectedOutput: 'ALERTA: XSS detectado!',
+  tests: {
+    fn: { javascript: 'detectarXss', python: 'detectar_xss' },
+    cases: [
+      { name: 'ataque clássico', args: ['<script>alert(1)</script>'], expected: 'ALERTA: XSS detectado!' },
+      { name: 'texto normal', args: ['Olá, mundo!'], expected: 'Input seguro' },
+      { name: 'maiúsculas misturadas', args: ['<ScRiPt>x</ScRiPt>'], expected: 'ALERTA: XSS detectado!', hidden: true },
+      { name: 'a palavra script sem tag', args: ['script sem tags'], expected: 'Input seguro', hidden: true },
+      { name: 'entrada vazia', args: [''], expected: 'Input seguro', hidden: true },
+      { name: 'tag no meio do texto', args: ['oi <SCRIPT>bad()</SCRIPT> tchau'], expected: 'ALERTA: XSS detectado!', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function detectarXss(entrada) {
+  if (entrada.toLowerCase().includes("<script>")) {
+    return "ALERTA: XSS detectado!";
+  }
+  return "Input seguro";
+}`,
+    python: `def detectar_xss(entrada):
+    if "<script>" in entrada.lower():
+        return "ALERTA: XSS detectado!"
+    return "Input seguro"`,
+  },
+  explanation: `
+**Normalizar antes de comparar**
+Atacantes escrevem <SCRIPT> ou <ScRiPt> para driblar filtros que só procuram "<script>". Converter tudo para minúscula (toLowerCase / lower) antes da busca fecha essa brecha simples.
+
+**Aviso realista:** filtros por lista de palavras são frágeis. A defesa correta contra XSS é escapar a saída (você viu isso no Modo Hacker). Aqui você treina detecção, que é útil para alertas e logs.
+  `,
   hints: [
-    'Em JS: if (input.includes("<script>")) { console.log("ALERTA: XSS detectado!"); }',
-    'Em Python: if "<script>" in input_usuario: print("ALERTA: XSS detectado!")',
-    'Não esqueça o else com "Input seguro"',
+    'Converta a entrada para minúscula antes de procurar: entrada.toLowerCase() / entrada.lower()',
+    'Depois procure "<script>" com includes / in',
+    'Se achar: "ALERTA: XSS detectado!", senão "Input seguro"',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const code7_3: CodeChallenge = {
@@ -96,33 +144,69 @@ const code7_3: CodeChallenge = {
   type: 'code',
   episode: 7,
   room: '7.3',
-  title: 'Sua vez — input seguro',
-  description: 'Mude o input para **"Olá, mundo!"** (sem script) e veja que o sistema aceita.',
-  instructions: 'Mude o input para "Olá, mundo!" e escreva a verificação de XSS.',
+  title: 'Sua vez — classificando ataques',
+  description: 'Agora vá além de um padrão: classifique a entrada pelo **tipo de ataque** que ela parece ser.',
+  instructions: 'Devolva "XSS" se contiver "<script", "SQL Injection" se contiver " or ", "Directory Traversal" se contiver "../", senão "Seguro". Ignore maiúsculas/minúsculas e use essa ordem de prioridade.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Mude o input para: "Olá, mundo!"
-const input = '<script>alert("hack")</script>';
-
-// Escreva um if/else:
-// Se input contiver "<script>" (use .includes()), imprima "ALERTA: XSS detectado!"
-// Senão, imprima "Input seguro"
+    javascript: `// Ordem: "<script" -> XSS | " or " -> SQL Injection | "../" -> Directory Traversal | senão "Seguro"
+function classificarEntrada(entrada) {
+  // seu código aqui
+}
 `,
-    python: `# Mude o input para: "Olá, mundo!"
-input_usuario = '<script>alert("hack")</script>'
-
-# Escreva um if/else:
-# Se input_usuario contiver "<script>" (use "in"), imprima "ALERTA: XSS detectado!"
-# Senão, imprima "Input seguro"
+    python: `# Ordem: "<script" -> XSS | " or " -> SQL Injection | "../" -> Directory Traversal | senão "Seguro"
+def classificar_entrada(entrada):
+    # seu código aqui
+    pass
 `,
   },
-  expectedOutput: 'Input seguro',
+  tests: {
+    fn: { javascript: 'classificarEntrada', python: 'classificar_entrada' },
+    cases: [
+      { name: 'XSS', args: ['<script>alert(1)</script>'], expected: 'XSS' },
+      { name: 'SQL Injection', args: ["' OR 1=1--"], expected: 'SQL Injection' },
+      { name: 'Directory Traversal', args: ['../../etc/passwd'], expected: 'Directory Traversal' },
+      { name: 'entrada normal', args: ['João Silva'], expected: 'Seguro' },
+      { name: 'OR em maiúscula', args: ["x' OR '1'='1"], expected: 'SQL Injection', hidden: true },
+      { name: 'XSS tem prioridade sobre os outros', args: ['<script> or ../'], expected: 'XSS', hidden: true },
+      { name: 'vazio', args: [''], expected: 'Seguro', hidden: true },
+      { name: 'palavra "for" não é " or "', args: ['formulario'], expected: 'Seguro', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function classificarEntrada(entrada) {
+  const texto = entrada.toLowerCase();
+  if (texto.includes("<script")) {
+    return "XSS";
+  } else if (texto.includes(" or ")) {
+    return "SQL Injection";
+  } else if (texto.includes("../")) {
+    return "Directory Traversal";
+  }
+  return "Seguro";
+}`,
+    python: `def classificar_entrada(entrada):
+    texto = entrada.lower()
+    if "<script" in texto:
+        return "XSS"
+    elif " or " in texto:
+        return "SQL Injection"
+    elif "../" in texto:
+        return "Directory Traversal"
+    return "Seguro"`,
+  },
+  explanation: `
+**Uma cadeia de decisões**
+O primeiro padrão que combina decide o resultado (por isso a ordem de prioridade importa).
+
+**Realidade:** é assim que WAFs simples e sistemas de detecção começam: por assinaturas de texto. Eles geram falsos positivos (um texto legítimo com " or ") e falsos negativos (variações de ataque). Você vai estudar isso em IDS/IPS.
+  `,
   hints: [
-    'Primeiro mude o input para "Olá, mundo!"',
-    'Depois escreva: if (input.includes("<script>")) { ... } else { ... }',
-    'Como "Olá, mundo!" não contém "<script>", deve imprimir "Input seguro"',
+    'Comece guardando a entrada em minúsculo: const texto = entrada.toLowerCase()',
+    'Use if / else if / else if com includes (Python: elif e "x" in texto)',
+    'Respeite a ordem: XSS, depois SQL Injection, depois Directory Traversal',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const theory7_4: TheoryChallenge = {
@@ -164,36 +248,75 @@ const code7_5: CodeChallenge = {
   episode: 7,
   room: '7.5',
   title: 'split() na prática',
-  description: 'O código divide uma linha de log em partes e mostra o usuário. **Execute**!',
-  instructions: 'Use split(" ") para dividir o log e imprima cada parte (Data, Evento, Usuario, IP).',
+  description: 'Logs são textos com campos separados por espaço. Use **split** para transformar uma linha de log em um objeto organizado.',
+  instructions: 'Dada uma linha "DATA EVENTO USUARIO IP", devolva um objeto com as chaves data, evento, usuario e ip.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const log = "2024-01-15 FALHA admin 192.168.1.1";
-
-// Use .split(" ") para dividir o log em partes
-// Depois imprima cada parte no formato:
-// "Data: " + partes[0]
-// "Evento: " + partes[1]
-// "Usuario: " + partes[2]
-// "IP: " + partes[3]
+    javascript: `// Linha de log: "2024-01-15 FALHA admin 192.168.1.1"
+// Dica: log.split(" ") devolve uma lista com as 4 partes
+function interpretarLog(log) {
+  // seu código aqui
+}
 `,
-    python: `log = "2024-01-15 FALHA admin 192.168.1.1"
-
-# Use .split(" ") para dividir o log em partes
-# Depois imprima cada parte no formato:
-# "Data: " + partes[0]
-# "Evento: " + partes[1]
-# "Usuario: " + partes[2]
-# "IP: " + partes[3]
+    python: `# Linha de log: "2024-01-15 FALHA admin 192.168.1.1"
+# Dica: log.split(" ") devolve uma lista com as 4 partes
+def interpretar_log(log):
+    # seu código aqui
+    pass
 `,
   },
-  expectedOutput: 'Data: 2024-01-15\nEvento: FALHA\nUsuario: admin\nIP: 192.168.1.1',
+  tests: {
+    fn: { javascript: 'interpretarLog', python: 'interpretar_log' },
+    cases: [
+      {
+        name: 'falha de admin',
+        args: ['2024-01-15 FALHA admin 192.168.1.1'],
+        expected: { data: '2024-01-15', evento: 'FALHA', usuario: 'admin', ip: '192.168.1.1' },
+      },
+      {
+        name: 'sucesso de outro usuário',
+        args: ['2024-02-01 SUCESSO ana 10.0.0.9'],
+        expected: { data: '2024-02-01', evento: 'SUCESSO', usuario: 'ana', ip: '10.0.0.9' },
+      },
+      {
+        name: 'outra data e IP',
+        args: ['2023-12-31 FALHA root 8.8.8.8'],
+        expected: { data: '2023-12-31', evento: 'FALHA', usuario: 'root', ip: '8.8.8.8' },
+        hidden: true,
+      },
+    ],
+  },
+  solution: {
+    javascript: `function interpretarLog(log) {
+  const partes = log.split(" ");
+  return {
+    data: partes[0],
+    evento: partes[1],
+    usuario: partes[2],
+    ip: partes[3],
+  };
+}`,
+    python: `def interpretar_log(log):
+    partes = log.split(" ")
+    return {
+        "data": partes[0],
+        "evento": partes[1],
+        "usuario": partes[2],
+        "ip": partes[3],
+    }`,
+  },
+  explanation: `
+**split**
+split(" ") quebra o texto em pedaços a cada espaço e devolve uma lista. Cada pedaço fica numa posição (0, 1, 2, 3), e você monta um objeto com nomes claros.
+
+**Na prática:** analistas de SOC transformam milhares de linhas de log em objetos para filtrar, contar e correlacionar eventos.
+  `,
   hints: [
-    'Primeiro: const partes = log.split(" ") / partes = log.split(" ")',
-    'Depois: console.log("Data: " + partes[0]) para cada campo',
-    'split(" ") divide o texto nos espaços, criando um array',
+    'const partes = log.split(" ")  (Python: partes = log.split(" "))',
+    'partes[0] é a data, partes[1] o evento, partes[2] o usuário, partes[3] o IP',
+    'Devolva um objeto com as 4 chaves: data, evento, usuario, ip',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const code7_6: CodeChallenge = {
@@ -202,28 +325,51 @@ const code7_6: CodeChallenge = {
   episode: 7,
   room: '7.6',
   title: 'replace() — substituindo texto',
-  description: 'O método **.replace()** substitui uma parte do texto por outra. Útil para sanitizar inputs! **Execute**.',
-  instructions: 'Use replace() para remover "<script>" e "</script>" do texto e imprima o resultado.',
+  description: 'Sanitizar é remover ou trocar partes perigosas. Remova **todas** as tags `<script>` e `</script>` do texto.',
+  instructions: 'Devolva o texto sem nenhuma ocorrência de "<script>" nem de "</script>". Exemplo: limparScript("Olá <script>alert(1)</script>") devolve "Olá alert(1)".',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const inputPerigoso = "Olá <script>alert(1)</script>";
-
-// Use .replace() para remover "<script>" e "</script>" do texto
-// Imprima o resultado limpo
+    javascript: `// Remova TODAS as ocorrências de "<script>" e "</script>"
+// Cuidado: replace() troca só a PRIMEIRA ocorrência; use replaceAll()
+function limparScript(texto) {
+  // seu código aqui
+}
 `,
-    python: `input_perigoso = "Olá <script>alert(1)</script>"
-
-# Use .replace() para remover "<script>" e "</script>" do texto
-# Imprima o resultado limpo
+    python: `# Remova TODAS as ocorrências de "<script>" e "</script>"
+def limpar_script(texto):
+    # seu código aqui
+    pass
 `,
   },
-  expectedOutput: 'Olá alert(1)',
+  tests: {
+    fn: { javascript: 'limparScript', python: 'limpar_script' },
+    cases: [
+      { name: 'uma tag', args: ['Olá <script>alert(1)</script>'], expected: 'Olá alert(1)' },
+      { name: 'sem tags', args: ['texto normal'], expected: 'texto normal' },
+      { name: 'duas ocorrências', args: ['<script>a</script><script>b</script>'], expected: 'ab', hidden: true },
+      { name: 'só a tag de fechamento', args: ['</script>x'], expected: 'x', hidden: true },
+      { name: 'texto vazio', args: [''], expected: '', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function limparScript(texto) {
+  return texto.replaceAll("<script>", "").replaceAll("</script>", "");
+}`,
+    python: `def limpar_script(texto):
+    return texto.replace("<script>", "").replace("</script>", "")`,
+  },
+  explanation: `
+**replace vs replaceAll**
+No JavaScript, replace troca só a primeira ocorrência; replaceAll troca todas. No Python, replace já troca todas. Esquecer isso deixa passar a segunda tag.
+
+**Um aviso importante de segurança:** remover "<script>" uma vez é burlável. O atacante escreve "<scr<script>ipt>", e depois da remoção sobra "<script>" de novo! Por isso a defesa certa é escapar a saída (transformar < em &lt;) em vez de tentar "apagar o perigoso".
+  `,
   hints: [
-    'Use .replace("<script>", "") para remover a tag de abertura',
-    'Encadeie outro .replace("</script>", "") para remover a de fechamento',
-    'Em JS: console.log(inputPerigoso.replace("<script>", "").replace("</script>", ""))',
+    'Use replace duas vezes: uma para "<script>" e outra para "</script>", trocando por ""',
+    'JavaScript: replaceAll (o replace comum só troca a primeira ocorrência)',
+    'Python: texto.replace("<script>", "").replace("</script>", "")',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const code7_7: CodeChallenge = {
@@ -232,32 +378,60 @@ const code7_7: CodeChallenge = {
   episode: 7,
   room: '7.7',
   title: 'indexOf() — encontrando posição',
-  description: '**.indexOf()** retorna a POSIÇÃO onde algo aparece no texto. Se não encontrar, retorna **-1**. **Execute**!',
-  instructions: 'Use indexOf/index para encontrar ":" e extraia o usuário e senha do texto.',
+  description: 'Dados chegam como "usuario:senha". Encontre o **primeiro** ":" e separe as duas partes, mesmo se a senha também tiver ":".',
+  instructions: 'Devolva um objeto {usuario, senha}, separando no PRIMEIRO ":". Exemplo: extrairCredenciais("admin:password123") devolve {usuario: "admin", senha: "password123"}.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const texto = "admin:password123";
-
-// Use .indexOf(":") para encontrar a posição dos dois pontos
-// Imprima: "Os dois pontos estão na posição: " + posição
-// Use .substring(0, posição) para extrair o usuário e imprima: "Usuário: " + ...
-// Use .substring(posição + 1) para extrair a senha e imprima: "Senha: " + ...
+    javascript: `// Separe no PRIMEIRO ":" (a senha pode conter ":" também)
+// Dica: texto.indexOf(":") e texto.slice(inicio, fim)
+function extrairCredenciais(texto) {
+  // seu código aqui
+}
 `,
-    python: `texto = "admin:password123"
-
-# Use .index(":") para encontrar a posição dos dois pontos
-# Imprima: "Os dois pontos estão na posição: " + str(posição)
-# Use texto[:posição] para extrair o usuário e imprima: "Usuário: " + ...
-# Use texto[posição + 1:] para extrair a senha e imprima: "Senha: " + ...
+    python: `# Separe no PRIMEIRO ":" (a senha pode conter ":" também)
+# Dica: texto.index(":") e texto[inicio:fim]
+def extrair_credenciais(texto):
+    # seu código aqui
+    pass
 `,
   },
-  expectedOutput: 'Os dois pontos estão na posição: 5\nUsuário: admin\nSenha: password123',
+  tests: {
+    fn: { javascript: 'extrairCredenciais', python: 'extrair_credenciais' },
+    cases: [
+      { name: 'caso simples', args: ['admin:password123'], expected: { usuario: 'admin', senha: 'password123' } },
+      { name: 'outro usuário', args: ['ana:1234'], expected: { usuario: 'ana', senha: '1234' } },
+      { name: 'senha com dois pontos', args: ['root:pa:ss'], expected: { usuario: 'root', senha: 'pa:ss' }, hidden: true },
+      { name: 'senha vazia', args: ['bob:'], expected: { usuario: 'bob', senha: '' }, hidden: true },
+      { name: 'usuário de uma letra', args: ['a:b'], expected: { usuario: 'a', senha: 'b' }, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function extrairCredenciais(texto) {
+  const pos = texto.indexOf(":");
+  return {
+    usuario: texto.slice(0, pos),
+    senha: texto.slice(pos + 1),
+  };
+}`,
+    python: `def extrair_credenciais(texto):
+    pos = texto.index(":")
+    return {
+        "usuario": texto[:pos],
+        "senha": texto[pos + 1:],
+    }`,
+  },
+  explanation: `
+**Posição + fatia**
+indexOf (JS) / index (Python) devolve a posição do primeiro ":". Com ela você fatia o texto: tudo ANTES é o usuário; tudo DEPOIS (pos + 1) é a senha.
+
+**Por que "primeiro" e não split(":")?** Se a senha tem ":", o split cortaria em mais partes e você perderia parte da senha. Tratar dados com formatos ambíguos é uma fonte clássica de bugs e de falhas de segurança.
+  `,
   hints: [
-    'Em JS: const posicao = texto.indexOf(":") / Em Python: posicao = texto.index(":")',
-    'O ":" está na posição 5 (contando do 0)',
-    'Em JS: texto.substring(0, posicao) pega "admin" / Em Python: texto[:posicao]',
+    'Ache a posição: const pos = texto.indexOf(":")  (Python: texto.index(":"))',
+    'Usuário: texto.slice(0, pos)  /  texto[:pos]',
+    'Senha: tudo depois do ":", ou seja, a partir de pos + 1',
   ],
-  difficulty: 'easy',
+  difficulty: 'hard',
 };
 
 const code7_8: CodeChallenge = {
@@ -266,34 +440,61 @@ const code7_8: CodeChallenge = {
   episode: 7,
   room: '7.8',
   title: 'Desafio — analisar log completo',
-  description: 'Combine TUDO! Analise um log: divida com split, verifique se é FALHA com includes, e mostre os detalhes. O código está pronto!',
-  instructions: 'Divida o log com split, verifique se é FALHA, e imprima os detalhes do alerta.',
+  description: 'Junte tudo: divida a linha do log, verifique se o evento foi uma **FALHA** e monte o alerta de segurança.',
+  instructions: 'Para "DATA EVENTO USUARIO IP": se o evento for "FALHA", devolva {alerta: true, usuario, ip}; senão, {alerta: false}.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const log = "2024-03-15 FALHA root 10.0.0.5";
-
-// Divida o log com .split(" ") para obter: data, evento, usuario, ip
-// Se o evento contiver "FALHA" (use .includes()):
-//   Imprima "ALERTA de seguranca!"
-//   Imprima "Quem: " + usuario
-//   Imprima "De onde: " + ip
+    javascript: `// Linha: "2024-01-15 FALHA root 10.0.0.5"
+// FALHA   -> { alerta: true, usuario: "root", ip: "10.0.0.5" }
+// outro   -> { alerta: false }
+function analisarLog(log) {
+  // seu código aqui
+}
 `,
-    python: `log = "2024-03-15 FALHA root 10.0.0.5"
-
-# Divida o log com .split(" ") para obter: data, evento, usuario, ip
-# Se o evento contiver "FALHA" (use "in"):
-#   Imprima "ALERTA de seguranca!"
-#   Imprima "Quem: " + usuario
-#   Imprima "De onde: " + ip
+    python: `# Linha: "2024-01-15 FALHA root 10.0.0.5"
+# FALHA   -> {"alerta": True, "usuario": "root", "ip": "10.0.0.5"}
+# outro   -> {"alerta": False}
+def analisar_log(log):
+    # seu código aqui
+    pass
 `,
   },
-  expectedOutput: 'ALERTA de seguranca!\nQuem: root\nDe onde: 10.0.0.5',
+  tests: {
+    fn: { javascript: 'analisarLog', python: 'analisar_log' },
+    cases: [
+      { name: 'falha de login', args: ['2024-01-15 FALHA root 10.0.0.5'], expected: { alerta: true, usuario: 'root', ip: '10.0.0.5' } },
+      { name: 'sucesso não gera alerta', args: ['2024-01-15 SUCESSO ana 10.0.0.9'], expected: { alerta: false } },
+      { name: 'outra falha', args: ['2024-03-02 FALHA admin 192.168.0.7'], expected: { alerta: true, usuario: 'admin', ip: '192.168.0.7' }, hidden: true },
+      { name: 'evento em minúsculas não é FALHA', args: ['2024-01-15 falha bob 1.1.1.1'], expected: { alerta: false }, hidden: true },
+      { name: 'outro tipo de evento', args: ['2024-01-15 LOGOUT bob 1.1.1.1'], expected: { alerta: false }, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function analisarLog(log) {
+  const partes = log.split(" ");
+  if (partes[1] === "FALHA") {
+    return { alerta: true, usuario: partes[2], ip: partes[3] };
+  }
+  return { alerta: false };
+}`,
+    python: `def analisar_log(log):
+    partes = log.split(" ")
+    if partes[1] == "FALHA":
+        return {"alerta": True, "usuario": partes[2], "ip": partes[3]}
+    return {"alerta": False}`,
+  },
+  explanation: `
+**O que você construiu**
+Um mini detector de eventos suspeitos: quebra o log, testa o campo de evento e devolve um resultado estruturado. É o esqueleto de qualquer sistema de monitoramento (SIEM).
+
+**Próximos passos:** trocar uma única linha por milhares e contar falhas por IP. Isso vira detecção de força bruta, exatamente o que você vai treinar no módulo de Blue Team.
+  `,
   hints: [
-    'Primeiro: const partes = log.split(" ") e acesse partes[0], partes[1], etc.',
-    'Em JS: if (evento.includes("FALHA")) { ... }',
-    'Em Python: if "FALHA" in evento: ...',
+    'Divida com split(" ") e olhe partes[1] (o evento)',
+    'Se partes[1] for exatamente "FALHA", devolva o objeto com alerta true, usuário e IP',
+    'Em qualquer outro caso, devolva { alerta: false }',
   ],
-  difficulty: 'easy',
+  difficulty: 'hard',
 };
 
 const theory7_9: TheoryChallenge = {

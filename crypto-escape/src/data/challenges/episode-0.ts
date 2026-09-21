@@ -126,21 +126,26 @@ const theory0_6: TheoryChallenge = {
   type: 'theory',
   episode: 0,
   room: '0.6',
-  title: 'Variáveis — guardando informações',
-  description: 'Variáveis são como "caixas" onde guardamos informações para usar depois. Pense como um cofre com um nome.',
+  title: 'Variáveis e funções — seus primeiros blocos',
+  description: 'Variáveis são "caixas" onde guardamos informações. Funções são blocos de código com nome, que recebem entradas e devolvem um resultado.',
   content: `
-**Exemplo:**
+**Variáveis**
 Guardar um nome em uma caixa chamada "usuario":
 
 • **JavaScript:** \`const usuario = "Ana";\`
 • **Python:** \`usuario = "Ana"\`
 
-Depois você pode mostrar o que está dentro:
+Depois você usa o que está dentro pelo nome da caixa.
 
-• **JavaScript:** \`console.log(usuario);\` → mostra: Ana
-• **Python:** \`print(usuario)\` → mostra: Ana
+**Funções (uma prévia)**
+Uma função **recebe entradas** e **devolve uma saída** com \`return\`:
 
-Na próxima sala você vai criar sua primeira variável!
+• **JavaScript:** \`function dobro(n) { return n * 2; }\`
+• **Python:** \`def dobro(n): return n * 2\`
+
+A partir das próximas salas, você vai **escrever funções**. O sistema chama a sua função com vários valores e confere se o resultado está certo, inclusive em **testes ocultos**.
+
+**Importante:** a função precisa **devolver** o valor com \`return\`. Só imprimir na tela (\`console.log\`/\`print\`) não conta.
   `,
 };
 
@@ -150,29 +155,50 @@ const code0_7: CodeChallenge = {
   episode: 0,
   room: '0.7',
   title: 'Criando sua primeira variável',
-  description: 'Vamos criar uma variável chamada `nome` e guardar seu nome nela. Depois, mostre o conteúdo usando print/console.log.',
-  instructions: 'Crie uma variável "nome" com o valor "Ana" e imprima.',
+  description: 'Escreva uma função que calcula o total de uma compra. Guarde o resultado em uma **variável** chamada `total` e devolva com return.',
+  instructions: 'Complete a função: total = preço × quantidade, e devolva o total.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Complete o código abaixo:
-
-const nome = "Ana";
-
-// Agora mostre o que está dentro de "nome":
-console.log(nome);
+    javascript: `// Guarde preco * quantidade em uma variável "total" e devolva.
+function calcularTotal(preco, quantidade) {
+  // seu código aqui
+}
 `,
-    python: `# Complete o código abaixo:
-
-nome = "Ana"
-
-# Agora mostre o que está dentro de "nome":
-print(nome)
+    python: `# Guarde preco * quantidade em uma variável "total" e devolva.
+def calcular_total(preco, quantidade):
+    # seu código aqui
+    pass
 `,
   },
-  expectedOutput: 'Ana',
+  tests: {
+    fn: { javascript: 'calcularTotal', python: 'calcular_total' },
+    cases: [
+      { name: '3 itens de 10', args: [10, 3], expected: 30 },
+      { name: '2 itens de 5', args: [5, 2], expected: 10 },
+      { name: 'preço zero', args: [0, 5], expected: 0, hidden: true },
+      { name: 'preço com decimal', args: [2.5, 4], expected: 10, hidden: true },
+      { name: 'quantidade zero', args: [100, 0], expected: 0, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function calcularTotal(preco, quantidade) {
+  const total = preco * quantidade;
+  return total;
+}`,
+    python: `def calcular_total(preco, quantidade):
+    total = preco * quantidade
+    return total`,
+  },
+  explanation: `
+**O que aconteceu aqui?**
+Você guardou o resultado de uma conta em uma variável e devolveu esse valor com return. A variável dá um nome ao valor, o que deixa o código mais fácil de ler.
+
+**Erro comum:** esquecer o return. Sem ele, a função devolve "nada" (undefined / None) e o teste mostra "recebido undefined".
+  `,
   hints: [
-    'O código já está quase pronto, só execute!',
-    'A variável guarda "Ana" e depois mostramos na tela',
+    'Crie a variável: const total = preco * quantidade;  (Python: total = preco * quantidade)',
+    'Depois devolva o valor: return total;',
+    'Se aparecer "recebido undefined" (ou None), falta o return',
   ],
   difficulty: 'easy',
 };
@@ -183,31 +209,47 @@ const code0_8: CodeChallenge = {
   episode: 0,
   room: '0.8',
   title: 'Juntando textos',
-  description: 'Você pode juntar (concatenar) textos. Exemplo: "Olá" + " " + "mundo" = "Olá mundo". Vamos praticar!',
-  instructions: 'Imprima: Olá Ana',
+  description: 'Você pode juntar (concatenar) textos com **+**: "Olá" + " " + "mundo" vira "Olá mundo". Escreva uma função que monta uma saudação.',
+  instructions: 'Devolva "Olá " seguido do nome. Exemplo: saudar("Ana") devolve "Olá Ana".',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const saudacao = "Olá";
-const nome = "Ana";
-
-// Junte saudacao + " " + nome e imprima
-// Use: console.log(saudacao + " " + nome);
-
-console.log(saudacao + " " + nome);
+    javascript: `// Devolva "Olá " + nome
+function saudar(nome) {
+  // seu código aqui
+}
 `,
-    python: `saudacao = "Olá"
-nome = "Ana"
-
-# Junte saudacao + " " + nome e imprima
-# Use: print(saudacao + " " + nome)
-
-print(saudacao + " " + nome)
+    python: `# Devolva "Olá " + nome
+def saudar(nome):
+    # seu código aqui
+    pass
 `,
   },
-  expectedOutput: 'Olá Ana',
+  tests: {
+    fn: { javascript: 'saudar', python: 'saudar' },
+    cases: [
+      { name: 'nome simples', args: ['Ana'], expected: 'Olá Ana' },
+      { name: 'outro nome', args: ['Hacker'], expected: 'Olá Hacker' },
+      { name: 'nome vazio', args: [''], expected: 'Olá ', hidden: true },
+      { name: 'nome composto', args: ['Maria Clara'], expected: 'Olá Maria Clara', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function saudar(nome) {
+  return "Olá " + nome;
+}`,
+    python: `def saudar(nome):
+    return "Olá " + nome`,
+  },
+  explanation: `
+**Concatenação**
+O sinal + junta textos. O espaço faz parte do texto: "Olá " (com espaço) + nome. Sem ele, você teria "OláAna".
+
+**Detalhe:** com nome vazio, o resultado é "Olá " (com o espaço no final). Os testes ocultos conferem exatamente isso.
+  `,
   hints: [
-    'O código já está pronto, só execute!',
-    'Estamos juntando 3 partes: "Olá" + espaço + "Ana"',
+    'Some o texto "Olá " com o nome: "Olá " + nome',
+    'Não esqueça do espaço depois de "Olá"',
+    'return "Olá " + nome',
   ],
   difficulty: 'easy',
 };

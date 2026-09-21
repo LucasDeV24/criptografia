@@ -34,24 +34,59 @@ const code2_1: CodeChallenge = {
   episode: 2,
   room: '2.1',
   title: 'Seu primeiro loop',
-  description: 'O código abaixo conta de 1 até 5. Está pronto — apenas **execute** para ver!',
-  instructions: 'Execute o código e veja o loop contando.',
+  description: 'Escreva uma função que **conta de 1 até n** e devolve os números em uma lista. Um loop repete a mesma ação várias vezes.',
+  instructions: 'Devolva uma lista com os números de 1 até n. Exemplo: contarAte(3) devolve [1, 2, 3].',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Contando de 1 até 5:
-for (let i = 1; i <= 5; i++) {
-  console.log(i);
+    javascript: `// Devolva a lista [1, 2, ..., n]
+function contarAte(n) {
+  const numeros = [];
+  // escreva um loop for que adiciona cada número em "numeros"
+  return numeros;
 }
 `,
-    python: `# Contando de 1 até 5:
-for i in range(1, 6):
-    print(i)
+    python: `# Devolva a lista [1, 2, ..., n]
+def contar_ate(n):
+    numeros = []
+    # escreva um loop for que adiciona cada número em "numeros"
+    return numeros
 `,
   },
-  expectedOutput: '1\n2\n3\n4\n5',
+  tests: {
+    fn: { javascript: 'contarAte', python: 'contar_ate' },
+    cases: [
+      { name: 'até 3', args: [3], expected: [1, 2, 3] },
+      { name: 'até 5', args: [5], expected: [1, 2, 3, 4, 5] },
+      { name: 'só o 1', args: [1], expected: [1], hidden: true },
+      { name: 'zero: lista vazia', args: [0], expected: [], hidden: true },
+      { name: 'até 10', args: [10], expected: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function contarAte(n) {
+  const numeros = [];
+  for (let i = 1; i <= n; i++) {
+    numeros.push(i);
+  }
+  return numeros;
+}`,
+    python: `def contar_ate(n):
+    numeros = []
+    for i in range(1, n + 1):
+        numeros.append(i)
+    return numeros`,
+  },
+  explanation: `
+**Como o loop funciona**
+"Comece em 1, repita enquanto i <= n, e a cada volta some 1." Em Python, range(1, n + 1) vai de 1 até n (o último número do range NÃO entra).
+
+**Casos de borda**
+Com n = 0 o loop nem roda e a lista fica vazia. Com n = 1, roda uma vez. Por isso existem testes ocultos para esses casos.
+  `,
   hints: [
-    'Clique em Executar — o código já está pronto!',
-    'O loop começa em 1 e vai até 5',
+    'JavaScript: for (let i = 1; i <= n; i++) { numeros.push(i); }',
+    'Python: for i in range(1, n + 1): numeros.append(i)',
+    'Em Python, range(1, 4) dá 1, 2, 3, então use n + 1 para incluir o n',
   ],
   difficulty: 'easy',
 };
@@ -61,23 +96,59 @@ const code2_2: CodeChallenge = {
   type: 'code',
   episode: 2,
   room: '2.2',
-  title: 'Mudando o loop',
-  description: 'Agora mude o loop para contar apenas de **1 até 3**.',
-  instructions: 'Escreva um loop for que conta de 1 até 3, imprimindo cada número.',
+  title: 'Acumulando com um loop',
+  description: 'Loops também **acumulam** resultados. Some todos os números de 1 até n usando uma variável que vai crescendo a cada volta.',
+  instructions: 'Devolva a soma de 1 até n. Exemplo: somarAte(4) devolve 10 (1+2+3+4).',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Escreva um loop for que conta de 1 até 3
-// A cada volta, imprima o valor de i
+    javascript: `// Devolva 1 + 2 + ... + n
+function somarAte(n) {
+  let soma = 0;
+  // escreva um loop que soma cada número em "soma"
+  return soma;
+}
 `,
-    python: `# Escreva um loop for que conta de 1 até 3
-# A cada volta, imprima o valor de i
+    python: `# Devolva 1 + 2 + ... + n
+def somar_ate(n):
+    soma = 0
+    # escreva um loop que soma cada número em "soma"
+    return soma
 `,
   },
-  expectedOutput: '1\n2\n3',
+  tests: {
+    fn: { javascript: 'somarAte', python: 'somar_ate' },
+    cases: [
+      { name: 'até 4', args: [4], expected: 10 },
+      { name: 'até 5', args: [5], expected: 15 },
+      { name: 'só o 1', args: [1], expected: 1, hidden: true },
+      { name: 'zero', args: [0], expected: 0, hidden: true },
+      { name: 'até 100', args: [100], expected: 5050, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function somarAte(n) {
+  let soma = 0;
+  for (let i = 1; i <= n; i++) {
+    soma = soma + i;
+  }
+  return soma;
+}`,
+    python: `def somar_ate(n):
+    soma = 0
+    for i in range(1, n + 1):
+        soma = soma + i
+    return soma`,
+  },
+  explanation: `
+**O padrão acumulador**
+Comece com uma variável em 0 e, a cada volta, some algo nela. É um dos padrões mais usados em programação: somar, contar, juntar textos.
+
+**Curiosidade:** existe uma fórmula direta (n * (n + 1) / 2), mas aqui você treina o loop. Com n = 100 o resultado é 5050.
+  `,
   hints: [
-    'Em JavaScript: for (let i = 1; i <= 3; i++) { console.log(i); }',
-    'Em Python: for i in range(1, 4): print(i)',
-    'Lembre: em Python, range(1, 4) vai de 1 até 3',
+    'Comece com soma = 0 e, dentro do loop, faça soma = soma + i',
+    'O loop vai de 1 até n (inclusive)',
+    'Devolva a soma depois do loop, não dentro dele',
   ],
   difficulty: 'easy',
 };
@@ -116,26 +187,64 @@ const code2_4: CodeChallenge = {
   episode: 2,
   room: '2.4',
   title: 'Percorrendo um texto',
-  description: 'O código abaixo mostra cada letra de "OLA" separadamente. **Execute** para ver!',
-  instructions: 'Escreva um loop que percorre o texto "OLA" e imprime cada letra.',
+  description: 'Percorra um texto **letra por letra** e conte quantas vogais (a, e, i, o, u) ele tem, sem diferenciar maiúsculas de minúsculas.',
+  instructions: 'Devolva o número de vogais do texto. Exemplo: contarVogais("Ola Mundo") devolve 4.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const texto = "OLA";
-
-// Escreva um loop for que percorre cada letra do texto
-// A cada volta, imprima a letra atual
+    javascript: `// Conte as vogais (a, e, i, o, u), maiúsculas ou minúsculas
+function contarVogais(texto) {
+  let total = 0;
+  // percorra cada letra do texto
+  return total;
+}
 `,
-    python: `texto = "OLA"
-
-# Escreva um loop for que percorre cada letra do texto
-# A cada volta, imprima a letra atual
+    python: `# Conte as vogais (a, e, i, o, u), maiúsculas ou minúsculas
+def contar_vogais(texto):
+    total = 0
+    # percorra cada letra do texto
+    return total
 `,
   },
-  expectedOutput: 'O\nL\nA',
+  tests: {
+    fn: { javascript: 'contarVogais', python: 'contar_vogais' },
+    cases: [
+      { name: 'texto comum', args: ['Ola Mundo'], expected: 4 },
+      { name: 'só vogais', args: ['AEIOU'], expected: 5 },
+      { name: 'sem vogais', args: ['xyz'], expected: 0, hidden: true },
+      { name: 'texto vazio', args: [''], expected: 0, hidden: true },
+      { name: 'maiúsculas e minúsculas misturadas', args: ['aEiOu'], expected: 5, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function contarVogais(texto) {
+  let total = 0;
+  const vogais = "aeiou";
+  for (let i = 0; i < texto.length; i++) {
+    if (vogais.includes(texto[i].toLowerCase())) {
+      total = total + 1;
+    }
+  }
+  return total;
+}`,
+    python: `def contar_vogais(texto):
+    total = 0
+    vogais = "aeiou"
+    for letra in texto:
+        if letra.lower() in vogais:
+            total = total + 1
+    return total`,
+  },
+  explanation: `
+**Percorrendo letras**
+Um texto é uma sequência de letras. O loop visita uma por vez (posição 0, 1, 2...). Em Python, "for letra in texto" faz isso direto.
+
+**Normalizando**
+Converter para minúscula (toLowerCase / lower) antes de comparar evita esquecer as maiúsculas. Na segurança, esse cuidado (normalizar antes de comparar) evita muitos filtros burláveis.
+  `,
   hints: [
-    'Em JS: for (let i = 0; i < texto.length; i++) { console.log(texto[i]); }',
-    'Em Python: for letra in texto: print(letra)',
-    'texto[0] = "O", texto[1] = "L", texto[2] = "A"',
+    'JavaScript: for (let i = 0; i < texto.length; i++) { const letra = texto[i]; ... }',
+    'Python: for letra in texto:',
+    'Compare a letra em minúscula com "aeiou": letra.lower() in "aeiou"',
   ],
   difficulty: 'easy',
 };
@@ -145,31 +254,62 @@ const code2_5: CodeChallenge = {
   type: 'code',
   episode: 2,
   room: '2.5',
-  title: 'Sua vez — mude o texto',
-  description: 'Mude o texto para **"SEC"** (de segurança) e veja as letras.',
-  instructions: 'Mude o texto para "SEC" e escreva um loop para imprimir cada letra.',
+  title: 'Invertendo um texto',
+  description: 'Construir um texto letra por letra é a base da criptografia. Inverta um texto: "HACK" vira "KCAH".',
+  instructions: 'Devolva o texto de trás para frente. Exemplo: inverter("HACK") devolve "KCAH".',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Mude "OLA" para "SEC":
-const texto = "OLA";
-
-// Escreva um loop for que percorre cada letra do texto
-// A cada volta, imprima a letra atual
+    javascript: `// Devolva o texto invertido, montando o resultado letra por letra
+function inverter(texto) {
+  let resultado = "";
+  // percorra as letras e vá montando o resultado
+  return resultado;
+}
 `,
-    python: `# Mude "OLA" para "SEC":
-texto = "OLA"
-
-# Escreva um loop for que percorre cada letra do texto
-# A cada volta, imprima a letra atual
+    python: `# Devolva o texto invertido, montando o resultado letra por letra
+def inverter(texto):
+    resultado = ""
+    # percorra as letras e vá montando o resultado
+    return resultado
 `,
   },
-  expectedOutput: 'S\nE\nC',
+  tests: {
+    fn: { javascript: 'inverter', python: 'inverter' },
+    cases: [
+      { name: 'HACK', args: ['HACK'], expected: 'KCAH' },
+      { name: 'texto curto', args: ['abc'], expected: 'cba' },
+      { name: 'vazio', args: [''], expected: '', hidden: true },
+      { name: 'uma letra', args: ['a'], expected: 'a', hidden: true },
+      { name: 'com espaço', args: ['ab c'], expected: 'c ba', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function inverter(texto) {
+  let resultado = "";
+  for (let i = 0; i < texto.length; i++) {
+    resultado = texto[i] + resultado;
+  }
+  return resultado;
+}`,
+    python: `def inverter(texto):
+    resultado = ""
+    for letra in texto:
+        resultado = letra + resultado
+    return resultado`,
+  },
+  explanation: `
+**A ideia**
+A cada letra, coloque-a na FRENTE do que já foi montado: "" → "H" → "AH"... no fim "KCAH". Trocar a ordem (resultado + letra por letra + resultado) muda o efeito.
+
+**Conexão com criptografia**
+Montar um texto novo a partir das letras de outro é exatamente o que uma cifra faz. Na Cifra de César você troca cada letra por outra.
+  `,
   hints: [
-    'Primeiro mude "OLA" para "SEC" na variável texto',
-    'Depois escreva o loop: for (let i = 0; i < texto.length; i++) em JS',
-    'Em Python: for letra in texto: print(letra)',
+    'Comece com resultado = "" e, em cada volta, junte a letra atual',
+    'Para inverter, coloque a letra ANTES do resultado: resultado = letra + resultado',
+    'Casos de borda: texto vazio e texto com espaços também precisam funcionar',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const code2_6: CodeChallenge = {
@@ -177,35 +317,69 @@ const code2_6: CodeChallenge = {
   type: 'code',
   episode: 2,
   room: '2.6',
-  title: 'Juntando texto com loop',
-  description: 'Agora vamos juntar letras com um loop! O código constrói uma palavra letra por letra. **Execute** para ver.',
-  instructions: 'Escreva um loop que percorre "HACK" e junta cada letra na variável resultado.',
+  title: 'Simulando força bruta',
+  description: 'Um atacante tenta todos os PINs numéricos em ordem (0, 1, 2...), mas desiste depois de `maximo` tentativas. Simule esse ataque com um loop.',
+  instructions: 'Devolva em qual tentativa o PIN foi descoberto (a primeira tentativa é o 0), ou -1 se o atacante desistir antes. Ele tenta os valores de 0 até maximo-1.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const letras = "HACK";
-let resultado = "";
-
-// Escreva um loop for que percorre cada letra de "letras"
-// A cada volta, adicione a letra ao resultado: resultado = resultado + letra
-
-console.log(resultado);
+    javascript: `// Tentativa 1 testa o 0, tentativa 2 testa o 1, e assim por diante.
+// O atacante só faz "maximo" tentativas (valores de 0 até maximo - 1).
+// Devolva o número da tentativa em que acertou, ou -1 se não achou.
+function tentativasParaQuebrar(pin, maximo) {
+  // seu código aqui
+}
 `,
-    python: `letras = "HACK"
-resultado = ""
-
-# Escreva um loop for que percorre cada letra de "letras"
-# A cada volta, adicione a letra ao resultado: resultado = resultado + letra
-
-print(resultado)
+    python: `# Tentativa 1 testa o 0, tentativa 2 testa o 1, e assim por diante.
+# O atacante só faz "maximo" tentativas (valores de 0 até maximo - 1).
+# Devolva o número da tentativa em que acertou, ou -1 se não achou.
+def tentativas_para_quebrar(pin, maximo):
+    # seu código aqui
+    pass
 `,
   },
-  expectedOutput: 'HACK',
+  tests: {
+    fn: { javascript: 'tentativasParaQuebrar', python: 'tentativas_para_quebrar' },
+    cases: [
+      { name: 'PIN 3 com limite 10', args: [3, 10], expected: 4 },
+      { name: 'PIN 0 (primeira tentativa)', args: [0, 10], expected: 1 },
+      { name: 'PIN fora do limite', args: [9, 5], expected: -1 },
+      { name: 'último valor permitido', args: [9, 10], expected: 10, hidden: true },
+      { name: 'PIN igual ao limite (não é tentado)', args: [10, 10], expected: -1, hidden: true },
+      { name: 'limite 1', args: [0, 1], expected: 1, hidden: true },
+      { name: 'limite zero: nenhuma tentativa', args: [0, 0], expected: -1, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function tentativasParaQuebrar(pin, maximo) {
+  for (let i = 0; i < maximo; i++) {
+    if (i === pin) {
+      return i + 1;
+    }
+  }
+  return -1;
+}`,
+    python: `def tentativas_para_quebrar(pin, maximo):
+    for i in range(maximo):
+        if i == pin:
+            return i + 1
+    return -1`,
+  },
+  explanation: `
+**Força bruta na prática**
+O loop testa cada palpite em ordem. Quando acerta, devolve o número da tentativa. Se o loop termina sem achar, devolve -1.
+
+**Limites de novo!**
+O último valor tentado é maximo - 1. Um PIN igual a maximo NÃO é testado: é um erro clássico de "off-by-one".
+
+**Como se defender**
+Um PIN de 4 dígitos tem só 10.000 combinações. Por isso sistemas reais bloqueiam a conta após poucas tentativas (você viu isso no Episódio 1) e usam senhas mais longas.
+  `,
   hints: [
-    'Em JS: for (let i = 0; i < letras.length; i++) { resultado = resultado + letras[i]; }',
-    'Em Python: for letra in letras: resultado = resultado + letra',
-    'resultado = "" → "H" → "HA" → "HAC" → "HACK"',
+    'Use um loop de 0 até maximo - 1 (Python: range(maximo))',
+    'Dentro do loop, se o valor for igual ao pin, devolva o número da tentativa (i + 1)',
+    'Só depois do loop, devolva -1: significa que o atacante desistiu',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const theory2_7: TheoryChallenge = {

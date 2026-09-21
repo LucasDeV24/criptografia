@@ -41,32 +41,50 @@ const code6_1: CodeChallenge = {
   type: 'code',
   episode: 6,
   room: '6.1',
-  title: 'Criando um objeto',
-  description: 'O código cria um objeto **usuario** com nome e cargo. **Execute** para ver!',
-  instructions: 'Execute e veja os dados do usuário.',
+  title: 'Lendo um objeto',
+  description: 'Um **objeto** (JS) / **dicionário** (Python) guarda dados com nome: chave e valor. Escreva uma função que descreve um usuário a partir dos dados dele.',
+  instructions: 'Devolva "NOME - CARGO" a partir do usuário. Exemplo: descrever({nome: "Ana", cargo: "Analista"}) devolve "Ana - Analista".',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const usuario = {
-  nome: "Ana",
-  cargo: "Analista de Segurança"
-};
-
-console.log(usuario.nome);
-console.log(usuario.cargo);
-`,
-    python: `usuario = {
-    "nome": "Ana",
-    "cargo": "Analista de Segurança"
+    javascript: `// O usuário tem as propriedades "nome" e "cargo".
+// Acesse com usuario.nome e usuario.cargo
+function descrever(usuario) {
+  // seu código aqui
 }
-
-print(usuario["nome"])
-print(usuario["cargo"])
+`,
+    python: `# O usuário é um dicionário com as chaves "nome" e "cargo".
+# Acesse com usuario["nome"] e usuario["cargo"]
+def descrever(usuario):
+    # seu código aqui
+    pass
 `,
   },
-  expectedOutput: 'Ana\nAnalista de Segurança',
+  tests: {
+    fn: { javascript: 'descrever', python: 'descrever' },
+    cases: [
+      { name: 'Ana', args: [{ nome: 'Ana', cargo: 'Analista' }], expected: 'Ana - Analista' },
+      { name: 'Carlos', args: [{ nome: 'Carlos', cargo: 'Pentester' }], expected: 'Carlos - Pentester' },
+      { name: 'campos vazios', args: [{ nome: '', cargo: '' }], expected: ' - ', hidden: true },
+      { name: 'ordem das chaves não importa', args: [{ cargo: 'Dev', nome: 'Bia' }], expected: 'Bia - Dev', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function descrever(usuario) {
+  return usuario.nome + " - " + usuario.cargo;
+}`,
+    python: `def descrever(usuario):
+    return usuario["nome"] + " - " + usuario["cargo"]`,
+  },
+  explanation: `
+**Chave e valor**
+Em vez de posições numéricas (como nas listas), você acessa os dados pelo NOME: usuario.nome (JS) ou usuario["nome"] (Python).
+
+**Por que importa:** a internet troca dados em formato JSON, que é exatamente isto. Toda resposta de API que você vai analisar é um objeto.
+  `,
   hints: [
-    'O código já está pronto! Execute.',
-    'usuario.nome acessa o valor da chave "nome"',
+    'JavaScript: usuario.nome e usuario.cargo',
+    'Python: usuario["nome"] e usuario["cargo"]',
+    'Junte com " - " no meio',
   ],
   difficulty: 'easy',
 };
@@ -77,34 +95,47 @@ const code6_2: CodeChallenge = {
   episode: 6,
   room: '6.2',
   title: 'Acessando propriedades',
-  description: 'Mude o código para mostrar apenas o **email** do usuário.',
-  instructions: 'Acesse e imprima a propriedade "email" do objeto usuario.',
+  description: 'Extraia um dado específico de dentro de um objeto: o e-mail do usuário.',
+  instructions: 'Devolva o e-mail do usuário. Exemplo: pegarEmail({nome: "Carlos", email: "carlos@security.com"}) devolve "carlos@security.com".',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const usuario = {
-  nome: "Carlos",
-  email: "carlos@security.com",
-  nivel: "Senior"
-};
-
-// Imprima o email do usuário
-// Acesse a propriedade "email" do objeto
-`,
-    python: `usuario = {
-    "nome": "Carlos",
-    "email": "carlos@security.com",
-    "nivel": "Senior"
+    javascript: `// Devolva a propriedade "email" do usuário
+function pegarEmail(usuario) {
+  // seu código aqui
 }
-
-# Imprima o email do usuário
-# Acesse a chave "email" do dicionário
+`,
+    python: `# Devolva a chave "email" do usuário
+def pegar_email(usuario):
+    # seu código aqui
+    pass
 `,
   },
-  expectedOutput: 'carlos@security.com',
+  tests: {
+    fn: { javascript: 'pegarEmail', python: 'pegar_email' },
+    cases: [
+      { name: 'Carlos', args: [{ nome: 'Carlos', email: 'carlos@security.com' }], expected: 'carlos@security.com' },
+      { name: 'Ana', args: [{ nome: 'Ana', email: 'ana@site.com' }], expected: 'ana@site.com' },
+      { name: 'email é a primeira chave', args: [{ email: 'x@y.com', nome: 'X' }], expected: 'x@y.com', hidden: true },
+      { name: 'com mais campos', args: [{ id: 1, nome: 'Bia', email: 'bia@ex.com', role: 'admin' }], expected: 'bia@ex.com', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function pegarEmail(usuario) {
+  return usuario.email;
+}`,
+    python: `def pegar_email(usuario):
+    return usuario["email"]`,
+  },
+  explanation: `
+**Acesso direto**
+Você pega só o campo que precisa. A posição das chaves dentro do objeto não importa, só o nome.
+
+**Na segurança:** ao analisar respostas de API, você procura campos sensíveis (e-mail, token, senha). Saber acessá-los é o primeiro passo.
+  `,
   hints: [
-    'Em JS: console.log(usuario.email)',
-    'Em Python: print(usuario["email"])',
-    'Objetos guardam dados com chave: valor',
+    'JavaScript: usuario.email',
+    'Python: usuario["email"]',
+    'return usuario.email',
   ],
   difficulty: 'easy',
 };
@@ -151,39 +182,56 @@ const code6_4: CodeChallenge = {
   type: 'code',
   episode: 6,
   room: '6.4',
-  title: 'Simulando resposta de API',
-  description: 'O código simula a resposta de um servidor após login. **Execute** e veja os dados retornados!',
-  instructions: 'Escreva um if/else que verifica se o login foi um sucesso e imprime o resultado.',
+  title: 'Interpretando uma resposta de API',
+  description: 'Quando você faz login em um site, o servidor responde com um objeto JSON. Interprete essa resposta.',
+  instructions: 'Se o "status" for "sucesso", devolva "Login OK: " + usuario. Senão devolva "Login falhou".',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const resposta = {
-  sucesso: true,
-  usuario: "admin",
-  role: "administrador"
-};
-
-// Escreva um if/else:
-// Se resposta.sucesso for true, imprima "Login OK: " + resposta.usuario
-// Senão, imprima "Login falhou"
-`,
-    python: `resposta = {
-    "sucesso": True,
-    "usuario": "admin",
-    "role": "administrador"
+    javascript: `// resposta = { status: "sucesso" ou "erro", usuario: "nome" }
+function interpretarLogin(resposta) {
+  // seu código aqui
 }
-
-# Escreva um if/else:
-# Se resposta["sucesso"] for True, imprima "Login OK: " + resposta["usuario"]
-# Senão, imprima "Login falhou"
+`,
+    python: `# resposta = { "status": "sucesso" ou "erro", "usuario": "nome" }
+def interpretar_login(resposta):
+    # seu código aqui
+    pass
 `,
   },
-  expectedOutput: 'Login OK: admin',
+  tests: {
+    fn: { javascript: 'interpretarLogin', python: 'interpretar_login' },
+    cases: [
+      { name: 'login com sucesso', args: [{ status: 'sucesso', usuario: 'admin' }], expected: 'Login OK: admin' },
+      { name: 'login com erro', args: [{ status: 'erro', usuario: 'admin' }], expected: 'Login falhou' },
+      { name: 'outro usuário', args: [{ status: 'sucesso', usuario: 'ana' }], expected: 'Login OK: ana', hidden: true },
+      { name: 'qualquer status diferente de sucesso', args: [{ status: 'bloqueado', usuario: 'x' }], expected: 'Login falhou', hidden: true },
+      { name: 'status com maiúscula não é sucesso', args: [{ status: 'SUCESSO', usuario: 'x' }], expected: 'Login falhou', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function interpretarLogin(resposta) {
+  if (resposta.status === "sucesso") {
+    return "Login OK: " + resposta.usuario;
+  }
+  return "Login falhou";
+}`,
+    python: `def interpretar_login(resposta):
+    if resposta["status"] == "sucesso":
+        return "Login OK: " + resposta["usuario"]
+    return "Login falhou"`,
+  },
+  explanation: `
+**Objeto + condição**
+Ler um campo do objeto e decidir com if é a rotina de quem analisa APIs.
+
+**Segurança:** o servidor decide o status; o cliente só interpreta. Um site que confia em um campo controlado pelo usuário (como "status") tem uma falha grave.
+  `,
   hints: [
-    'Em JS: if (resposta.sucesso) { console.log("Login OK: " + resposta.usuario); }',
-    'Em Python: if resposta["sucesso"]: print("Login OK: " + resposta["usuario"])',
-    'Não esqueça o else com "Login falhou"',
+    'Compare resposta.status com "sucesso" (Python: resposta["status"])',
+    'Se for sucesso: return "Login OK: " + resposta.usuario',
+    'Qualquer outra coisa: return "Login falhou"',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const code6_5: CodeChallenge = {
@@ -192,38 +240,59 @@ const code6_5: CodeChallenge = {
   episode: 6,
   room: '6.5',
   title: 'Verificando permissões',
-  description: 'O código verifica se o usuário é admin. Mude o **role** para **"usuario"** e veja o resultado mudar.',
-  instructions: 'Mude o role para "usuario" e escreva o if/else para verificar permissões.',
+  description: 'Sistemas guardam o **papel** (role) de cada usuário. Decida o nível de acesso pelo role.',
+  instructions: 'Devolva "Acesso total" para role "admin", "Acesso limitado" para "usuario" e "Sem acesso" para qualquer outro.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const usuario = {
-  nome: "Carlos",
-  // Mude o role para "usuario":
-  role: "admin"
-};
-
-// Escreva um if/else:
-// Se usuario.role for "admin", imprima "Acesso total"
-// Senão, imprima "Acesso limitado"
-`,
-    python: `usuario = {
-    "nome": "Carlos",
-    # Mude o role para "usuario":
-    "role": "admin"
+    javascript: `// admin -> "Acesso total" | usuario -> "Acesso limitado" | outro -> "Sem acesso"
+function verificarPermissao(usuario) {
+  // seu código aqui
 }
-
-# Escreva um if/else:
-# Se usuario["role"] for "admin", imprima "Acesso total"
-# Senão, imprima "Acesso limitado"
+`,
+    python: `# admin -> "Acesso total" | usuario -> "Acesso limitado" | outro -> "Sem acesso"
+def verificar_permissao(usuario):
+    # seu código aqui
+    pass
 `,
   },
-  expectedOutput: 'Acesso limitado',
+  tests: {
+    fn: { javascript: 'verificarPermissao', python: 'verificar_permissao' },
+    cases: [
+      { name: 'admin', args: [{ nome: 'Ana', role: 'admin' }], expected: 'Acesso total' },
+      { name: 'usuário comum', args: [{ nome: 'Carlos', role: 'usuario' }], expected: 'Acesso limitado' },
+      { name: 'visitante', args: [{ nome: 'X', role: 'visitante' }], expected: 'Sem acesso', hidden: true },
+      { name: 'role vazio', args: [{ nome: 'Y', role: '' }], expected: 'Sem acesso', hidden: true },
+      { name: 'ADMIN em maiúsculas não é admin', args: [{ nome: 'Z', role: 'ADMIN' }], expected: 'Sem acesso', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function verificarPermissao(usuario) {
+  if (usuario.role === "admin") {
+    return "Acesso total";
+  } else if (usuario.role === "usuario") {
+    return "Acesso limitado";
+  }
+  return "Sem acesso";
+}`,
+    python: `def verificar_permissao(usuario):
+    if usuario["role"] == "admin":
+        return "Acesso total"
+    elif usuario["role"] == "usuario":
+        return "Acesso limitado"
+    return "Sem acesso"`,
+  },
+  explanation: `
+**Princípio do menor privilégio**
+O padrão (o "senão" final) deve ser NEGAR o acesso. Se um role desconhecido ganhasse acesso por padrão, qualquer valor inesperado abriria a porta.
+
+**Detalhe:** "ADMIN" ≠ "admin". Comparações de texto diferenciam maiúsculas, e isso protege ou quebra o sistema conforme a regra.
+  `,
   hints: [
-    'Primeiro mude role: "admin" para role: "usuario"',
-    'Depois: if (usuario.role == "admin") em JS',
-    'Como "usuario" não é "admin", deve entrar no else → "Acesso limitado"',
+    'Use if / else if (Python: elif) para os dois roles conhecidos',
+    'O caso final (nenhum dos dois) devolve "Sem acesso"',
+    'Compare o texto exatamente: "admin" e "usuario"',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const code6_6: CodeChallenge = {
@@ -231,37 +300,70 @@ const code6_6: CodeChallenge = {
   type: 'code',
   episode: 6,
   room: '6.6',
-  title: 'Array de objetos — lista de usuários',
-  description: 'Na vida real, sistemas guardam VÁRIOS usuários. Combinamos array + objetos! **Execute** e veja.',
-  instructions: 'Percorra o array de usuários e imprima o nome dos que são "admin".',
+  title: 'Lista de objetos — quem é admin?',
+  description: 'Bancos de dados devolvem **listas de objetos**. Percorra a lista de usuários e encontre os administradores.',
+  instructions: 'Devolva uma lista com os NOMES dos usuários cujo role é "admin", na ordem em que aparecem.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const usuarios = [
-  { nome: "Ana", role: "admin" },
-  { nome: "Carlos", role: "usuario" },
-  { nome: "Maria", role: "admin" }
-];
-
-// Percorra o array usuarios com um loop for
-// Se o role do usuário for "admin", imprima: nome + " é admin"
+    javascript: `// usuarios = [{ nome: "Ana", role: "admin" }, ...]
+// Devolva uma lista só com os nomes dos admins
+function listarAdmins(usuarios) {
+  const nomes = [];
+  // seu código aqui
+  return nomes;
+}
 `,
-    python: `usuarios = [
-    {"nome": "Ana", "role": "admin"},
-    {"nome": "Carlos", "role": "usuario"},
-    {"nome": "Maria", "role": "admin"}
-]
-
-# Percorra a lista usuarios com um loop for
-# Se o role do usuário for "admin", imprima: nome + " é admin"
+    python: `# usuarios = [{"nome": "Ana", "role": "admin"}, ...]
+# Devolva uma lista só com os nomes dos admins
+def listar_admins(usuarios):
+    nomes = []
+    # seu código aqui
+    return nomes
 `,
   },
-  expectedOutput: 'Ana é admin\nMaria é admin',
+  tests: {
+    fn: { javascript: 'listarAdmins', python: 'listar_admins' },
+    cases: [
+      {
+        name: 'dois admins',
+        args: [[{ nome: 'Ana', role: 'admin' }, { nome: 'Bia', role: 'usuario' }, { nome: 'Maria', role: 'admin' }]],
+        expected: ['Ana', 'Maria'],
+      },
+      { name: 'nenhum admin', args: [[{ nome: 'Bia', role: 'usuario' }]], expected: [] },
+      { name: 'lista vazia', args: [[]], expected: [], hidden: true },
+      { name: 'todos admins', args: [[{ nome: 'A', role: 'admin' }, { nome: 'B', role: 'admin' }]], expected: ['A', 'B'], hidden: true },
+      { name: 'ordem preservada', args: [[{ nome: 'Z', role: 'admin' }, { nome: 'A', role: 'admin' }]], expected: ['Z', 'A'], hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function listarAdmins(usuarios) {
+  const nomes = [];
+  for (let i = 0; i < usuarios.length; i++) {
+    if (usuarios[i].role === "admin") {
+      nomes.push(usuarios[i].nome);
+    }
+  }
+  return nomes;
+}`,
+    python: `def listar_admins(usuarios):
+    nomes = []
+    for usuario in usuarios:
+        if usuario["role"] == "admin":
+            nomes.append(usuario["nome"])
+    return nomes`,
+  },
+  explanation: `
+**Filtrando**
+Percorra a lista, teste uma propriedade de cada objeto e guarde só o que interessa. É o padrão "filtrar": muito comum ao analisar dados de usuários e logs.
+
+**Na segurança:** listar quem tem privilégios altos é uma tarefa clássica de auditoria (menos admins = menos risco).
+  `,
   hints: [
-    'Em JS: for (let i = 0; i < usuarios.length; i++) { if (usuarios[i].role == "admin") { ... } }',
-    'Em Python: for u in usuarios: if u["role"] == "admin": print(u["nome"] + " é admin")',
-    'Só Ana e Maria são admin',
+    'Percorra cada usuário e teste se usuario.role é "admin"',
+    'Para cada admin, adicione o NOME à lista: nomes.push(...) / nomes.append(...)',
+    'Devolva a lista no final, mesmo se estiver vazia',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const code6_7: CodeChallenge = {
@@ -269,39 +371,75 @@ const code6_7: CodeChallenge = {
   type: 'code',
   episode: 6,
   room: '6.7',
-  title: 'Função + Objeto — verificação real',
-  description: 'Vamos combinar tudo! Uma função que recebe um usuário e verifica suas permissões. **Execute**!',
-  instructions: 'Crie uma função que recebe um usuario e retorna "Permitido" se for admin, "Negado" se não for.',
+  title: 'Contando papéis — relatório de acesso',
+  description: 'Um relatório de acesso conta quantos usuários existem em cada papel. Construa um **objeto** com essas contagens.',
+  instructions: 'Devolva um objeto/dicionário no formato {role: quantidade}. Exemplo: para 1 admin e 2 usuarios devolve {"admin": 1, "usuario": 2}.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Crie uma função "verificarAcesso" que recebe um usuario
-// Se usuario.role for "admin", retorne "Permitido"
-// Senão, retorne "Negado"
-
-const ana = { nome: "Ana", role: "admin" };
-const carlos = { nome: "Carlos", role: "usuario" };
-
-console.log(ana.nome + ": " + verificarAcesso(ana));
-console.log(carlos.nome + ": " + verificarAcesso(carlos));
+    javascript: `// Devolva { admin: 1, usuario: 2 }, contando os roles
+function contarPapeis(usuarios) {
+  const contagem = {};
+  // seu código aqui
+  return contagem;
+}
 `,
-    python: `# Crie uma função "verificar_acesso" que recebe um usuario
-# Se usuario["role"] for "admin", retorne "Permitido"
-# Senão, retorne "Negado"
-
-ana = {"nome": "Ana", "role": "admin"}
-carlos = {"nome": "Carlos", "role": "usuario"}
-
-print(ana["nome"] + ": " + verificar_acesso(ana))
-print(carlos["nome"] + ": " + verificar_acesso(carlos))
+    python: `# Devolva {"admin": 1, "usuario": 2}, contando os roles
+def contar_papeis(usuarios):
+    contagem = {}
+    # seu código aqui
+    return contagem
 `,
   },
-  expectedOutput: 'Ana: Permitido\nCarlos: Negado',
+  tests: {
+    fn: { javascript: 'contarPapeis', python: 'contar_papeis' },
+    cases: [
+      {
+        name: '1 admin e 2 usuários',
+        args: [[{ nome: 'Ana', role: 'admin' }, { nome: 'Bia', role: 'usuario' }, { nome: 'Carlos', role: 'usuario' }]],
+        expected: { admin: 1, usuario: 2 },
+      },
+      { name: 'um só papel', args: [[{ nome: 'A', role: 'admin' }, { nome: 'B', role: 'admin' }]], expected: { admin: 2 } },
+      { name: 'lista vazia', args: [[]], expected: {}, hidden: true },
+      { name: 'um usuário', args: [[{ nome: 'X', role: 'visitante' }]], expected: { visitante: 1 }, hidden: true },
+      {
+        name: 'três papéis',
+        args: [[{ nome: 'a', role: 'admin' }, { nome: 'b', role: 'usuario' }, { nome: 'c', role: 'visitante' }, { nome: 'd', role: 'usuario' }]],
+        expected: { admin: 1, usuario: 2, visitante: 1 },
+        hidden: true,
+      },
+    ],
+  },
+  solution: {
+    javascript: `function contarPapeis(usuarios) {
+  const contagem = {};
+  for (let i = 0; i < usuarios.length; i++) {
+    const role = usuarios[i].role;
+    if (contagem[role] === undefined) {
+      contagem[role] = 0;
+    }
+    contagem[role] = contagem[role] + 1;
+  }
+  return contagem;
+}`,
+    python: `def contar_papeis(usuarios):
+    contagem = {}
+    for usuario in usuarios:
+        role = usuario["role"]
+        contagem[role] = contagem.get(role, 0) + 1
+    return contagem`,
+  },
+  explanation: `
+**Objeto como contador**
+A chave é o role; o valor é a contagem. Na primeira vez que um role aparece, ele ainda não existe no objeto, então começamos em 0 (em Python, .get(role, 0) já faz isso).
+
+**Isso é o coração de muita análise de logs:** contar quantas vezes cada IP, usuário ou erro aparece revela ataques (um IP com milhares de tentativas de login é força bruta).
+  `,
   hints: [
-    'Em JS: function verificarAcesso(usuario) { if (usuario.role == "admin") { return "Permitido"; } ... }',
-    'Em Python: def verificar_acesso(usuario): if usuario["role"] == "admin": return "Permitido"',
-    'Ana é admin → "Permitido", Carlos é usuario → "Negado"',
+    'Percorra os usuários e pegue o role de cada um',
+    'JavaScript: contagem[role] = (contagem[role] || 0) + 1',
+    'Python: contagem[role] = contagem.get(role, 0) + 1',
   ],
-  difficulty: 'easy',
+  difficulty: 'hard',
 };
 
 const theory6_8: TheoryChallenge = {
