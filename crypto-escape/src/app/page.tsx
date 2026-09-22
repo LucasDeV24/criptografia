@@ -74,9 +74,9 @@ export default function Home() {
         </h1>
 
         <p className="text-xl text-[var(--muted-gray)] mb-8 max-w-lg mx-auto leading-relaxed">
-          Aprenda cibersegurança do zero ao profissional. Resolva enigmas, escreva código em{' '}
+          Aprenda cibersegurança do zero ao profissional. Programe em{' '}
           <span className="text-[var(--cyber-cyan)]">JavaScript</span> ou{' '}
-          <span className="text-[var(--matrix-green)]">Python</span>.
+          <span className="text-[var(--matrix-green)]">Python</span>, e ataque e defenda sistemas reais direto no terminal.
         </p>
 
         {hasProgress && (

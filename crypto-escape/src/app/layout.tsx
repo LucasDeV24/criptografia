@@ -15,19 +15,19 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Crypto Escape — Aprenda Cibersegurança",
-  description: "Aprenda cibersegurança do zero ao profissional resolvendo desafios interativos. XSS, SQL Injection, Hash, JWT e muito mais.",
-  keywords: ["cibersegurança", "hacking ético", "CTF", "programação", "criptografia", "XSS", "SQL Injection"],
+  description: "Aprenda cibersegurança do zero ao profissional. Programe em JavaScript e Python, e ataque e defenda sistemas reais num terminal simulado: nmap, sqlmap, AWS, firewall e muito mais.",
+  keywords: ["cibersegurança", "hacking ético", "CTF", "terminal Linux", "pentest", "programação", "criptografia", "XSS", "SQL Injection"],
   authors: [{ name: "Lucas" }],
   openGraph: {
     title: "Crypto Escape — Aprenda Cibersegurança",
-    description: "382 salas interativas de cibersegurança, com laboratórios práticos. Do zero ao nível profissional.",
+    description: "382 salas interativas de cibersegurança, com laboratórios práticos e terminal de ataque e defesa. Do zero ao nível profissional.",
     type: "website",
     locale: "pt_BR",
   },
   twitter: {
     card: "summary_large_image",
     title: "Crypto Escape",
-    description: "Aprenda cibersegurança resolvendo desafios de código.",
+    description: "Aprenda cibersegurança programando e praticando ataque e defesa num terminal real, do zero ao profissional.",
   },
 };
 
