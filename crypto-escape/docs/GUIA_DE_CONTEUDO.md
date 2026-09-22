@@ -94,7 +94,10 @@ inclua a regra dele em `scripts/audit-prerequisites.mjs`.
 Depois de criar ou migrar exercícios, rode `npm run verify:exercises`. Para cada exercício com `tests`, em JavaScript
 e em Python, ele confere que: (1) a `solution` passa em todos os testes; (2) o `starterCode` não passa sozinho;
 (3) há `solution`, `explanation`, `hints` e testes ocultos (quando a função recebe argumentos); (4) uma resposta
-fixa não passa em todos os testes. Ele usa os mesmos workers do site, então o resultado é fiel.
+fixa não passa em todos os testes. Ele usa os mesmos workers do site, então o resultado é fiel. Como o JavaScript
+roda numa VM do Node (não num navegador de verdade), `atob`/`btoa` são poliflados no próprio script com `Buffer`
+(produção funciona sem isso, já que Web Workers reais têm essas funções nativamente) — se um exercício novo usar
+outra API só de navegador, ela também vai precisar de polyfill ali.
 
 ## 7. Módulos de terminal (episódios 47 a 55)
 
@@ -122,6 +125,7 @@ fixa não passa em todos os testes. Ele usa os mesmos workers do site, então o 
 - Motor de execução isolado (Web Workers), com timeout, erros com linha e testes ocultos.
 - Auditoria de pré-requisitos (`npm run audit:prereqs`): o curso todo passa com 0 conceitos usados antes de ensinados.
 - Programação (episódios 0 a 7): 75 exercícios com testes visíveis e ocultos, em escada de dificuldade, com as funções ensinadas a fundo no Episódio 0.
+- Cibersegurança (episódios 8 a 19, chaves de `episode-1.ts` a `episode-12.ts`): 36 exercícios convertidos de "valida só a saída impressa" para testes de função reais (mesmo padrão do 0-7) — cada um reescrito para expor uma função nomeada com parâmetros e `return`, com casos visíveis e ocultos, `solution` e `explanation`. A conversão revelou e corrigiu **vários bugs reais do conteúdo antigo** que nunca tinham sido testados: um hash "simulado" que dava resultados diferentes em JS e Python para certas entradas (trocado por uma função hash simples, determinística nos dois idiomas — `hash*31+código % 1000000007`); um filtro de log que marcava "401 UNAUTHORIZED" como SQL Injection por engano (a palavra contém "OR"); uma cifra de César cujo exemplo de teste nunca decodificava para a palavra prometida; e um detector de exfiltração cuja matemática (comparar um dia contra a média de TODOS os dias, incluindo o próprio pico) tornava a detecção **matematicamente impossível** de disparar — corrigido para comparar contra a média dos OUTROS dias. Ao escrever objetos JSON compartilhados entre os dois idiomas, evite chaves em camelCase que só um dos dois lados vai ler igual (prefira snake_case ou nomes de uma palavra só) e sempre confira funções que fazem sua própria serialização JSON (`json.dumps` tem espaços por padrão, diferente de `JSON.stringify`; use `separators=(',', ':')` para igualar).
 - Módulo Terminal e Linux (episódio 47): 9 salas de teoria e 7 laboratórios com tarefas conferidas.
 - Módulo Terminal: Ataque e Defesa (episódio 48): processos (ps/kill), 4 laboratórios (1 livre, 3 com
   cronômetro real) intercalando ataque e defesa, e correlação de evidências (log + ps) para não agir no alvo errado.
@@ -153,8 +157,8 @@ prontos**: Log/SIEM (52), Malware (53), Cloud (54) e Firewall ao vivo (55).
 1. Mais módulos de terminal/segurança, se o usuário quiser continuar nessa linha (candidatos ainda não
    construídos: Linux avançado/escalada de privilégios, Forense de memória, Segurança em contêineres/DevSecOps —
    ver os placeholders "Em breve" em `/trilhas`).
-2. Migrar os episódios 20 a 45 (lógica, web, cripto, blue team, OSINT, automação) para testes de função.
-   Os episódios 8 a 19 (Cibersegurança) também ainda validam só a saída.
+2. Migrar os episódios 20 a 45 (lógica, web, cripto, blue team, OSINT, automação) para testes de função —
+   mesmo trabalho que já foi feito para os episódios 8 a 19 (ver "Feito" acima).
 3. Mini-projetos de portfólio com testes (ex.: verificador de senhas, scanner de portas).
 5. Revisão do conteúdo por um profissional de segurança (fatos, fontes, exemplos reais).
 6. Ranking com integridade no servidor (hoje o cliente grava o próprio progresso).

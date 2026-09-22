@@ -9,6 +9,8 @@ Plataforma interativa para aprender **programação e cibersegurança** resolven
   fica em `src/data/course-order.ts`). Terminal simulado com tarefas conferidas pelo sistema: comandos de arquivo,
   processos (`ps`/`kill`) com laboratórios de **cronômetro real** de ataque e defesa, e rede (`ping`, `dig`, `curl`).
 - **Cibersegurança (episódios 8 a 45):** criptografia, vulnerabilidades web, blue team, OSINT, automação.
+  Os episódios 8 a 19 (36 exercícios) já usam o mesmo padrão de testes de função do 0-7; 20-45 ainda
+  validam só pela saída (próximo da fila de conversão).
 - **Active Directory, Pentest Web, SIEM, Malware, Cloud e Firewall ao vivo (episódios 50-55):** domínio,
   grupos aninhados e escalonamento de privilégio, `gobuster`/`sqlmap` automatizando reconhecimento e SQL
   Injection, cruzamento de logs sob pressão de tempo, perícia estática de malware

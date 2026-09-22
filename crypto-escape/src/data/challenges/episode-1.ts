@@ -30,68 +30,97 @@ const code1_1: CodeChallenge = {
   episode: 1,
   room: '1.1',
   title: 'Desvendando uma mensagem secreta',
-  description: 'Alguém te enviou uma mensagem codificada: **Khoor**. Você sabe que é Cifra de César com deslocamento 3. O código para decodificar JÁ ESTÁ PRONTO. Execute e veja a mensagem real!',
-  instructions: 'Execute o código e veja a mensagem decodificada.',
+  description: 'Alguém te enviou uma mensagem codificada: **Khoor**. Você sabe que é Cifra de César com deslocamento 3. O loop que percorre a mensagem já está pronto — falta só devolver o resultado.',
+  instructions: 'Complete a função decodificarCesar(mensagem): ela deve desfazer a Cifra de César com deslocamento fixo de 3 e devolver (return) o texto decodificado.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Mensagem secreta que alguém te enviou:
-const mensagemSecreta = "Khoor";
+    javascript: `function decodificarCesar(mensagem) {
+  let resultado = "";
+  for (let i = 0; i < mensagem.length; i++) {
+    const letra = mensagem[i];
+    const codigo = letra.charCodeAt(0);
 
-// Código para decodificar (já pronto!)
-let resultado = "";
-for (let i = 0; i < mensagemSecreta.length; i++) {
-  const letra = mensagemSecreta[i];
-  const codigo = letra.charCodeAt(0);
-  
-  // Verifica se é letra maiúscula
-  if (codigo >= 65 && codigo <= 90) {
-    const novoCaractere = String.fromCharCode(((codigo - 65 - 3 + 26) % 26) + 65);
-    resultado += novoCaractere;
-  } else if (codigo >= 97 && codigo <= 122) {
-    const novoCaractere = String.fromCharCode(((codigo - 97 - 3 + 26) % 26) + 97);
-    resultado += novoCaractere;
-  } else {
-    resultado += letra;
+    if (codigo >= 65 && codigo <= 90) {
+      resultado += String.fromCharCode(((codigo - 65 - 3 + 26) % 26) + 65);
+    } else if (codigo >= 97 && codigo <= 122) {
+      resultado += String.fromCharCode(((codigo - 97 - 3 + 26) % 26) + 97);
+    } else {
+      resultado += letra;
+    }
   }
+  // troque esta linha pelo seu return
 }
-
-console.log(resultado);
 `,
-    python: `# Mensagem secreta que alguém te enviou:
-mensagem_secreta = "Khoor"
+    python: `def decodificar_cesar(mensagem):
+    resultado = ""
+    for letra in mensagem:
+        codigo = ord(letra)
 
-# Código para decodificar (já pronto!)
-resultado = ""
-for letra in mensagem_secreta:
-    codigo = ord(letra)
-    
-    # Verifica se é letra maiúscula
-    if 65 <= codigo <= 90:
-        novo_caractere = chr(((codigo - 65 - 3 + 26) % 26) + 65)
-        resultado += novo_caractere
-    elif 97 <= codigo <= 122:
-        novo_caractere = chr(((codigo - 97 - 3 + 26) % 26) + 97)
-        resultado += novo_caractere
-    else:
-        resultado += letra
+        if 65 <= codigo <= 90:
+            resultado += chr(((codigo - 65 - 3 + 26) % 26) + 65)
+        elif 97 <= codigo <= 122:
+            resultado += chr(((codigo - 97 - 3 + 26) % 26) + 97)
+        else:
+            resultado += letra
 
-print(resultado)
+    # troque esta linha (e o pass) pelo seu return
+    pass
 `,
   },
-  expectedOutput: 'Hello',
+  tests: {
+    fn: { javascript: 'decodificarCesar', python: 'decodificar_cesar' },
+    cases: [
+      { name: '"Khoor"', args: ['Khoor'], expected: 'Hello' },
+      { name: '"Jrrg"', args: ['Jrrg'], expected: 'Good' },
+      { name: 'texto vazio', args: [''], expected: '', hidden: true },
+      { name: 'com pontuação', args: ['Kdssb!'], expected: 'Happy!', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function decodificarCesar(mensagem) {
+  let resultado = "";
+  for (let i = 0; i < mensagem.length; i++) {
+    const letra = mensagem[i];
+    const codigo = letra.charCodeAt(0);
+
+    if (codigo >= 65 && codigo <= 90) {
+      resultado += String.fromCharCode(((codigo - 65 - 3 + 26) % 26) + 65);
+    } else if (codigo >= 97 && codigo <= 122) {
+      resultado += String.fromCharCode(((codigo - 97 - 3 + 26) % 26) + 97);
+    } else {
+      resultado += letra;
+    }
+  }
+  return resultado;
+}`,
+    python: `def decodificar_cesar(mensagem):
+    resultado = ""
+    for letra in mensagem:
+        codigo = ord(letra)
+
+        if 65 <= codigo <= 90:
+            resultado += chr(((codigo - 65 - 3 + 26) % 26) + 65)
+        elif 97 <= codigo <= 122:
+            resultado += chr(((codigo - 97 - 3 + 26) % 26) + 97)
+        else:
+            resultado += letra
+
+    return resultado`,
+  },
   explanation: `
-**O que esse código faz?**
+**O que essa função faz?**
 1. Pega cada letra da mensagem secreta
 2. Descobre o "código" da letra (A=65, B=66, etc)
 3. Volta 3 posições (K volta para H)
-4. Mostra a mensagem real
+4. Devolve a mensagem real com **return** — sem isso, quem chama a função não recebe nada de volta
 
 **Por que isso importa em cibersegurança?**
 Hackers do bem precisam entender como mensagens são codificadas para protegê-las melhor. César é simples, mas o conceito é o mesmo usado no WhatsApp (só que MUITO mais complexo)!
   `,
   hints: [
-    'O código já está pronto! Só clique em Executar',
-    '"Khoor" se transforma em "Hello" quando voltamos 3 letras',
+    'O loop que decodifica já está pronto — falta só o return no final',
+    'JavaScript: return resultado;    Python: return resultado (apague o pass)',
+    '"Khoor" decodificado vira "Hello"',
   ],
   difficulty: 'easy',
 };
@@ -101,46 +130,86 @@ const code1_2: CodeChallenge = {
   type: 'code',
   episode: 1,
   room: '1.2',
-  title: 'Sua vez — mude a mensagem',
-  description: 'Agora você recebeu outra mensagem secreta: **"Rrod"**. Mude APENAS a primeira linha do código para decodificar essa nova mensagem.',
-  instructions: 'Escreva o código para decodificar "Rrod" usando Cifra de César com deslocamento 3. Use charCodeAt/ord para obter o código ASCII e volte 3 posições.',
+  title: 'Sua vez — qualquer deslocamento',
+  description: 'Na sala anterior o deslocamento era sempre 3. Agora escreva a versão geral: uma função que decodifica com **qualquer** deslocamento, recebido como parâmetro.',
+  instructions: 'Escreva decodificarCesarGenerico(mensagem, deslocamento): desfaça a Cifra de César usando o deslocamento recebido (não fixe em 3) e devolva o resultado com return.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Mensagem secreta que alguém te enviou:
-const mensagemSecreta = "Rrod";
-
-// Decodifique usando Cifra de César (deslocamento 3)
-// Para cada caractere da mensagem:
-//   - Descubra o código ASCII com charCodeAt(0)
-//   - Se for letra maiúscula (65-90): volte 3 posições
-//   - Se for letra minúscula (97-122): volte 3 posições
-//   - Fórmula: ((codigo - base - 3 + 26) % 26) + base
-//     (base = 65 para maiúsculas, 97 para minúsculas)
-//   - Senão, mantenha o caractere original
-// Junte tudo em uma string resultado e imprima com console.log()
+    javascript: `function decodificarCesarGenerico(mensagem, deslocamento) {
+  // Para cada caractere da mensagem:
+  //   - Descubra o código ASCII com charCodeAt(0)
+  //   - Se for letra maiúscula (65-90): volte "deslocamento" posições
+  //   - Se for letra minúscula (97-122): volte "deslocamento" posições
+  //   - Fórmula: (((codigo - base - deslocamento) % 26) + 26) % 26 + base
+  //     (base = 65 para maiúsculas, 97 para minúsculas)
+  //   - Senão, mantenha o caractere original
+  // Junte tudo em uma variável resultado e devolva com return
+}
 `,
-    python: `# Mensagem secreta que alguém te enviou:
-mensagem_secreta = "Rrod"
-
-# Decodifique usando Cifra de César (deslocamento 3)
-# Para cada caractere da mensagem:
-#   - Descubra o código ASCII com ord()
-#   - Se for letra maiúscula (65-90): volte 3 posições
-#   - Se for letra minúscula (97-122): volte 3 posições
-#   - Fórmula: chr(((codigo - base - 3 + 26) % 26) + base)
-#     (base = 65 para maiúsculas, 97 para minúsculas)
-#   - Senão, mantenha o caractere original
-# Junte tudo em uma string resultado e imprima com print()
+    python: `def decodificar_cesar_generico(mensagem, deslocamento):
+    # Para cada caractere da mensagem:
+    #   - Descubra o código ASCII com ord()
+    #   - Se for letra maiúscula (65-90): volte "deslocamento" posições
+    #   - Se for letra minúscula (97-122): volte "deslocamento" posições
+    #   - Fórmula: (((codigo - base - deslocamento) % 26) + 26) % 26 + base
+    #     (base = 65 para maiúsculas, 97 para minúsculas)
+    #   - Senão, mantenha o caractere original
+    # Junte tudo em uma variável resultado e devolva com return
+    pass
 `,
   },
-  expectedOutput: 'Good',
+  tests: {
+    fn: { javascript: 'decodificarCesarGenerico', python: 'decodificar_cesar_generico' },
+    cases: [
+      { name: 'deslocamento 3', args: ['Khoor', 3], expected: 'Hello' },
+      { name: 'deslocamento 1', args: ['Ifmmp', 1], expected: 'Hello' },
+      { name: 'deslocamento 0', args: ['Abc', 0], expected: 'Abc', hidden: true },
+      { name: 'texto vazio', args: ['', 5], expected: '', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function decodificarCesarGenerico(mensagem, deslocamento) {
+  let resultado = "";
+  for (let i = 0; i < mensagem.length; i++) {
+    const letra = mensagem[i];
+    const codigo = letra.charCodeAt(0);
+
+    if (codigo >= 65 && codigo <= 90) {
+      resultado += String.fromCharCode((((codigo - 65 - deslocamento) % 26) + 26) % 26 + 65);
+    } else if (codigo >= 97 && codigo <= 122) {
+      resultado += String.fromCharCode((((codigo - 97 - deslocamento) % 26) + 26) % 26 + 97);
+    } else {
+      resultado += letra;
+    }
+  }
+  return resultado;
+}`,
+    python: `def decodificar_cesar_generico(mensagem, deslocamento):
+    resultado = ""
+    for letra in mensagem:
+        codigo = ord(letra)
+
+        if 65 <= codigo <= 90:
+            resultado += chr((((codigo - 65 - deslocamento) % 26) + 26) % 26 + 65)
+        elif 97 <= codigo <= 122:
+            resultado += chr((((codigo - 97 - deslocamento) % 26) + 26) % 26 + 97)
+        else:
+            resultado += letra
+
+    return resultado`,
+  },
+  explanation: `
+**A generalização**
+Em vez de sempre voltar 3 posições, a função agora recebe o deslocamento como parâmetro — a mesma lógica serve para decodificar QUALQUER Cifra de César, não só a do exemplo. É assim que se transforma um caso específico numa ferramenta reutilizável.
+
+**Detalhe da fórmula:** o \`+ 26) % 26\` extra existe porque, em JavaScript, o resto de uma divisão por número negativo pode dar negativo — esse ajuste garante que o resultado sempre fique entre 0 e 25.
+  `,
   hints: [
-    'Você precisa percorrer cada letra da mensagem com um loop',
-    'Para maiúsculas, use base 65. Para minúsculas, use base 97',
-    'A fórmula é: ((codigo - base - 3 + 26) % 26) + base',
-    'O resultado final é "Good"',
+    'Copie a estrutura do loop da sala anterior, mas troque o 3 fixo pelo parâmetro deslocamento',
+    'A fórmula muda para: (((codigo - base - deslocamento) % 26) + 26) % 26 + base',
+    'Com deslocamento 0, a mensagem não muda nada — bom caso para testar seu raciocínio',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const theory1_3: TheoryChallenge = {

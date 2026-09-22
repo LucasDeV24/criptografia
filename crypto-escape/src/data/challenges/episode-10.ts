@@ -47,81 +47,76 @@ const code10_1: CodeChallenge = {
   episode: 10,
   room: '10.1',
   title: 'Mensagem oculta em texto',
-  description: 'Esta mensagem parece normal... mas há algo escondido nas primeiras letras de cada palavra!',
-  instructions: 'Execute e descubra a mensagem oculta',
+  description: 'Um texto de várias linhas pode esconder uma palavra nas primeiras letras de cada linha — um acróstico. Escreva a função que extrai essa mensagem oculta.',
+  instructions: 'Complete extrairAcrostico(mensagem): pegue a primeira letra de cada linha não-vazia (depois de tirar espaços das pontas) e junte tudo. Devolva a palavra oculta com return.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Mensagem aparentemente normal
-const mensagem = \`
-Sempre esteja
-Curioso e
-Resiliente para
-Evoluir constantemente em
-Todos os aspectos
-\`;
-
-// Extrair primeira letra de cada linha
-const linhas = mensagem.trim().split('\\n');
-let mensagemOculta = "";
-
-for (let i = 0; i < linhas.length; i++) {
-  const linha = linhas[i].trim();
-  if (linha.length > 0) {
-    mensagemOculta += linha[0];
-  }
+    javascript: `function extrairAcrostico(mensagem) {
+  const linhas = mensagem.trim().split('\\n');
+  let oculta = "";
+  // Percorra "linhas": para cada uma, tire os espaços com .trim()
+  // Se a linha (depois do trim) não estiver vazia, adicione a primeira letra a "oculta"
+  // Devolva "oculta" com return
 }
-
-console.log("📝 Mensagem visível:");
-console.log(mensagem);
-console.log("\\n🔍 Mensagem OCULTA:");
-console.log(mensagemOculta);
 `,
-    python: `# Mensagem aparentemente normal
-mensagem = """
-Sempre esteja
-Curioso e
-Resiliente para
-Evoluir constantemente em
-Todos os aspectos
-"""
-
-# Extrair primeira letra de cada linha
-linhas = mensagem.strip().split('\\n')
-mensagem_oculta = ""
-
-for linha in linhas:
-    linha = linha.strip()
-    if len(linha) > 0:
-        mensagem_oculta += linha[0]
-
-print("📝 Mensagem visível:")
-print(mensagem)
-print("\\n🔍 Mensagem OCULTA:")
-print(mensagem_oculta)
+    python: `def extrair_acrostico(mensagem):
+    linhas = mensagem.strip().split('\\n')
+    oculta = ""
+    # Percorra "linhas": para cada uma, tire os espaços com .strip()
+    # Se a linha (depois do strip) não estiver vazia, adicione a primeira letra a "oculta"
+    # Devolva "oculta" com return
+    pass
 `,
   },
-  expectedOutput: '🔍 Mensagem OCULTA:\nSCRET',
+  tests: {
+    fn: { javascript: 'extrairAcrostico', python: 'extrair_acrostico' },
+    cases: [
+      { name: 'acróstico SECRET', args: ['Seja\nEsperto\nCurioso\nResiliente\nEmpenhado\nTécnico'], expected: 'SECRET' },
+      { name: 'acróstico HELLO', args: ['Hoje\nEu\nLembro\nLivre\nOnde'], expected: 'HELLO' },
+      { name: 'texto vazio', args: [''], expected: '', hidden: true },
+      { name: 'com linhas em branco no meio', args: ['Seja\n\nEsperto\n\nCurioso'], expected: 'SEC', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function extrairAcrostico(mensagem) {
+  const linhas = mensagem.trim().split('\\n');
+  let oculta = "";
+  for (let i = 0; i < linhas.length; i++) {
+    const linha = linhas[i].trim();
+    if (linha.length > 0) {
+      oculta += linha[0];
+    }
+  }
+  return oculta;
+}`,
+    python: `def extrair_acrostico(mensagem):
+    linhas = mensagem.strip().split('\\n')
+    oculta = ""
+    for linha in linhas:
+        linha = linha.strip()
+        if len(linha) > 0:
+            oculta += linha[0]
+    return oculta`,
+  },
   explanation: `
 **Técnica: Acróstico**
 
-Mensagem oculta: **SECRET**
-
-Primeiras letras de cada linha formam a palavra secreta!
+Cada linha esconde uma letra — junte as primeiras letras (ignorando linhas em branco) e a palavra aparece.
 
 **No mundo real:**
-Hackers usam isso para comunicação encoberta.
-Parece texto normal, mas carrega informação oculta.
+Hackers usam variações dessa ideia para comunicação encoberta. Parece texto normal, mas carrega informação oculta.
 
-**Variações:**
-• Última letra de cada palavra
-• Caracteres invisíveis (zero-width)
-• Espaços em branco (Morse code)
+**Variações reais:**
+• Última letra de cada palavra, em vez da primeira
+• Caracteres invisíveis (zero-width characters)
+• Padrões de espaços em branco (parecido com código Morse)
   `,
   hints: [
-    'Olhe a primeira letra de cada linha',
-    'S-C-R-E-T → SECRET',
+    'linha.trim() (Python: linha.strip()) tira espaços das pontas antes de checar se está vazia',
+    'linha[0] pega o primeiro caractere de uma string, em qualquer um dos dois idiomas',
+    'Linhas em branco (depois do trim) não contribuem nenhuma letra — só pule elas',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const code10_2: CodeChallenge = {
@@ -130,31 +125,53 @@ const code10_2: CodeChallenge = {
   episode: 10,
   room: '10.2',
   title: 'Dados em hexadecimal',
-  description: 'Você encontrou este código suspeito em um arquivo: 48656c6c6f. Parece hexadecimal. Decodifique!',
-  instructions: 'Execute e veja o texto escondido',
+  description: 'Você encontrou código suspeito em um arquivo, algo como "48656c6c6f". Parece hexadecimal. Escreva a função que decodifica.',
+  instructions: 'Complete hexParaTexto(hexData): percorra de 2 em 2 caracteres, converta cada par para número (base 16) e depois para caractere. Junte tudo e devolva com return.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Dados em hexadecimal encontrados em um arquivo suspeito
-const hexData = "48656c6c6f";
-
-// Converta o hexadecimal para texto ASCII:
-// 1. Percorra hexData de 2 em 2 caracteres (i += 2)
-// 2. Extraia cada par de hex com hexData.substr(i, 2)
-// 3. Converta para número decimal com parseInt(hex, 16)
-// 4. Converta para caractere com String.fromCharCode()
-// 5. Junte tudo em uma string resultado
-// 6. Imprima: "📝 Texto decodificado: " + resultado
+    javascript: `function hexParaTexto(hexData) {
+  let resultado = "";
+  // Percorra hexData de 2 em 2 caracteres (i += 2)
+  // Para cada par: hexData.substr(i, 2)
+  // Converta para decimal: parseInt(par, 16)
+  // Converta para caractere: String.fromCharCode(...)
+  // Junte tudo em "resultado" e devolva com return
+}
 `,
-    python: `# Dados em hexadecimal encontrados em um arquivo suspeito
-hex_data = "48656c6c6f"
-
-# Converta o hexadecimal para texto ASCII:
-# 1. Use bytes.fromhex(hex_data) para converter hex em bytes
-# 2. Use .decode('utf-8') para converter bytes em texto
-# 3. Imprima: f"📝 Texto decodificado: {texto}"
+    python: `def hex_para_texto(hex_data):
+    resultado = ""
+    # Percorra hex_data de 2 em 2 caracteres
+    # Para cada par: hex_data[i:i+2]
+    # Converta para decimal: int(par, 16)
+    # Converta para caractere: chr(...)
+    # Junte tudo em "resultado" e devolva com return
+    pass
 `,
   },
-  expectedOutput: '📝 Texto decodificado: Hello',
+  tests: {
+    fn: { javascript: 'hexParaTexto', python: 'hex_para_texto' },
+    cases: [
+      { name: '"Hello"', args: ['48656c6c6f'], expected: 'Hello' },
+      { name: 'com espaço no meio', args: ['48656c6c6f20776f726c64'], expected: 'Hello world', hidden: true },
+      { name: 'texto vazio', args: [''], expected: '', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function hexParaTexto(hexData) {
+  let resultado = "";
+  for (let i = 0; i < hexData.length; i += 2) {
+    const par = hexData.substr(i, 2);
+    resultado += String.fromCharCode(parseInt(par, 16));
+  }
+  return resultado;
+}`,
+    python: `def hex_para_texto(hex_data):
+    resultado = ""
+    for i in range(0, len(hex_data), 2):
+        par = hex_data[i:i + 2]
+        resultado += chr(int(par, 16))
+    return resultado`,
+  },
   explanation: `
 **Hex to ASCII conversion**
 
@@ -167,8 +184,7 @@ hex_data = "48656c6c6f"
 • ...
 
 **Uso comum:**
-• Malware esconde strings em hex
-• Evitar detecção por antivírus
+• Malware esconde strings em hex para evitar detecção por antivírus
 • Ofuscar código
 
 **Ferramentas:**
@@ -176,12 +192,11 @@ hex_data = "48656c6c6f"
 • xxd (Linux hex dump)
   `,
   hints: [
-    'Hexadecimal é base 16 (0-9, A-F). Cada 2 dígitos = 1 caractere',
-    'JS: parseInt("48", 16) retorna 72. String.fromCharCode(72) retorna "H"',
-    'Python: bytes.fromhex("48656c6c6f").decode("utf-8") retorna "Hello"',
-    'O texto escondido é "Hello"',
+    'range(0, len(hex_data), 2) (JS: for com i += 2) percorre de 2 em 2',
+    'parseInt(par, 16) (Python: int(par, 16)) converte o par hex para um número decimal',
+    'String.fromCharCode(...) (Python: chr(...)) converte o número no caractere correspondente',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const theory10_3: TheoryChallenge = {
@@ -234,42 +249,48 @@ const code10_4: CodeChallenge = {
   episode: 10,
   room: '10.4',
   title: 'Extraindo dados de "imagem" (simulado)',
-  description: 'Você tem uma sequência de números que representam pixels de uma imagem. Os bits menos significativos formam uma mensagem!',
-  instructions: 'Execute e extraia a mensagem escondida',
+  description: 'Você tem uma sequência de números que representam pixels reconstruídos de uma imagem (já extraídos dos bits menos significativos). Eles formam uma mensagem!',
+  instructions: 'Complete extrairMensagemDePixels(pixels): converta cada número em caractere e junte tudo numa string. Devolva com return.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// "Pixels" da imagem (valores RGB simplificados)
-const pixels = [72, 101, 108, 108, 111];
-
-// Os valores dos pixels são na verdade códigos ASCII!
-// 1. Percorra o array pixels
-// 2. Converta cada número para caractere com String.fromCharCode()
-// 3. Junte todos os caracteres em uma string
-// 4. Imprima: "📝 Mensagem escondida: " + a mensagem
+    javascript: `function extrairMensagemDePixels(pixels) {
+  // Cada número em "pixels" é, na verdade, um código ASCII
+  // Converta cada um para caractere com String.fromCharCode() e junte tudo
+  // Dica: .map() + .join("") resolve em uma linha
+}
 `,
-    python: `# "Pixels" da imagem (valores RGB simplificados)
-pixels = [72, 101, 108, 108, 111]
-
-# Os valores dos pixels são na verdade códigos ASCII!
-# 1. Percorra a lista pixels
-# 2. Converta cada número para caractere com chr()
-# 3. Junte todos os caracteres em uma string
-# 4. Imprima: f"📝 Mensagem escondida: {mensagem}"
+    python: `def extrair_mensagem_de_pixels(pixels):
+    # Cada número em "pixels" é, na verdade, um código ASCII
+    # Converta cada um para caractere com chr() e junte tudo
+    # Dica: uma list comprehension + "".join(...) resolve em uma linha
+    pass
 `,
   },
-  expectedOutput: '📝 Mensagem escondida: Hello',
+  tests: {
+    fn: { javascript: 'extrairMensagemDePixels', python: 'extrair_mensagem_de_pixels' },
+    cases: [
+      { name: '"Hello"', args: [[72, 101, 108, 108, 111]], expected: 'Hello' },
+      { name: '"World"', args: [[87, 111, 114, 108, 100]], expected: 'World' },
+      { name: 'lista vazia', args: [[]], expected: '', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function extrairMensagemDePixels(pixels) {
+  return pixels.map(p => String.fromCharCode(p)).join("");
+}`,
+    python: `def extrair_mensagem_de_pixels(pixels):
+    return "".join(chr(p) for p in pixels)`,
+  },
   explanation: `
-**Mensagem escondida: Hello**
+**Neste exemplo simplificado, os "pixels" já são valores ASCII prontos.**
 
-Neste exemplo simplificado, os "pixels" são na verdade valores ASCII.
 No mundo real:
-• Imagem tem milhões de pixels
-• Você usa LSBs para reconstruir bytes
-• 1 byte = 8 pixels (1 bit por pixel)
+• Uma imagem tem milhões de pixels
+• Você extrai os LSBs (bits menos significativos) de cada um
+• 8 desses bits, juntos, reconstroem 1 byte — e é esse byte que vira um número como os que você recebeu aqui
 
 **Capacidade:**
-Imagem 1920x1080 = 2 milhões de pixels
-Pode esconder: ~250KB de dados!
+Uma imagem 1920x1080 tem cerca de 2 milhões de pixels — o suficiente para esconder até ~250KB de dados sem alteração visível.
 
 **Detecção:**
 • Análise estatística
@@ -277,10 +298,9 @@ Pode esconder: ~250KB de dados!
 • Chi-square test
   `,
   hints: [
-    '72 = "H", 101 = "e", 108 = "l"... são valores ASCII',
-    'JS: String.fromCharCode(72) retorna "H"',
-    'Python: chr(72) retorna "H"',
-    'Percorra com loop e concatene os caracteres em uma string',
+    'pixels.map(p => String.fromCharCode(p)) transforma cada número em caractere',
+    '.join("") junta tudo numa string só, sem separador',
+    'Python: "".join(chr(p) for p in pixels) faz tudo numa linha',
   ],
   difficulty: 'easy',
 };

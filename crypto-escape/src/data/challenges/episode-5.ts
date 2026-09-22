@@ -53,70 +53,74 @@ const code5_1: CodeChallenge = {
   episode: 5,
   room: '5.1',
   title: 'Simulando um login normal',
-  description: 'Veja como um sistema de login funciona internamente. Este código simula uma query SQL.',
-  instructions: 'Execute e veja o login normal funcionando',
+  description: 'Veja como um sistema de login funciona internamente. Esta função simula uma consulta SQL de verdade: buscar um usuário cujo par usuário+senha bata exatamente.',
+  instructions: 'Complete fazerLogin(usuarios, usuarioDigitado, senhaDigitada): procure na lista usuarios um item cujo usuario e senha batam com os digitados. Devolva "Login bem-sucedido!" ou "Usuário ou senha incorretos".',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Simulação de banco de dados
-const usuarios = [
-  { usuario: "admin", senha: "senha123" },
-  { usuario: "user", senha: "123456" }
-];
-
-// Dados do formulário de login
-const usuarioDigitado = "admin";
-const senhaDigitada = "senha123";
-
-// Simula query SQL:
-// SELECT * FROM usuarios WHERE usuario='admin' AND senha='senha123'
-
-const usuarioEncontrado = usuarios.find(u => 
-  u.usuario === usuarioDigitado && u.senha === senhaDigitada
-);
-
-if (usuarioEncontrado) {
-  console.log("Login bem-sucedido!");
-} else {
-  console.log("Usuário ou senha incorretos");
+    javascript: `function fazerLogin(usuarios, usuarioDigitado, senhaDigitada) {
+  // Use usuarios.find(u => ...) para procurar o usuário com usuario E senha batendo
+  // Se encontrou, devolva "Login bem-sucedido!"
+  // Se não, devolva "Usuário ou senha incorretos"
 }
 `,
-    python: `# Simulação de banco de dados
-usuarios = [
-    {"usuario": "admin", "senha": "senha123"},
-    {"usuario": "user", "senha": "123456"}
-]
-
-# Dados do formulário de login
-usuario_digitado = "admin"
-senha_digitada = "senha123"
-
-# Simula query SQL:
-# SELECT * FROM usuarios WHERE usuario='admin' AND senha='senha123'
-
-usuario_encontrado = None
-for u in usuarios:
-    if u["usuario"] == usuario_digitado and u["senha"] == senha_digitada:
-        usuario_encontrado = u
-        break
-
-if usuario_encontrado:
-    print("Login bem-sucedido!")
-else:
-    print("Usuário ou senha incorretos")
+    python: `def fazer_login(usuarios, usuario_digitado, senha_digitada):
+    # Percorra "usuarios" com um for e compare usuario e senha de cada item
+    # Se encontrar um que bate, devolva "Login bem-sucedido!"
+    # Se terminar o loop sem achar, devolva "Usuário ou senha incorretos"
+    pass
 `,
   },
-  expectedOutput: 'Login bem-sucedido!',
+  tests: {
+    fn: { javascript: 'fazerLogin', python: 'fazer_login' },
+    cases: [
+      {
+        name: 'usuário e senha certos',
+        args: [[{ usuario: 'admin', senha: 'senha123' }, { usuario: 'user', senha: '123456' }], 'admin', 'senha123'],
+        expected: 'Login bem-sucedido!',
+      },
+      {
+        name: 'senha errada',
+        args: [[{ usuario: 'admin', senha: 'senha123' }, { usuario: 'user', senha: '123456' }], 'admin', 'errada'],
+        expected: 'Usuário ou senha incorretos',
+      },
+      {
+        name: 'outro usuário certo',
+        args: [[{ usuario: 'admin', senha: 'senha123' }, { usuario: 'user', senha: '123456' }], 'user', '123456'],
+        expected: 'Login bem-sucedido!',
+        hidden: true,
+      },
+      { name: 'banco de dados vazio', args: [[], 'admin', 'senha123'], expected: 'Usuário ou senha incorretos', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function fazerLogin(usuarios, usuarioDigitado, senhaDigitada) {
+  const usuarioEncontrado = usuarios.find(u =>
+    u.usuario === usuarioDigitado && u.senha === senhaDigitada
+  );
+
+  if (usuarioEncontrado) {
+    return "Login bem-sucedido!";
+  }
+  return "Usuário ou senha incorretos";
+}`,
+    python: `def fazer_login(usuarios, usuario_digitado, senha_digitada):
+    for u in usuarios:
+        if u["usuario"] == usuario_digitado and u["senha"] == senha_digitada:
+            return "Login bem-sucedido!"
+    return "Usuário ou senha incorretos"`,
+  },
   explanation: `
 **Como funciona:**
-1. Sistema busca no banco onde usuario='admin' E senha='senha123'
+1. Sistema busca no banco onde usuario E senha batem exatamente
 2. Encontrou? Login permitido
-3. Não encontrou? Acesso negado
+3. Não encontrou (mesmo com lista vazia)? Acesso negado
 
 Na próxima sala vamos QUEBRAR essa lógica!
   `,
   hints: [
-    'Este é um login normal e seguro',
-    'Usuário e senha corretos = login bem-sucedido',
+    'JavaScript: usuarios.find(u => u.usuario === usuarioDigitado && u.senha === senhaDigitada)',
+    'Python: um for percorrendo usuarios, comparando u["usuario"] e u["senha"]',
+    'Lista vazia nunca encontra ninguém — deve cair direto no "incorretos"',
   ],
   difficulty: 'easy',
 };
@@ -127,63 +131,63 @@ const code5_2: CodeChallenge = {
   episode: 5,
   room: '5.2',
   title: 'Seu primeiro SQL Injection',
-  description: 'Agora o sistema está VULNERÁVEL - ele monta a query concatenando strings. Mude o usuário para: admin\' OR \'1\'=\'1',
-  instructions: 'Mude usuarioDigitado para: admin\' OR \'1\'=\'1',
+  description: 'Agora simule um sistema VULNERÁVEL, que monta a query SQL concatenando strings direto do que o usuário digitou — sem nenhuma proteção.',
+  instructions: 'Complete tentarLoginVulneravel(usuarioDigitado, senhaDigitada): monte a query concatenando as strings, e devolva "Login bem-sucedido!" se ela contiver "OR \'1\'=\'1\'" (a injeção clássica). Senão, devolva "Usuário ou senha incorretos".',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Sistema VULNERÁVEL que concatena strings
-const usuarios = [
-  { usuario: "admin", senha: "senha123" },
-  { usuario: "user", senha: "123456" }
-];
-
-// Modifique o usuário para fazer SQL Injection:
-// Use: admin' OR '1'='1
-const usuarioDigitado = "admin";
-const senhaDigitada = "qualquer";
-
-// Monte a query SQL concatenando as variáveis:
-// "SELECT * FROM usuarios WHERE usuario='" + usuario + "' AND senha='" + senha + "'"
-// Imprima "Query gerada:" e a query na próxima linha
-
-// Verifique se a query contém "OR '1'='1'" (injection bem-sucedida)
-// Se sim, imprima: "Login bem-sucedido!"
-// Se não, imprima: "Usuário ou senha incorretos"
+    javascript: `function tentarLoginVulneravel(usuarioDigitado, senhaDigitada) {
+  // Monte a query concatenando:
+  // "SELECT * FROM usuarios WHERE usuario='" + usuarioDigitado + "' AND senha='" + senhaDigitada + "'"
+  // Se a query contiver "OR '1'='1'", devolva "Login bem-sucedido!"
+  // Senão, devolva "Usuário ou senha incorretos"
+}
 `,
-    python: `# Sistema VULNERÁVEL que concatena strings
-usuarios = [
-    {"usuario": "admin", "senha": "senha123"},
-    {"usuario": "user", "senha": "123456"}
-]
-
-# Modifique o usuário para fazer SQL Injection:
-# Use: admin' OR '1'='1
-usuario_digitado = "admin"
-senha_digitada = "qualquer"
-
-# Monte a query SQL usando f-string:
-# f"SELECT * FROM usuarios WHERE usuario='{usuario}' AND senha='{senha}'"
-# Imprima "Query gerada:" e a query na próxima linha
-
-# Verifique se a query contém "OR '1'='1'" (injection bem-sucedida)
-# Se sim, imprima: "Login bem-sucedido!"
-# Se não, imprima: "Usuário ou senha incorretos"
+    python: `def tentar_login_vulneravel(usuario_digitado, senha_digitada):
+    # Monte a query com f-string:
+    # f"SELECT * FROM usuarios WHERE usuario='{usuario_digitado}' AND senha='{senha_digitada}'"
+    # Se a query contiver "OR '1'='1'", devolva "Login bem-sucedido!"
+    # Senão, devolva "Usuário ou senha incorretos"
+    pass
 `,
   },
-  expectedOutput: 'Login bem-sucedido!',
+  tests: {
+    fn: { javascript: 'tentarLoginVulneravel', python: 'tentar_login_vulneravel' },
+    cases: [
+      { name: 'usuário normal, sem injeção', args: ['admin', 'qualquer'], expected: 'Usuário ou senha incorretos' },
+      { name: 'payload de injeção clássico', args: ["admin' OR '1'='1", 'qualquer'], expected: 'Login bem-sucedido!' },
+      { name: 'outro usuário normal', args: ['user', '123456'], expected: 'Usuário ou senha incorretos', hidden: true },
+      { name: 'injeção sem nome de usuário', args: ["' OR '1'='1", 'x'], expected: 'Login bem-sucedido!', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function tentarLoginVulneravel(usuarioDigitado, senhaDigitada) {
+  const query = "SELECT * FROM usuarios WHERE usuario='" + usuarioDigitado + "' AND senha='" + senhaDigitada + "'";
+
+  if (query.includes("OR '1'='1'")) {
+    return "Login bem-sucedido!";
+  }
+  return "Usuário ou senha incorretos";
+}`,
+    python: `def tentar_login_vulneravel(usuario_digitado, senha_digitada):
+    query = f"SELECT * FROM usuarios WHERE usuario='{usuario_digitado}' AND senha='{senha_digitada}'"
+
+    if "OR '1'='1'" in query:
+        return "Login bem-sucedido!"
+    return "Usuário ou senha incorretos"`,
+  },
   explanation: `
 **VULNERABILIDADE EXPLORADA!**
 
-Query gerada:
+Com \`usuarioDigitado = "admin' OR '1'='1"\`, a query concatenada vira:
 \`SELECT * FROM usuarios WHERE usuario='admin' OR '1'='1' AND senha='qualquer'\`
 
 **Por que funcionou:**
 • '1'='1' é SEMPRE verdadeiro
-• O OR faz a query retornar TODOS os usuários
-• Você entrou sem saber a senha!
+• O OR faz a condição inteira virar verdadeira, não importa a senha
+• Repare que nem precisa do "admin" — só a injeção sozinha já basta (último teste oculto)
 
 **No mundo real:**
-Hackers usam isso para:
+Hackers usam a mesma ideia para:
 • Fazer login como admin
 • Extrair dados: \` ' UNION SELECT * FROM cartoes--\`
 • Apagar tabelas: \` '; DROP TABLE usuarios;--\`
@@ -194,8 +198,9 @@ Hackers usam isso para:
 • Validar e sanitizar inputs
   `,
   hints: [
-    'Troque "admin" por "admin\' OR \'1\'=\'1"',
-    'Coloque aspas simples e espaços exatamente como mostrado',
+    'Monte a query igual ao template dado, só trocando os valores',
+    '.includes("OR \'1\'=\'1\'") em JS, ou "OR \'1\'=\'1\'" in query em Python',
+    'O usuário não precisa ser "admin" para a injeção funcionar — o ataque não depende do nome',
   ],
   difficulty: 'medium',
 };
@@ -232,6 +237,10 @@ Forçar erros SQL que revelam estrutura do banco:
 • Burp Suite + SQL injection extensions
 • Havij
 
+**Ferramentas novas para o próximo laboratório**
+• **\`.map()\` (JavaScript):** transforma cada item de uma lista em outra coisa, devolvendo uma lista nova do mesmo tamanho. \`[1,2,3].map(x => x * 2)\` vira \`[2,4,6]\`. Em **Python**, o equivalente mais comum é uma list comprehension: \`[x * 2 for x in lista]\`.
+• **\`.join()\` (JavaScript) e \`"separador".join(...)\` (Python):** junta os itens de uma lista numa única string, com um separador entre eles. \`["a","b","c"].join("-")\` vira \`"a-b-c"\`. Em Python é \`"-".join(["a","b","c"])\` — repare que o separador vem ANTES do \`.join\`, ao contrário do JavaScript.
+
 **Próxima sala:** Extração de dados com UNION.
   `,
 };
@@ -242,64 +251,74 @@ const code5_4: CodeChallenge = {
   episode: 5,
   room: '5.4',
   title: 'Extraindo dados com UNION',
-  description: 'Use UNION para combinar a query legítima com uma maliciosa e extrair dados de outra tabela.',
-  instructions: 'Veja como UNION extrai dados sensíveis',
+  description: 'UNION combina o resultado de duas consultas SQL diferentes numa só. Um atacante usa isso para "colar" dados de uma tabela sensível junto com o resultado de uma busca inofensiva.',
+  instructions: 'Complete extrairComUniao(query, senhas): se a query (sem diferenciar maiúsculas/minúsculas) contiver "UNION SELECT", devolva "Dados extraídos:\\n" seguido de cada entrada de senhas no formato "usuario | senha", uma por linha. Senão, devolva "Nenhum dado extra retornado."',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Banco de dados com múltiplas tabelas
-const produtos = [
-  { id: 1, nome: "Notebook" },
-  { id: 2, nome: "Mouse" }
-];
-
-const senhas = [
-  { usuario: "admin", senha: "super_secret_123" },
-  { usuario: "user", senha: "password" }
-];
-
-// Crie o payload UNION para extrair dados da tabela de senhas
-// O payload deve ser: "1 UNION SELECT usuario, senha FROM senhas--"
-// Imprima "Payload injetado:" e o payload na próxima linha
-
-// Simule a extração: imprima "\\nDados extraídos:"
-// Percorra o array 'senhas' e para cada entrada imprima:
-// usuario + " | " + senha
+    javascript: `function extrairComUniao(query, senhas) {
+  // Se query.toUpperCase() contiver "UNION SELECT":
+  //   monte "Dados extraídos:\\n" + uma linha "usuario | senha" por item de senhas,
+  //   juntando as linhas com "\\n" (dica: .map() e .join("\\n"))
+  // Senão, devolva "Nenhum dado extra retornado."
+}
 `,
-    python: `# Banco de dados com múltiplas tabelas
-produtos = [
-    {"id": 1, "nome": "Notebook"},
-    {"id": 2, "nome": "Mouse"}
-]
-
-senhas = [
-    {"usuario": "admin", "senha": "super_secret_123"},
-    {"usuario": "user", "senha": "password"}
-]
-
-# Crie o payload UNION para extrair dados da tabela de senhas
-# O payload deve ser: "1 UNION SELECT usuario, senha FROM senhas--"
-# Imprima "Payload injetado:" e o payload na próxima linha
-
-# Simule a extração: imprima "\\nDados extraídos:"
-# Percorra a lista 'senhas' e para cada entrada imprima:
-# usuario + " | " + senha
+    python: `def extrair_com_uniao(query, senhas):
+    # Se query.upper() contiver "UNION SELECT":
+    #   monte "Dados extraídos:\\n" + uma linha "usuario | senha" por item de senhas,
+    #   juntando as linhas com "\\n" (dica: uma list comprehension e "\\n".join(...))
+    # Senão, devolva "Nenhum dado extra retornado."
+    pass
 `,
   },
-  expectedOutput: 'Dados extraídos:\nadmin | super_secret_123\nuser | password',
+  tests: {
+    fn: { javascript: 'extrairComUniao', python: 'extrair_com_uniao' },
+    cases: [
+      {
+        name: 'payload UNION SELECT',
+        args: ['1 UNION SELECT usuario, senha FROM senhas--', [{ usuario: 'admin', senha: 'super_secret_123' }, { usuario: 'user', senha: 'password' }]],
+        expected: 'Dados extraídos:\nadmin | super_secret_123\nuser | password',
+      },
+      {
+        name: 'consulta normal, sem UNION',
+        args: ['1', [{ usuario: 'admin', senha: 'super_secret_123' }]],
+        expected: 'Nenhum dado extra retornado.',
+      },
+      {
+        name: 'UNION em minúsculas (mesmo assim funciona)',
+        args: ['1 union select x from y--', [{ usuario: 'admin', senha: 'super_secret_123' }]],
+        expected: 'Dados extraídos:\nadmin | super_secret_123',
+        hidden: true,
+      },
+      {
+        name: 'UNION mas tabela de senhas vazia',
+        args: ['1 UNION SELECT usuario, senha FROM senhas--', []],
+        expected: 'Dados extraídos:\n',
+        hidden: true,
+      },
+    ],
+  },
+  solution: {
+    javascript: `function extrairComUniao(query, senhas) {
+  if (query.toUpperCase().includes("UNION SELECT")) {
+    return "Dados extraídos:\\n" + senhas.map(s => s.usuario + " | " + s.senha).join("\\n");
+  }
+  return "Nenhum dado extra retornado.";
+}`,
+    python: `def extrair_com_uniao(query, senhas):
+    if "UNION SELECT" in query.upper():
+        linhas = [s["usuario"] + " | " + s["senha"] for s in senhas]
+        return "Dados extraídos:\\n" + "\\n".join(linhas)
+    return "Nenhum dado extra retornado."`,
+  },
   explanation: `
 **O que aconteceu:**
-Você estava buscando um produto (id=1).
-Mas injetou: \`UNION SELECT usuario, senha FROM senhas\`
-
-**Resultado:**
-A query retorna os produtos E as senhas!
+A consulta original buscava um produto (id=1). O payload injeta \`UNION SELECT usuario, senha FROM senhas\`, e o banco devolve os dois resultados **combinados** — produtos E senhas, numa resposta só.
 
 **No mundo real:**
 Assim hackers roubam:
 • Números de cartão de crédito
 • CPFs, emails, endereços
 • Senhas de administradores
-• Dados confidenciais
 
 **Caso real:**
 2017 - Equifax (agência de crédito) teve 147 MILHÕES de dados roubados via SQL Injection.
@@ -308,10 +327,11 @@ Assim hackers roubam:
 Pentesters são pagos para encontrar isso ANTES dos hackers do mal!
   `,
   hints: [
-    'O código já está pronto - mostra como UNION funciona',
-    'Veja como combinar dados de tabelas diferentes',
+    'query.toUpperCase().includes("UNION SELECT") detecta o payload mesmo em minúsculas',
+    '.map(s => s.usuario + " | " + s.senha).join("\\n") monta as linhas (Python: list comprehension + "\\n".join(...))',
+    'Lista de senhas vazia ainda deve devolver "Dados extraídos:\\n" (só sem nenhuma linha depois)',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const theory5_5: TheoryChallenge = {

@@ -10,7 +10,6 @@ const theory2_0: TheoryChallenge = {
   content: `
 **O que é Hash?**
 Hash é como uma "impressão digital" de um texto. Você coloca uma senha, sai um código único.
-Exemplo: "senha123" → "482c811da5d5b4bc6d497ffa98491e38"
 
 **Por que isso importa?**
 Sites NÃO guardam sua senha real. Eles guardam o HASH.
@@ -25,11 +24,26 @@ Entendem isso para criar sistemas mais seguros e testar vulnerabilidades.
 Vamos aprender como funciona!
 
 **Ferramentas novas neste episódio**
-• **Hash simulado (uma "caixa-preta"):** nos exercícios você recebe pronta uma função de hash **simplificada**, criada só para estudo. Ela NÃO é um hash de verdade, como MD5 ou SHA-256. Você não precisa entender a conta por dentro: o que importa é o que ela faz. Ela transforma qualquer texto em um código de tamanho fixo, sempre o mesmo para a mesma entrada, e não dá para "desfazer" a conta.
-• **Trechos como \`Math.abs(...)\` e \`.toString(16)\`:** aparecem dentro dessa função pronta. \`Math.abs\` tira o sinal negativo de um número e \`.toString(16)\` escreve o número em hexadecimal. Você só precisa **chamar** a função.
-• **\`break\` e \`continue\` em loops:** dentro de um loop, \`break\` **encerra** o loop na hora (útil quando você já achou o que procurava, como a senha certa) e \`continue\` **pula** o resto da volta atual e segue para a próxima volta.
+• **Hash simulado (uma "caixa-preta"):** nos exercícios você recebe pronta uma função \`simpleHash\`, criada só para estudo. Ela NÃO é um hash de verdade, como MD5 ou SHA-256. Você não precisa entender a conta por dentro: o que importa é o que ela faz. Ela transforma qualquer texto em um código de tamanho fixo, sempre o mesmo para a mesma entrada, e não dá para "desfazer" a conta.
+• **\`% (resto da divisão)\` e \`.toString(16)\`:** aparecem dentro dessa função pronta. \`%\` garante que o número fique sempre dentro de um limite fixo, e \`.toString(16)\` escreve o número em hexadecimal (como um hash de verdade aparece). Você só precisa **chamar** a função, nunca editá-la.
+• **\`break\` e \`continue\` em loops:** dentro de um loop, \`break\` **encerra** o loop na hora — útil quando você já achou o que procurava, como a senha certa. \`continue\` **pula** o resto da volta atual e segue para a próxima.
+• **\`for...of\` (JavaScript):** além do \`for\` com contador que você já conhece, existe \`for (const item of lista)\` — percorre a lista direto, item por item, sem precisar de índice. No **Python**, \`for item in lista\` já faz exatamente isso.
   `,
 };
+
+const SIMPLE_HASH_JS = `function simpleHash(texto) {
+  let hash = 7;
+  for (let i = 0; i < texto.length; i++) {
+    hash = (hash * 31 + texto.charCodeAt(i)) % 1000000007;
+  }
+  return hash.toString(16);
+}`;
+
+const SIMPLE_HASH_PY = `def simple_hash(texto):
+    hash_val = 7
+    for char in texto:
+        hash_val = (hash_val * 31 + ord(char)) % 1000000007
+    return format(hash_val, "x")`;
 
 const code2_1: CodeChallenge = {
   id: '2.1',
@@ -37,73 +51,68 @@ const code2_1: CodeChallenge = {
   episode: 2,
   room: '2.1',
   title: 'Comparando senhas com hash',
-  description: 'Você tem o hash de uma senha guardada no sistema. Um usuário está tentando fazer login. O código compara os hashes para verificar se a senha está correta.',
-  instructions: 'Execute o código e veja como a validação funciona',
+  description: 'Um sistema de login não guarda a senha real — só o hash dela. Escreva a função que confirma se uma tentativa de login está correta, comparando hashes.',
+  instructions: 'Complete verificarLogin(senhaDigitada, hashArmazenado): calcule o hash da senha digitada com simpleHash() e compare com hashArmazenado. Devolva "Login bem-sucedido!" ou "Senha incorreta".',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Sistema simples de validação de senha
+    javascript: `${SIMPLE_HASH_JS}
 
-// Hash da senha guardada no banco de dados
-const hashArmazenado = "5f4dcc3b5aa765d61d8327deb882cf99";
-
-// Usuário tentando fazer login com esta senha:
-const senhaDigitada = "password";
-
-// Função simples para simular hash (MD5 simplificado)
-function simpleHash(texto) {
-  let hash = 0;
-  for (let i = 0; i < texto.length; i++) {
-    hash = ((hash << 5) - hash) + texto.charCodeAt(i);
-    hash = hash & hash; // Convert to 32bit integer
-  }
-  return Math.abs(hash).toString(16);
-}
-
-const hashDigitado = simpleHash(senhaDigitada);
-
-if (hashDigitado === hashArmazenado) {
-  console.log("Login bem-sucedido!");
-} else {
-  console.log("Senha incorreta");
+function verificarLogin(senhaDigitada, hashArmazenado) {
+  // Calcule o hash de senhaDigitada com simpleHash()
+  // Compare com hashArmazenado
+  // return "Login bem-sucedido!" se forem iguais, senão return "Senha incorreta"
 }
 `,
-    python: `# Sistema simples de validação de senha
+    python: `${SIMPLE_HASH_PY}
 
-# Hash da senha guardada no banco de dados
-hash_armazenado = "5f4dcc3b5aa765d61d8327deb882cf99"
-
-# Usuário tentando fazer login com esta senha:
-senha_digitada = "password"
-
-# Função simples para simular hash
-def simple_hash(texto):
-    hash_val = 0
-    for char in texto:
-        hash_val = ((hash_val << 5) - hash_val) + ord(char)
-        hash_val = hash_val & 0xFFFFFFFF  # 32bit
-    return format(abs(hash_val), 'x')
-
-hash_digitado = simple_hash(senha_digitada)
-
-if hash_digitado == hash_armazenado:
-    print("Login bem-sucedido!")
-else:
-    print("Senha incorreta")
+def verificar_login(senha_digitada, hash_armazenado):
+    # Calcule o hash de senha_digitada com simple_hash()
+    # Compare com hash_armazenado
+    # return "Login bem-sucedido!" se forem iguais, senão return "Senha incorreta"
+    pass
 `,
   },
-  expectedOutput: 'Senha incorreta',
+  tests: {
+    fn: { javascript: 'verificarLogin', python: 'verificar_login' },
+    cases: [
+      { name: 'senha certa', args: ['password', '858f7af'], expected: 'Login bem-sucedido!' },
+      { name: 'senha errada', args: ['admin', '858f7af'], expected: 'Senha incorreta' },
+      { name: 'maiúscula/minúscula importa', args: ['Admin', '1177efa8'], expected: 'Senha incorreta', hidden: true },
+      { name: 'senha vazia com hash vazio', args: ['', '7'], expected: 'Login bem-sucedido!', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `${SIMPLE_HASH_JS}
+
+function verificarLogin(senhaDigitada, hashArmazenado) {
+  const hash = simpleHash(senhaDigitada);
+  if (hash === hashArmazenado) {
+    return "Login bem-sucedido!";
+  }
+  return "Senha incorreta";
+}`,
+    python: `${SIMPLE_HASH_PY}
+
+def verificar_login(senha_digitada, hash_armazenado):
+    hash_val = simple_hash(senha_digitada)
+    if hash_val == hash_armazenado:
+        return "Login bem-sucedido!"
+    return "Senha incorreta"`,
+  },
   explanation: `
 **O que aconteceu?**
 O sistema não compara senhas diretamente. Ele compara HASHES.
-Se os hashes são iguais = senha correta
-Se diferentes = senha errada
+Se os hashes são iguais = senha correta. Se diferentes = senha errada.
+
+**Repare no caso "Admin" vs "admin":** hash é sensível a maiúsculas e minúsculas — um caractere diferente já muda o hash inteiro.
 
 **No mundo real:**
-Sites como Instagram, Gmail usam isso. Eles NUNCA veem sua senha real!
+Sites como Instagram e Gmail usam essa mesma ideia. Eles NUNCA guardam sua senha real, só o hash dela.
   `,
   hints: [
-    'O código já está pronto, só execute',
-    'A senha "password" não corresponde ao hash armazenado',
+    'const hash = simpleHash(senhaDigitada); (ou hash_val = simple_hash(...) em Python)',
+    'Compare hash === hashArmazenado (Python: hash_val == hash_armazenado)',
+    'Não esqueça o return nos dois casos do if/else',
   ],
   difficulty: 'easy',
 };
@@ -113,57 +122,70 @@ const code2_2: CodeChallenge = {
   type: 'code',
   episode: 2,
   room: '2.2',
-  title: 'Testando diferentes senhas',
-  description: 'Agora tente trocar a senha digitada para "admin" e veja se o login funciona.',
-  instructions: 'Use a função simpleHash() para calcular o hash da senha "admin" e compare com o hash armazenado. Imprima se o login foi bem-sucedido ou não.',
+  title: 'Auditando várias tentativas de login',
+  description: 'Um log de acesso tem várias tentativas de login, cada uma com a senha digitada e o hash que estava armazenado naquela conta. Conte quantas tentativas realmente bateram.',
+  instructions: 'Escreva contarLoginsValidos(tentativas): tentativas é uma lista de pares [senha, hashArmazenado]. Devolva quantos pares têm simpleHash(senha) igual a hashArmazenado.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Senha que o usuário está tentando:
-const senhaDigitada = "admin";
+    javascript: `${SIMPLE_HASH_JS}
 
-// Hash armazenado no banco de dados:
-const hashArmazenado = "5f4dcc3b5aa765d61d8327deb882cf99";
-
-function simpleHash(texto) {
-  let hash = 0;
-  for (let i = 0; i < texto.length; i++) {
-    hash = ((hash << 5) - hash) + texto.charCodeAt(i);
-    hash = hash & hash;
-  }
-  return Math.abs(hash).toString(16);
+function contarLoginsValidos(tentativas) {
+  // Percorra "tentativas" (cada item é [senha, hashArmazenado])
+  // Para cada uma, compare simpleHash(senha) com hashArmazenado
+  // Conte quantas batem e devolva o total com return
 }
-
-// Calcule o hash da senhaDigitada usando simpleHash()
-// Compare o hash calculado com hashArmazenado
-// Se forem iguais, imprima: "Login bem-sucedido!"
-// Se forem diferentes, imprima: "Senha incorreta"
 `,
-    python: `# Senha que o usuário está tentando:
-senha_digitada = "admin"
+    python: `${SIMPLE_HASH_PY}
 
-# Hash armazenado no banco de dados:
-hash_armazenado = "5f4dcc3b5aa765d61d8327deb882cf99"
-
-def simple_hash(texto):
-    hash_val = 0
-    for char in texto:
-        hash_val = ((hash_val << 5) - hash_val) + ord(char)
-        hash_val = hash_val & 0xFFFFFFFF
-    return format(abs(hash_val), 'x')
-
-# Calcule o hash da senha_digitada usando simple_hash()
-# Compare o hash calculado com hash_armazenado
-# Se forem iguais, imprima: "Login bem-sucedido!"
-# Se forem diferentes, imprima: "Senha incorreta"
+def contar_logins_validos(tentativas):
+    # Percorra "tentativas" (cada item é [senha, hash_armazenado])
+    # Para cada uma, compare simple_hash(senha) com hash_armazenado
+    # Conte quantas batem e devolva o total com return
+    pass
 `,
   },
-  expectedOutput: 'Senha incorreta',
+  tests: {
+    fn: { javascript: 'contarLoginsValidos', python: 'contar_logins_validos' },
+    cases: [
+      { name: 'uma bate, uma não', args: [[['password', '858f7af'], ['admin', '858f7af']]], expected: 1 },
+      { name: 'duas batem, uma não', args: [[['admin', '1177efa8'], ['password', '858f7af'], ['qwerty', '858f7af']]], expected: 2 },
+      { name: 'lista vazia', args: [[]], expected: 0, hidden: true },
+      { name: 'uma tentativa, bate', args: [[['letmein', '1a44c57c']]], expected: 1, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `${SIMPLE_HASH_JS}
+
+function contarLoginsValidos(tentativas) {
+  let total = 0;
+  for (const [senha, hashArmazenado] of tentativas) {
+    if (simpleHash(senha) === hashArmazenado) {
+      total++;
+    }
+  }
+  return total;
+}`,
+    python: `${SIMPLE_HASH_PY}
+
+def contar_logins_validos(tentativas):
+    total = 0
+    for senha, hash_armazenado in tentativas:
+        if simple_hash(senha) == hash_armazenado:
+            total += 1
+    return total`,
+  },
+  explanation: `
+**O que você fez**
+Percorreu uma lista de tentativas, aplicando a mesma verificação da sala anterior em cada uma, e somando quantas passaram. Isso é literalmente o que um sistema de auditoria de segurança faz ao revisar um log de tentativas de login.
+
+**Por que auditar isso importa:** muitas tentativas de login que "batem" vindas de lugares estranhos são um sinal de conta comprometida.
+  `,
   hints: [
-    'Chame simpleHash(senhaDigitada) e guarde o resultado em uma variável',
-    'Use if/else para comparar o hash calculado com hashArmazenado',
-    'Nenhuma das senhas testadas corresponde ao hash - o resultado é "Senha incorreta"',
+    'Um loop for...of (JS) ou for (Python) percorre cada [senha, hash] da lista',
+    'Use um contador que começa em 0 e soma 1 a cada acerto',
+    'Lista vazia deve devolver 0 — o loop simplesmente não executa nenhuma vez',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const theory2_3: TheoryChallenge = {
@@ -175,7 +197,7 @@ const theory2_3: TheoryChallenge = {
   description: 'Hackers tentam adivinhar senhas testando milhares de combinações. Isso se chama "força bruta" ou "brute force".',
   content: `
 **Como funciona um ataque de força bruta:**
-1. Hacker tem o hash: "5f4dcc3b5aa765d61d8327deb882cf99"
+1. Hacker tem o hash de uma senha
 2. Ele testa: "123456", "password", "admin", "letmein"...
 3. Para cada uma, calcula o hash e compara
 4. Se encontrar = descobriu a senha!
@@ -200,52 +222,61 @@ const code2_4: CodeChallenge = {
   episode: 2,
   room: '2.4',
   title: 'Seu primeiro ataque de força bruta',
-  description: 'Você tem um hash. Teste senhas comuns até encontrar a correta. O código já tem uma lista de senhas - você só precisa completar o loop.',
-  instructions: 'Escreva um loop que teste cada senha da wordlist contra o hash alvo. Para cada senha, calcule o hash e compare. Quando encontrar, imprima a senha.',
+  description: 'Você tem o hash de uma senha e uma wordlist de senhas comuns. Teste cada uma até encontrar a que corresponde ao hash — ou concluir que nenhuma bate.',
+  instructions: 'Escreva quebrarSenha(hashAlvo, wordlist): teste cada senha da wordlist com simpleHash(). Devolva a primeira que bater com hashAlvo, ou null (None em Python) se nenhuma bater.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const hashAlvo = "21232f297a57a5a743894a0e4a801fc3";
+    javascript: `${SIMPLE_HASH_JS}
 
-// Lista de senhas comuns (wordlist)
-const senhasComuns = ["123456", "password", "admin", "qwerty", "letmein"];
-
-function simpleHash(texto) {
-  let hash = 0;
-  for (let i = 0; i < texto.length; i++) {
-    hash = ((hash << 5) - hash) + texto.charCodeAt(i);
-    hash = hash & hash;
-  }
-  return Math.abs(hash).toString(16);
+function quebrarSenha(hashAlvo, wordlist) {
+  // Percorra a wordlist com um loop
+  // Para cada senha, calcule o hash com simpleHash()
+  // Se bater com hashAlvo, devolva essa senha com return (use break-por-return: sair na hora)
+  // Se terminar o loop sem achar, devolva null
 }
-
-// Percorra a lista senhasComuns com um loop
-// Para cada senha, calcule o hash com simpleHash()
-// Compare o hash calculado com hashAlvo
-// Se encontrar, imprima: "Senha encontrada: " + a senha
-// Use break para parar quando encontrar
 `,
-    python: `hash_alvo = "21232f297a57a5a743894a0e4a801fc3"
+    python: `${SIMPLE_HASH_PY}
 
-# Lista de senhas comuns (wordlist)
-senhas_comuns = ["123456", "password", "admin", "qwerty", "letmein"]
-
-def simple_hash(texto):
-    hash_val = 0
-    for char in texto:
-        hash_val = ((hash_val << 5) - hash_val) + ord(char)
-        hash_val = hash_val & 0xFFFFFFFF
-    return format(abs(hash_val), 'x')
-
-# Percorra a lista senhas_comuns com um loop
-# Para cada senha, calcule o hash com simple_hash()
-# Compare o hash calculado com hash_alvo
-# Se encontrar, imprima: "Senha encontrada: " + a senha
-# Use break para parar quando encontrar
+def quebrar_senha(hash_alvo, wordlist):
+    # Percorra a wordlist com um loop
+    # Para cada senha, calcule o hash com simple_hash()
+    # Se bater com hash_alvo, devolva essa senha com return (retornar já "quebra" o loop)
+    # Se terminar o loop sem achar, devolva None
+    pass
 `,
   },
-  expectedOutput: 'Senha encontrada: admin',
+  tests: {
+    fn: { javascript: 'quebrarSenha', python: 'quebrar_senha' },
+    cases: [
+      { name: 'acha "admin"', args: ['1177efa8', ['123456', 'password', 'admin', 'qwerty', 'letmein']], expected: 'admin' },
+      { name: 'acha "letmein" (última da lista)', args: ['1a44c57c', ['123456', 'password', 'admin', 'qwerty', 'letmein']], expected: 'letmein' },
+      { name: 'nenhuma senha bate', args: ['ffffffff', ['123456', 'password']], expected: null, hidden: true },
+      { name: 'wordlist com uma senha só', args: ['27861ef9', ['123456']], expected: '123456', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `${SIMPLE_HASH_JS}
+
+function quebrarSenha(hashAlvo, wordlist) {
+  for (const senha of wordlist) {
+    if (simpleHash(senha) === hashAlvo) {
+      return senha;
+    }
+  }
+  return null;
+}`,
+    python: `${SIMPLE_HASH_PY}
+
+def quebrar_senha(hash_alvo, wordlist):
+    for senha in wordlist:
+        if simple_hash(senha) == hash_alvo:
+            return senha
+    return None`,
+  },
   explanation: `
 **Parabéns! Você fez um ataque de força bruta.**
+
+Repare no caso em que nenhuma senha bate: o loop termina normalmente e a função devolve null/None — um resultado tão válido quanto encontrar a senha, e que seu código precisa saber tratar.
 
 **No mundo real:**
 • Analistas de segurança fazem isso para testar sistemas
@@ -256,12 +287,11 @@ def simple_hash(texto):
 Pentesters (testadores de invasão) são pagos para fazer exatamente isso - tentar quebrar sistemas para encontrar vulnerabilidades ANTES dos hackers do mal.
   `,
   hints: [
-    'Use for (let i = 0; i < senhasComuns.length; i++) ou for...of',
-    'Dentro do loop: const hash = simpleHash(senhasComuns[i])',
-    'Compare: if (hash === hashAlvo) e imprima a senha encontrada',
-    'A senha correta é "admin"',
+    'return dentro do loop já interrompe a busca na hora que encontra — não precisa de break separado',
+    'Se o loop terminar sem nenhum return ter acontecido, o código cai no return null (ou None) do final',
+    '"admin" é a 3ª da lista, "letmein" é a última — confira se seu loop percorre a lista inteira',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const theory2_5: TheoryChallenge = {

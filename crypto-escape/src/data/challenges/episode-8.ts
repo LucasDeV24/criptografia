@@ -47,86 +47,73 @@ const code8_1: CodeChallenge = {
   type: 'code',
   episode: 8,
   room: '8.1',
-  title: 'Simulando uma requisição API',
-  description: 'Veja como um cliente faz uma requisição GET para buscar dados de um usuário.',
-  instructions: 'Execute e veja a requisição simulada',
+  title: 'Traduzindo status codes',
+  description: 'Toda resposta de API vem com um status code — um número que diz o que aconteceu. Escreva a função que traduz esses números.',
+  instructions: 'Complete classificarStatus(status): devolva a descrição certa para 200, 401, 403, 404 e 500. Para qualquer outro número, devolva "Código desconhecido".',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Simulação de API REST
-
-// Cliente faz requisição GET
-const requisicao = {
-  metodo: "GET",
-  url: "/api/usuarios/123",
-  headers: {
-    "Content-Type": "application/json"
-  }
-};
-
-console.log("📡 Requisição:");
-console.log(requisicao.metodo + " " + requisicao.url);
-
-// Servidor responde
-const resposta = {
-  status: 200,
-  body: {
-    id: 123,
-    nome: "João Silva",
-    email: "joao@email.com",
-    role: "user"
-  }
-};
-
-console.log("\\n✅ Resposta (Status " + resposta.status + "):");
-console.log(JSON.stringify(resposta.body, null, 2));
+    javascript: `function classificarStatus(status) {
+  // Use if/else (ou um objeto de consulta) para mapear:
+  // 200 -> "OK (sucesso)"
+  // 401 -> "Não autorizado (sem login)"
+  // 403 -> "Proibido (sem permissão)"
+  // 404 -> "Não encontrado"
+  // 500 -> "Erro do servidor"
+  // qualquer outro -> "Código desconhecido"
+}
 `,
-    python: `# Simulação de API REST
-
-# Cliente faz requisição GET
-requisicao = {
-    "metodo": "GET",
-    "url": "/api/usuarios/123",
-    "headers": {
-        "Content-Type": "application/json"
-    }
-}
-
-print("📡 Requisição:")
-print(f"{requisicao['metodo']} {requisicao['url']}")
-
-# Servidor responde
-resposta = {
-    "status": 200,
-    "body": {
-        "id": 123,
-        "nome": "João Silva",
-        "email": "joao@email.com",
-        "role": "user"
-    }
-}
-
-import json
-print(f"\\n✅ Resposta (Status {resposta['status']}):")
-print(json.dumps(resposta["body"], indent=2, ensure_ascii=False))
+    python: `def classificar_status(status):
+    # Use if/elif/else (ou um dicionário de consulta) para mapear:
+    # 200 -> "OK (sucesso)"
+    # 401 -> "Não autorizado (sem login)"
+    # 403 -> "Proibido (sem permissão)"
+    # 404 -> "Não encontrado"
+    # 500 -> "Erro do servidor"
+    # qualquer outro -> "Código desconhecido"
+    pass
 `,
   },
-  expectedOutput: '📡 Requisição:\nGET /api/usuarios/123\n\n✅ Resposta (Status 200):',
+  tests: {
+    fn: { javascript: 'classificarStatus', python: 'classificar_status' },
+    cases: [
+      { name: '200', args: [200], expected: 'OK (sucesso)' },
+      { name: '401', args: [401], expected: 'Não autorizado (sem login)' },
+      { name: '404', args: [404], expected: 'Não encontrado', hidden: true },
+      { name: 'código não mapeado', args: [999], expected: 'Código desconhecido', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function classificarStatus(status) {
+  if (status === 200) return "OK (sucesso)";
+  if (status === 401) return "Não autorizado (sem login)";
+  if (status === 403) return "Proibido (sem permissão)";
+  if (status === 404) return "Não encontrado";
+  if (status === 500) return "Erro do servidor";
+  return "Código desconhecido";
+}`,
+    python: `def classificar_status(status):
+    if status == 200:
+        return "OK (sucesso)"
+    if status == 401:
+        return "Não autorizado (sem login)"
+    if status == 403:
+        return "Proibido (sem permissão)"
+    if status == 404:
+        return "Não encontrado"
+    if status == 500:
+        return "Erro do servidor"
+    return "Código desconhecido"`,
+  },
   explanation: `
 **Comunicação básica de API:**
+Cliente pede dados, servidor responde com um corpo (geralmente JSON) E um status code — o número que diz, de forma padronizada, o que aconteceu.
 
-Cliente pede: "Me dê dados do usuário 123"
-Servidor responde: Aqui está (JSON com os dados)
-
-**Status codes importantes:**
-• 200 = OK (sucesso)
-• 401 = Não autorizado (sem login)
-• 403 = Proibido (sem permissão)
-• 404 = Não encontrado
-• 500 = Erro do servidor
+**Por que "Código desconhecido" importa:** APIs reais usam dezenas de status codes (201, 204, 429, 503...). Uma função que só soubesse os 5 mais comuns e quebrasse com qualquer outro seria frágil — o caso padrão evita isso.
   `,
   hints: [
-    'Esta é uma requisição normal e autorizada',
-    'Status 200 = tudo funcionou corretamente',
+    'Uma sequência de if (sem else) com return dentro de cada um já resolve, sem precisar de elif/else if',
+    'O return final, fora de qualquer if, cobre todos os códigos que não bateram em nenhuma comparação',
+    '999 não está na lista — deve cair no "Código desconhecido"',
   ],
   difficulty: 'easy',
 };
@@ -137,62 +124,74 @@ const code8_2: CodeChallenge = {
   episode: 8,
   room: '8.2',
   title: 'API sem autenticação (vulnerável)',
-  description: 'Esta API NÃO exige autenticação. Qualquer um pode acessar dados de qualquer usuário! Teste mudando o ID.',
-  instructions: 'Mude o ID de 1 para 999 e veja dados de outro usuário',
+  description: 'Esta API NÃO exige autenticação: qualquer ID retorna os dados daquele usuário, sem checar quem está pedindo.',
+  instructions: 'Complete buscarUsuarioPorId(bancoDeDados, id): devolva o usuário com esse id, ou null se não existir. Não faça NENHUMA checagem de permissão — é exatamente esse o ponto da vulnerabilidade.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// API VULNERÁVEL - sem autenticação
-
-const bancoDeDados = [
-  { id: 1, nome: "João", email: "joao@email.com", role: "user" },
-  { id: 999, nome: "Admin", email: "admin@empresa.com", role: "admin", senha: "super_secret" }
-];
-
-// A API não exige login - qualquer ID pode ser acessado!
-// 1. Defina uma variável usuarioId com o valor 999 (Admin)
-// 2. Use bancoDeDados.find() para buscar o usuário com esse ID
-// 3. Imprima os dados com console.log(JSON.stringify(usuario))
+    javascript: `function buscarUsuarioPorId(bancoDeDados, id) {
+  // Use bancoDeDados.find() para buscar o usuário com esse id
+  // Se não encontrar, devolva null
+}
 `,
-    python: `import json
-
-# API VULNERÁVEL - sem autenticação
-
-banco_de_dados = [
-    {"id": 1, "nome": "João", "email": "joao@email.com", "role": "user"},
-    {"id": 999, "nome": "Admin", "email": "admin@empresa.com", "role": "admin", "senha": "super_secret"}
-]
-
-# A API não exige login - qualquer ID pode ser acessado!
-# 1. Defina uma variável usuario_id com o valor 999 (Admin)
-# 2. Use next() com generator para buscar o usuário com esse ID no banco_de_dados
-# 3. Imprima os dados com print(json.dumps(usuario))
+    python: `def buscar_usuario_por_id(banco_de_dados, id):
+    # Percorra banco_de_dados com um for e compare o id de cada item
+    # Se encontrar, devolva o usuário
+    # Se terminar o loop sem achar, devolva None
+    pass
 `,
   },
-  expectedOutput: '{"id": 999, "nome": "Admin", "email": "admin@empresa.com", "role": "admin", "senha": "super_secret"}',
+  tests: {
+    fn: { javascript: 'buscarUsuarioPorId', python: 'buscar_usuario_por_id' },
+    cases: [
+      {
+        name: 'acessa o Admin sem estar logado como ele',
+        args: [[
+          { id: 1, nome: 'João', email: 'joao@email.com', role: 'user' },
+          { id: 999, nome: 'Admin', email: 'admin@empresa.com', role: 'admin', senha: 'super_secret' },
+        ], 999],
+        expected: { id: 999, nome: 'Admin', email: 'admin@empresa.com', role: 'admin', senha: 'super_secret' },
+      },
+      {
+        name: 'acessa o usuário comum',
+        args: [[
+          { id: 1, nome: 'João', email: 'joao@email.com', role: 'user' },
+          { id: 999, nome: 'Admin', email: 'admin@empresa.com', role: 'admin', senha: 'super_secret' },
+        ], 1],
+        expected: { id: 1, nome: 'João', email: 'joao@email.com', role: 'user' },
+      },
+      { name: 'id que não existe', args: [[{ id: 1, nome: 'João' }], 42], expected: null, hidden: true },
+      { name: 'banco vazio', args: [[], 1], expected: null, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function buscarUsuarioPorId(bancoDeDados, id) {
+  return bancoDeDados.find(u => u.id === id) ?? null;
+}`,
+    python: `def buscar_usuario_por_id(banco_de_dados, id):
+    for u in banco_de_dados:
+        if u["id"] == id:
+            return u
+    return None`,
+  },
   explanation: `
 **VULNERABILIDADE GRAVE!**
 
-Você conseguiu acessar dados de ADMIN (incluindo senha!) apenas mudando o ID na URL.
+A função conseguiu acessar dados de ADMIN (incluindo senha!) apenas trocando o id — sem NENHUMA verificação de quem está pedindo.
 
 **No mundo real:**
-Isso se chama IDOR (Insecure Direct Object Reference).
-Aconteceu com:
-• Instagram (2019) - dados de celebridades expostos
-• Facebook (2018) - 50 milhões de contas
-• Várias empresas brasileiras
+Isso se chama IDOR (Insecure Direct Object Reference). Já aconteceu com Instagram (2019, dados de celebridades expostos) e Facebook (2018, 50 milhões de contas), entre várias outras empresas.
 
 **Defesa:**
 • Sempre verificar autenticação
-• Validar que usuário tem permissão para acessar aquele ID
-• Não confiar em parâmetros do cliente
+• Validar que o usuário logado tem permissão para acessar aquele ID específico
+• Nunca confiar em parâmetros vindos do cliente
   `,
   hints: [
-    'Defina const usuarioId = 999 para acessar o Admin',
-    'Use bancoDeDados.find(u => u.id === usuarioId) para buscar',
-    'Use JSON.stringify(usuario) para imprimir como JSON',
-    'Você verá dados sensíveis do admin, incluindo a senha!',
+    'JavaScript: bancoDeDados.find(u => u.id === id) ?? null',
+    'Python: um for comparando u["id"] == id, com return None depois do loop',
+    'A função em si não julga se o pedido é "certo" — isso é exatamente o problema que a IDOR explora',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const theory8_3: TheoryChallenge = {
@@ -237,71 +236,91 @@ const code8_4: CodeChallenge = {
   type: 'code',
   episode: 8,
   room: '8.4',
-  title: 'Descobrindo token fraco',
-  description: 'Esta API usa tokens... mas eles são PREVISÍVEIS! Tokens são apenas números sequenciais. Descubra o padrão e acesse dados de outro usuário.',
-  instructions: 'Execute e veja o padrão dos tokens',
+  title: 'Explorando um token fraco',
+  description: 'Esta API usa tokens... mas eles são PREVISÍVEIS! Em vez de testar um token de cada vez na mão, escreva uma função que PREVÊ o token de qualquer usuário a partir do padrão e o usa.',
+  instructions: 'Complete explorarTokenFraco(sessoes, userIdAlvo): monte o token previsto como "TOKEN_" + (1000 + userIdAlvo), procure uma sessão com esse token, e devolva "✅ Acessei dados do: " + nome. Se não achar, devolva "Token não encontrado".',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Sistema com tokens fracos (VULNERÁVEL)
-
-const sessoes = [
-  { userId: 1, token: "TOKEN_1001", nome: "João" },
-  { userId: 2, token: "TOKEN_1002", nome: "Maria" },
-  { userId: 3, token: "TOKEN_1003", nome: "Admin" }
-];
-
-// Seu token (usuário João, id=1): TOKEN_1001
-// Observe o padrão: TOKEN_1001, TOKEN_1002, TOKEN_1003...
-//
-// 1. Adivinhe o token do Admin baseado no padrão sequencial
-// 2. Use sessoes.find() para buscar a sessão com esse token
-// 3. Imprima: "✅ Acessei dados do: " + o nome do usuário encontrado
+    javascript: `function explorarTokenFraco(sessoes, userIdAlvo) {
+  // Monte o token previsto: "TOKEN_" + (1000 + userIdAlvo)
+  // Use sessoes.find() para procurar uma sessão com esse token
+  // Se achou, devolva "✅ Acessei dados do: " + o nome dela
+  // Se não achou, devolva "Token não encontrado"
+}
 `,
-    python: `# Sistema com tokens fracos (VULNERÁVEL)
-
-sessoes = [
-    {"userId": 1, "token": "TOKEN_1001", "nome": "João"},
-    {"userId": 2, "token": "TOKEN_1002", "nome": "Maria"},
-    {"userId": 3, "token": "TOKEN_1003", "nome": "Admin"}
-]
-
-# Seu token (usuário João, id=1): TOKEN_1001
-# Observe o padrão: TOKEN_1001, TOKEN_1002, TOKEN_1003...
-#
-# 1. Adivinhe o token do Admin baseado no padrão sequencial
-# 2. Use next() com generator para buscar a sessão com esse token
-# 3. Imprima: f"✅ Acessei dados do: {nome}"
+    python: `def explorar_token_fraco(sessoes, user_id_alvo):
+    # Monte o token previsto: "TOKEN_" + str(1000 + user_id_alvo)
+    # Percorra sessoes procurando uma com esse token
+    # Se achou, devolva "✅ Acessei dados do: " + o nome dela
+    # Se não achou, devolva "Token não encontrado"
+    pass
 `,
   },
-  expectedOutput: '✅ Acessei dados do: Admin',
+  tests: {
+    fn: { javascript: 'explorarTokenFraco', python: 'explorar_token_fraco' },
+    cases: [
+      {
+        name: 'acessa o Admin (userId 3)',
+        args: [[
+          { userId: 1, token: 'TOKEN_1001', nome: 'João' },
+          { userId: 2, token: 'TOKEN_1002', nome: 'Maria' },
+          { userId: 3, token: 'TOKEN_1003', nome: 'Admin' },
+        ], 3],
+        expected: '✅ Acessei dados do: Admin',
+      },
+      {
+        name: 'acessa outro usuário (userId 2)',
+        args: [[
+          { userId: 1, token: 'TOKEN_1001', nome: 'João' },
+          { userId: 2, token: 'TOKEN_1002', nome: 'Maria' },
+          { userId: 3, token: 'TOKEN_1003', nome: 'Admin' },
+        ], 2],
+        expected: '✅ Acessei dados do: Maria',
+      },
+      {
+        name: 'userId sem sessão correspondente',
+        args: [[{ userId: 1, token: 'TOKEN_1001', nome: 'João' }], 99],
+        expected: 'Token não encontrado',
+        hidden: true,
+      },
+    ],
+  },
+  solution: {
+    javascript: `function explorarTokenFraco(sessoes, userIdAlvo) {
+  const token = "TOKEN_" + (1000 + userIdAlvo);
+  const sessao = sessoes.find(s => s.token === token);
+  return sessao ? "✅ Acessei dados do: " + sessao.nome : "Token não encontrado";
+}`,
+    python: `def explorar_token_fraco(sessoes, user_id_alvo):
+    token = "TOKEN_" + str(1000 + user_id_alvo)
+    for s in sessoes:
+        if s["token"] == token:
+            return f"✅ Acessei dados do: {s['nome']}"
+    return "Token não encontrado"`,
+  },
   explanation: `
 **FALHA DE SEGURANÇA!**
 
-Tokens previsíveis permitem:
-1. Descobrir o padrão (TOKEN_1001, 1002, 1003...)
-2. Gerar tokens de outros usuários
-3. Sequestrar sessões
+Como os tokens seguem um padrão sequencial (TOKEN_1001, 1002, 1003...), sua função não precisou "adivinhar" nada na mão — ela CALCULA o token de qualquer userId e testa. É exatamente assim que um script de ataque automatizaria isso contra milhares de contas.
 
 **Tokens seguros devem ser:**
 • Aleatórios (UUID, random bytes)
 • Longos (128+ bits)
-• Únicos
-• Imprevisíveis
+• Únicos e imprevisíveis
 
 **Exemplo de token seguro:**
 \`eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIx...\`
 
 **Ferramentas de teste:**
-• Burp Suite Sequencer (testa aleatoriedade)
-• Postman (testar APIs)
+• Burp Suite Sequencer (testa aleatoriedade de tokens)
+• Postman (testar APIs manualmente)
   `,
   hints: [
-    'Os tokens seguem o padrão TOKEN_100X, onde X é o userId',
-    'O Admin tem userId 3, então o token é TOKEN_1003',
-    'Use sessoes.find(s => s.token === "TOKEN_1003") para buscar',
-    'Imprima "✅ Acessei dados do: " + sessaoAdmin.nome',
+    '"TOKEN_" + (1000 + userIdAlvo) monta o token previsto (Python: "TOKEN_" + str(1000 + user_id_alvo))',
+    'sessoes.find(s => s.token === token) (Python: for comparando s["token"] == token)',
+    'Se nenhuma sessão tiver esse token, devolva "Token não encontrado" em vez de quebrar',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const theory8_5: TheoryChallenge = {

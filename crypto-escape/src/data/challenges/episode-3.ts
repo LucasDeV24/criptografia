@@ -39,30 +39,39 @@ const code3_1: CodeChallenge = {
   episode: 3,
   room: '3.1',
   title: 'Decodificando Base64',
-  description: 'Você interceptou uma mensagem codificada em Base64. O código para decodificar já está pronto - execute e veja a mensagem real.',
-  instructions: 'Execute o código e veja a mensagem decodificada',
+  description: 'Você interceptou mensagens codificadas em Base64. Escreva a função que decodifica qualquer uma delas.',
+  instructions: 'Complete decodificarBase64(mensagemBase64): decodifique com atob() (JS) ou base64.b64decode() (Python) e devolva o texto real com return.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Mensagem interceptada em Base64:
-const mensagemBase64 = "SGFja2VyIGRvIGJlbQ==";
-
-// Decodificar (atob = ASCII to Binary)
-const mensagemReal = atob(mensagemBase64);
-
-console.log(mensagemReal);
+    javascript: `function decodificarBase64(mensagemBase64) {
+  // Decodifique com atob() (ASCII to Binary) e devolva com return
+}
 `,
     python: `import base64
 
-# Mensagem interceptada em Base64:
-mensagem_base64 = "SGFja2VyIGRvIGJlbQ=="
-
-# Decodificar
-mensagem_real = base64.b64decode(mensagem_base64).decode('utf-8')
-
-print(mensagem_real)
+def decodificar_base64(mensagem_base64):
+    # Decodifique com base64.b64decode(...).decode('utf-8') e devolva com return
+    pass
 `,
   },
-  expectedOutput: 'Hacker do bem',
+  tests: {
+    fn: { javascript: 'decodificarBase64', python: 'decodificar_base64' },
+    cases: [
+      { name: '"Hacker do bem"', args: ['SGFja2VyIGRvIGJlbQ=='], expected: 'Hacker do bem' },
+      { name: '"teste"', args: ['dGVzdGU='], expected: 'teste' },
+      { name: 'texto vazio', args: [''], expected: '', hidden: true },
+      { name: 'com números', args: ['YWJjMTIz'], expected: 'abc123', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function decodificarBase64(mensagemBase64) {
+  return atob(mensagemBase64);
+}`,
+    python: `import base64
+
+def decodificar_base64(mensagem_base64):
+    return base64.b64decode(mensagem_base64).decode('utf-8')`,
+  },
   explanation: `
 **Funções importantes:**
 • JavaScript: \`atob()\` = ASCII to Binary (decodifica)
@@ -70,11 +79,12 @@ print(mensagem_real)
 • Python: \`base64.b64decode()\` (decodifica)
 • Python: \`base64.b64encode()\` (codifica)
 
-Base64 NÃO é criptografia - é só encoding. Qualquer um pode decodificar!
+Base64 NÃO é criptografia - é só encoding. Qualquer um pode decodificar, sem precisar de senha ou chave nenhuma!
   `,
   hints: [
-    'O código já está pronto - só execute!',
-    'atob() é a função de decodificação do JavaScript',
+    'JavaScript: return atob(mensagemBase64);',
+    'Python: return base64.b64decode(mensagem_base64).decode("utf-8")',
+    'Texto vazio decodifica para texto vazio — não precisa tratar como caso especial',
   ],
   difficulty: 'easy',
 };
@@ -85,31 +95,48 @@ const code3_2: CodeChallenge = {
   episode: 3,
   room: '3.2',
   title: 'Codificando mensagens',
-  description: 'Agora vamos fazer o contrário - codificar uma mensagem em Base64. Troque a mensagem para seu nome.',
-  instructions: 'Use btoa() (JavaScript) ou base64.b64encode() (Python) para codificar "teste" em Base64 e imprima o resultado.',
+  description: 'Agora o caminho inverso: transformar um texto qualquer em Base64.',
+  instructions: 'Complete codificarBase64(mensagem): codifique com btoa() (JS) ou base64.b64encode() (Python) e devolva o resultado com return.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Mensagem para codificar:
-const mensagem = "teste";
-
-// Codifique a mensagem em Base64 usando btoa()
-// Imprima o resultado com console.log()
+    javascript: `function codificarBase64(mensagem) {
+  // Codifique com btoa() e devolva com return
+}
 `,
     python: `import base64
 
-# Mensagem para codificar:
-mensagem = "teste"
-
-# Codifique a mensagem em Base64 usando base64.b64encode()
-# Lembre-se: .encode('utf-8') antes e .decode('utf-8') depois
-# Imprima o resultado com print()
+def codificar_base64(mensagem):
+    # Codifique com base64.b64encode(...).decode('utf-8') e devolva com return
+    # Lembre-se: mensagem.encode('utf-8') antes de codificar
+    pass
 `,
   },
-  expectedOutput: 'dGVzdGU=',
+  tests: {
+    fn: { javascript: 'codificarBase64', python: 'codificar_base64' },
+    cases: [
+      { name: '"teste"', args: ['teste'], expected: 'dGVzdGU=' },
+      { name: '"meu nome"', args: ['meu nome'], expected: 'bWV1IG5vbWU=' },
+      { name: 'texto vazio', args: [''], expected: '', hidden: true },
+      { name: 'com números', args: ['abc123'], expected: 'YWJjMTIz', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function codificarBase64(mensagem) {
+  return btoa(mensagem);
+}`,
+    python: `import base64
+
+def codificar_base64(mensagem):
+    return base64.b64encode(mensagem.encode('utf-8')).decode('utf-8')`,
+  },
+  explanation: `
+**Codificar é o caminho inverso de decodificar**
+btoa (Binary to ASCII) transforma texto comum num texto só com caracteres seguros para email, URL ou JSON. Repare que codificar e decodificar são operações **inversas**: \`decodificarBase64(codificarBase64(x))\` sempre devolve \`x\` de volta.
+  `,
   hints: [
-    'JavaScript: btoa(mensagem) codifica em Base64',
-    'Python: base64.b64encode(mensagem.encode("utf-8")).decode("utf-8")',
-    'O resultado de "teste" em Base64 é "dGVzdGU="',
+    'JavaScript: return btoa(mensagem);',
+    'Python: mensagem.encode("utf-8") primeiro, depois base64.b64encode(...), depois .decode("utf-8")',
+    '"teste" codificado é "dGVzdGU="',
   ],
   difficulty: 'easy',
 };
@@ -150,37 +177,64 @@ const code3_4: CodeChallenge = {
   episode: 3,
   room: '3.4',
   title: 'Analisando código suspeito',
-  description: 'Você encontrou este código em um site: eval(atob("Y29uc29sZS5sb2coIkNvZGlnbyBtYWxpY2lvc28hIik=")). O que ele faz? Decodifique para descobrir!',
-  instructions: 'Decodifique a string Base64 e mostre o código oculto',
+  description: 'Alguns códigos maliciosos escondem um `eval()` ANINHADO dentro do texto decodificado — um Base64 que, ao ser revelado, contém outro comando para executar código. Escreva uma função que decodifica e avisa quando isso acontece.',
+  instructions: 'Complete decodificarEAlertar(base64Str): decodifique a string. Se o resultado contiver "eval(", devolva "ALERTA: contém eval() aninhado!". Senão, devolva o texto decodificado normalmente.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// String suspeita encontrada em um site:
-const codigoSuspeito = "Y29uc29sZS5sb2coIkNvZGlnbyBtYWxpY2lvc28hIik=";
+    javascript: `function decodificarEAlertar(base64Str) {
+  const decodificado = atob(base64Str);
 
-// Decodifique a string Base64 usando atob()
-// Imprima o código oculto com console.log()
+  // Se "decodificado" contiver a substring "eval(", devolva o alerta
+  // Senão, devolva "decodificado"
+}
 `,
     python: `import base64
 
-# String suspeita encontrada em um site:
-codigo_suspeito = "Y29uc29sZS5sb2coIkNvZGlnbyBtYWxpY2lvc28hIik="
+def decodificar_e_alertar(base64_str):
+    decodificado = base64.b64decode(base64_str).decode('utf-8')
 
-# Decodifique a string Base64 usando base64.b64decode()
-# Lembre-se de usar .decode('utf-8') no resultado
-# Imprima o código oculto com print()
+    # Se "decodificado" contiver a substring "eval(", devolva o alerta
+    # Senão, devolva "decodificado"
+    pass
 `,
   },
-  expectedOutput: 'console.log("Codigo malicioso!")',
+  tests: {
+    fn: { javascript: 'decodificarEAlertar', python: 'decodificar_e_alertar' },
+    cases: [
+      { name: 'código inofensivo', args: ['Y29uc29sZS5sb2coJ29pJyk='], expected: "console.log('oi')" },
+      { name: 'eval aninhado', args: ['ZXZhbChhdG9iKCd4Jykp'], expected: 'ALERTA: contém eval() aninhado!' },
+      { name: 'exemplo original do site', args: ['Y29uc29sZS5sb2coIkNvZGlnbyBtYWxpY2lvc28hIik='], expected: 'console.log("Codigo malicioso!")', hidden: true },
+      { name: 'outro eval aninhado', args: ['ZXZhbCh4KQ=='], expected: 'ALERTA: contém eval() aninhado!', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function decodificarEAlertar(base64Str) {
+  const decodificado = atob(base64Str);
+
+  if (decodificado.includes("eval(")) {
+    return "ALERTA: contém eval() aninhado!";
+  }
+  return decodificado;
+}`,
+    python: `import base64
+
+def decodificar_e_alertar(base64_str):
+    decodificado = base64.b64decode(base64_str).decode('utf-8')
+
+    if "eval(" in decodificado:
+        return "ALERTA: contém eval() aninhado!"
+    return decodificado`,
+  },
   explanation: `
-**O que você descobriu:**
-O código escondido era: \`console.log("Codigo malicioso!")\`
+**O que você automatizou**
+Isso é um mini-detector: decodifica primeiro, e só DEPOIS de ver o conteúdo real decide se é perigoso. É exatamente essa a diferença entre confiar num texto cifrado às cegas e analisá-lo.
 
 **No mundo real:**
-Analistas de malware fazem isso o tempo todo:
-1. Encontram código ofuscado/escondido
-2. Decodificam (Base64, hex, etc)
-3. Analisam o que o código realmente faz
-4. Criam assinaturas para detectar ataques similares
+Analistas de malware fazem isso o tempo todo, em escala muito maior:
+1. Encontram código ofuscado/escondido (às vezes em várias camadas de Base64)
+2. Decodificam (Base64, hex, etc.)
+3. Procuram por padrões perigosos (\`eval\`, \`exec\`, downloads escondidos)
+4. Criam assinaturas para detectar ataques similares automaticamente
 
 **Ferramentas profissionais:**
 • CyberChef (decodifica tudo)
@@ -188,11 +242,11 @@ Analistas de malware fazem isso o tempo todo:
 • IDA Pro / Ghidra (engenharia reversa)
   `,
   hints: [
-    'JavaScript: atob(codigoSuspeito) decodifica Base64',
-    'Python: base64.b64decode(codigo_suspeito).decode("utf-8")',
-    'O resultado é um comando JavaScript malicioso',
+    '.includes("eval(") (JS) ou "eval(" in decodificado (Python) verifica se a substring existe',
+    'Decodifique primeiro (isso já está pronto), depois só falta o if/else',
+    'Sem eval( dentro do texto, devolva o texto decodificado sem alterar nada',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const theory3_5: TheoryChallenge = {

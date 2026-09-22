@@ -37,6 +37,9 @@ Vamos criar nosso próprio script de força bruta!
 
 **Lembrete**
 A função de hash "MD5 simplificado" dos exercícios é a mesma caixa-preta do episódio de Hash e Senhas: uma função pronta que transforma um texto em um código fixo. Não é o MD5 real, e você só precisa **chamá-la**.
+
+**Ferramenta nova**
+• **\`Math.min()\` (JavaScript) e \`min()\` (Python):** devolvem o MENOR entre dois ou mais números. \`Math.min(3, 7)\` vale 3. Serve, por exemplo, para nunca pedir mais itens de uma lista do que ela realmente tem.
   `,
 };
 
@@ -45,67 +48,72 @@ const code7_1: CodeChallenge = {
   type: 'code',
   episode: 7,
   room: '7.1',
-  title: 'Criando uma wordlist',
-  description: 'Vamos criar uma mini wordlist com as 10 senhas mais comuns do mundo.',
-  instructions: 'Execute e veja as senhas mais usadas',
+  title: 'Resumindo uma wordlist',
+  description: 'Vamos criar uma função que resume qualquer wordlist: quantas senhas tem, e mostra as N primeiras.',
+  instructions: 'Complete resumirWordlist(wordlist, quantas): monte um resumo com o total de senhas e as "quantas" primeiras (ou menos, se a lista for menor). Veja o formato exato nos testes visíveis.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Top 10 senhas mais usadas (dados reais de vazamentos)
-const wordlist = [
-  "123456",
-  "password",
-  "123456789",
-  "12345678",
-  "12345",
-  "1234567",
-  "admin",
-  "123123",
-  "qwerty",
-  "abc123"
-];
-
-console.log("=== Wordlist carregada ===");
-console.log("Total de senhas: " + wordlist.length);
-console.log("\\nPrimeiras 5:");
-for (let i = 0; i < 5; i++) {
-  console.log((i + 1) + ". " + wordlist[i]);
+    javascript: `function resumirWordlist(wordlist, quantas) {
+  // n = o menor entre "quantas" e wordlist.length (Math.min)
+  // Monte as linhas "1. senha", "2. senha"... para as n primeiras
+  // Devolva: "=== Wordlist carregada ===\\nTotal de senhas: " + wordlist.length +
+  //          "\\n\\nPrimeiras " + n + ":\\n" + linhas juntadas com "\\n"
 }
 `,
-    python: `# Top 10 senhas mais usadas (dados reais de vazamentos)
-wordlist = [
-    "123456",
-    "password",
-    "123456789",
-    "12345678",
-    "12345",
-    "1234567",
-    "admin",
-    "123123",
-    "qwerty",
-    "abc123"
-]
-
-print("=== Wordlist carregada ===")
-print(f"Total de senhas: {len(wordlist)}")
-print("\\nPrimeiras 5:")
-for i in range(5):
-    print(f"{i + 1}. {wordlist[i]}")
+    python: `def resumir_wordlist(wordlist, quantas):
+    # n = o menor entre "quantas" e len(wordlist) (min())
+    # Monte as linhas "1. senha", "2. senha"... para as n primeiras
+    # Devolva: "=== Wordlist carregada ===\\nTotal de senhas: " + str(len(wordlist)) +
+    #          "\\n\\nPrimeiras " + str(n) + ":\\n" + linhas juntadas com "\\n"
+    pass
 `,
   },
-  expectedOutput: '=== Wordlist carregada ===\nTotal de senhas: 10\n\nPrimeiras 5:\n1. 123456\n2. password\n3. 123456789\n4. 12345678\n5. 12345',
+  tests: {
+    fn: { javascript: 'resumirWordlist', python: 'resumir_wordlist' },
+    cases: [
+      {
+        name: 'top 10, mostrando 5',
+        args: [['123456', 'password', '123456789', '12345678', '12345', '1234567', 'admin', '123123', 'qwerty', 'abc123'], 5],
+        expected: '=== Wordlist carregada ===\nTotal de senhas: 10\n\nPrimeiras 5:\n1. 123456\n2. password\n3. 123456789\n4. 12345678\n5. 12345',
+      },
+      {
+        name: 'lista menor que "quantas" pedido',
+        args: [['abc', 'def'], 5],
+        expected: '=== Wordlist carregada ===\nTotal de senhas: 2\n\nPrimeiras 2:\n1. abc\n2. def',
+        hidden: true,
+      },
+      { name: 'lista vazia', args: [[], 5], expected: '=== Wordlist carregada ===\nTotal de senhas: 0\n\nPrimeiras 0:\n', hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function resumirWordlist(wordlist, quantas) {
+  const n = Math.min(quantas, wordlist.length);
+  const linhas = [];
+  for (let i = 0; i < n; i++) {
+    linhas.push((i + 1) + ". " + wordlist[i]);
+  }
+  return "=== Wordlist carregada ===\\nTotal de senhas: " + wordlist.length + "\\n\\nPrimeiras " + n + ":\\n" + linhas.join("\\n");
+}`,
+    python: `def resumir_wordlist(wordlist, quantas):
+    n = min(quantas, len(wordlist))
+    linhas = []
+    for i in range(n):
+        linhas.append(f"{i + 1}. {wordlist[i]}")
+    return "=== Wordlist carregada ===\\nTotal de senhas: " + str(len(wordlist)) + "\\n\\nPrimeiras " + str(n) + ":\\n" + "\\n".join(linhas)`,
+  },
   explanation: `
 **Fato chocante:**
-23% de TODAS as contas usam senhas dessa lista!
+23% de TODAS as contas usam senhas de uma lista como essa!
 
-**Estudo real (2023):**
-"123456" ainda é a senha mais usada no mundo.
-Mais de 100 milhões de pessoas usam ela.
+**Estudo real:**
+"123456" ainda é uma das senhas mais usadas no mundo. Por isso força bruta com wordlist funciona tão bem — não é preciso adivinhar, só testar o que MILHÕES de pessoas já usam.
 
-Por isso força bruta com wordlist funciona tão bem!
+**Sobre o Math.min/min():** ele evita um erro comum — pedir "as 5 primeiras" de uma lista que só tem 2 itens. Sem esse cuidado, seu código tentaria acessar posições que não existem.
   `,
   hints: [
-    'Estas são as 10 senhas mais comuns do mundo',
-    'Dados de vazamentos reais (Have I Been Pwned)',
+    'Math.min(quantas, wordlist.length) (Python: min(quantas, len(wordlist)))',
+    'Um for de 0 até n (exclusive) monta cada linha "i+1. senha"',
+    'Junte as linhas com "\\n" só na hora de devolver, não uma a uma',
   ],
   difficulty: 'easy',
 };
@@ -116,79 +124,122 @@ const code7_2: CodeChallenge = {
   episode: 7,
   room: '7.2',
   title: 'Ataque automatizado',
-  description: 'Agora automatize um ataque! Teste cada senha da wordlist contra um hash até encontrar a correta.',
-  instructions: 'Execute o ataque de força bruta automatizado',
+  description: 'Agora automatize um ataque! Teste cada senha da wordlist contra um hash, uma por vez, até encontrar a correta (ou esgotar a lista).',
+  instructions: 'Complete atacarHash(wordlist, hashAlvo): teste cada senha com simpleHash(), registrando cada tentativa. Pare assim que encontrar. Veja o formato exato da narração nos testes.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const wordlist = ["123456", "password", "123456789", "12345678", "qwerty"];
-
-// Hash alvo (senha que queremos descobrir)
-const hashAlvo = "e10adc3949ba59abbe56e057f20f883e";
-
-// Função hash MD5 simplificada
-function simpleHash(texto) {
-  let hash = 0;
+    javascript: `function simpleHash(texto) {
+  let hash = 7;
   for (let i = 0; i < texto.length; i++) {
-    hash = ((hash << 5) - hash) + texto.charCodeAt(i);
-    hash = hash & hash;
+    hash = (hash * 31 + texto.charCodeAt(i)) % 1000000007;
   }
-  return Math.abs(hash).toString(16).padStart(32, '0');
+  return hash.toString(16);
 }
 
-console.log("🔍 Iniciando ataque de força bruta...");
-console.log("Hash alvo: " + hashAlvo);
-console.log("\\n");
-
-// Crie variáveis: tentativas (0) e senhaEncontrada (false)
-// Percorra a wordlist:
-//   - Incremente tentativas
-//   - Calcule o hash com simpleHash()
-//   - Imprima: "Tentativa " + tentativas + ": testando '" + senha + "'..."
-//   - Se hash === hashAlvo:
-//     - Imprima: "\\n✅ SENHA ENCONTRADA: " + senha
-//     - Imprima: "Total de tentativas: " + tentativas
-//     - Marque como encontrada e use break
-// Depois do loop, se não encontrou:
-//   - Imprima: "\\n❌ Senha não encontrada na wordlist"
+function atacarHash(wordlist, hashAlvo) {
+  // Percorra a wordlist com um contador "tentativas" começando em 0
+  // Para cada senha: incremente tentativas, monte a linha
+  //   "Tentativa " + tentativas + ": testando '" + senha + "'..."
+  // Se simpleHash(senha) === hashAlvo:
+  //   adicione "\\n✅ SENHA ENCONTRADA: " + senha e "Total de tentativas: " + tentativas
+  //   pare o loop (a senha já foi achada)
+  // Se o loop terminar sem achar, adicione "\\n❌ Senha não encontrada na wordlist"
+  // Devolva tudo junto com "\\n"
+}
 `,
-    python: `wordlist = ["123456", "password", "123456789", "12345678", "qwerty"]
-
-# Hash alvo (senha que queremos descobrir)
-hash_alvo = "e10adc3949ba59abbe56e057f20f883e"
-
-# Função hash MD5 simplificada
-def simple_hash(texto):
-    hash_val = 0
+    python: `def simple_hash(texto):
+    hash_val = 7
     for char in texto:
-        hash_val = ((hash_val << 5) - hash_val) + ord(char)
-        hash_val = hash_val & 0xFFFFFFFF
-    return format(abs(hash_val), '032x')
+        hash_val = (hash_val * 31 + ord(char)) % 1000000007
+    return format(hash_val, "x")
 
-print("🔍 Iniciando ataque de força bruta...")
-print(f"Hash alvo: {hash_alvo}")
-print("\\n")
-
-# Crie variáveis: tentativas (0) e senha_encontrada (False)
-# Percorra a wordlist:
-#   - Incremente tentativas
-#   - Calcule o hash com simple_hash()
-#   - Imprima: f"Tentativa {tentativas}: testando '{senha}'..."
-#   - Se hash == hash_alvo:
-#     - Imprima: f"\\n✅ SENHA ENCONTRADA: {senha}"
-#     - Imprima: f"Total de tentativas: {tentativas}"
-#     - Marque como encontrada e use break
-# Depois do loop, se não encontrou:
-#   - Imprima: "\\n❌ Senha não encontrada na wordlist"
+def atacar_hash(wordlist, hash_alvo):
+    # Percorra a wordlist com um contador "tentativas" começando em 0
+    # Para cada senha: incremente tentativas, monte a linha
+    #   f"Tentativa {tentativas}: testando '{senha}'..."
+    # Se simple_hash(senha) == hash_alvo:
+    #   adicione f"\\n✅ SENHA ENCONTRADA: {senha}" e f"Total de tentativas: {tentativas}"
+    #   pare o loop (a senha já foi achada)
+    # Se o loop terminar sem achar, adicione "\\n❌ Senha não encontrada na wordlist"
+    # Devolva tudo junto com "\\n"
+    pass
 `,
   },
-  expectedOutput: 'Tentativa 2: testando \'password\'...\n\n✅ SENHA ENCONTRADA: password\nTotal de tentativas: 2',
+  tests: {
+    fn: { javascript: 'atacarHash', python: 'atacar_hash' },
+    cases: [
+      {
+        name: 'acha "password" na 2ª tentativa',
+        args: [['123456', 'password', '123456789', '12345678', 'qwerty'], '858f7af'],
+        expected: "Tentativa 1: testando '123456'...\nTentativa 2: testando 'password'...\n\n✅ SENHA ENCONTRADA: password\nTotal de tentativas: 2",
+      },
+      {
+        name: 'esgota a wordlist sem achar',
+        args: [['123456', 'password', '123456789', '12345678', 'qwerty'], 'nao-existe-esse-hash'],
+        expected: "Tentativa 1: testando '123456'...\nTentativa 2: testando 'password'...\nTentativa 3: testando '123456789'...\nTentativa 4: testando '12345678'...\nTentativa 5: testando 'qwerty'...\n\n❌ Senha não encontrada na wordlist",
+        hidden: true,
+      },
+    ],
+  },
+  solution: {
+    javascript: `function simpleHash(texto) {
+  let hash = 7;
+  for (let i = 0; i < texto.length; i++) {
+    hash = (hash * 31 + texto.charCodeAt(i)) % 1000000007;
+  }
+  return hash.toString(16);
+}
+
+function atacarHash(wordlist, hashAlvo) {
+  const linhas = [];
+  let tentativas = 0;
+  let encontrada = false;
+
+  for (const senha of wordlist) {
+    tentativas++;
+    linhas.push("Tentativa " + tentativas + ": testando '" + senha + "'...");
+    if (simpleHash(senha) === hashAlvo) {
+      linhas.push("\\n✅ SENHA ENCONTRADA: " + senha);
+      linhas.push("Total de tentativas: " + tentativas);
+      encontrada = true;
+      break;
+    }
+  }
+  if (!encontrada) {
+    linhas.push("\\n❌ Senha não encontrada na wordlist");
+  }
+  return linhas.join("\\n");
+}`,
+    python: `def simple_hash(texto):
+    hash_val = 7
+    for char in texto:
+        hash_val = (hash_val * 31 + ord(char)) % 1000000007
+    return format(hash_val, "x")
+
+def atacar_hash(wordlist, hash_alvo):
+    linhas = []
+    tentativas = 0
+    encontrada = False
+
+    for senha in wordlist:
+        tentativas += 1
+        linhas.append(f"Tentativa {tentativas}: testando '{senha}'...")
+        if simple_hash(senha) == hash_alvo:
+            linhas.append(f"\\n✅ SENHA ENCONTRADA: {senha}")
+            linhas.append(f"Total de tentativas: {tentativas}")
+            encontrada = True
+            break
+    if not encontrada:
+        linhas.append("\\n❌ Senha não encontrada na wordlist")
+    return "\\n".join(linhas)`,
+  },
   explanation: `
 **Ataque bem-sucedido!**
 
-Encontramos a senha "password" em apenas 2 tentativas.
+Encontramos a senha "password" em apenas 2 tentativas — e o loop **parou na hora**, sem testar as 3 senhas restantes da lista. Isso é o \`break\`: por que gastar tempo testando o resto se você já achou?
 
 **No mundo real:**
-• Hashcat testa 100 BILHÕES de senhas por segundo (com GPU)
+• Hashcat testa bilhões de senhas por segundo (com GPU)
 • rockyou.txt tem 14 milhões de senhas
 • Tempo médio: minutos a horas (dependendo da senha)
 
@@ -199,10 +250,11 @@ Encontramos a senha "password" em apenas 2 tentativas.
 • Hashing forte (bcrypt, Argon2)
   `,
   hints: [
-    'O código está pronto - veja o ataque acontecendo',
-    'A senha "password" será encontrada rapidamente',
+    'Contador tentativas começa em 0, incrementa a cada senha testada',
+    'break (JS) / break (Python) some do loop assim que simpleHash(senha) bate',
+    'Se o hash não bater com NENHUMA senha, o loop termina sozinho e você cai no caso "não encontrada"',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const theory7_3: TheoryChallenge = {
@@ -250,76 +302,73 @@ const code7_4: CodeChallenge = {
   episode: 7,
   room: '7.4',
   title: 'Ataque híbrido com mutações',
-  description: 'Pegue uma wordlist e aplique regras de mutação para gerar variações (password → p@ssw0rd, Password1, etc).',
-  instructions: 'Execute e veja as mutações sendo geradas',
+  description: 'Pegue uma palavra-base e aplique regras de mutação para gerar variações realistas (password → p@ssw0rd, Password123, etc). É assim que uma wordlist pequena vira uma bem maior.',
+  instructions: 'Complete gerarMutacoes(palavra): devolva um array com 5 variações, NESTA ordem: a palavra original, com a primeira letra maiúscula, +"123", +"2024", e em leetspeak (a→@, o→0, i→1, e→3).',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `const palavrasBase = ["admin", "password"];
-
-// Implemente a função gerarMutacoes que retorna um array com 5 variações:
-// 1. A palavra original
-// 2. Primeira letra maiúscula (charAt(0).toUpperCase() + slice(1))
-// 3. Palavra + "123"
-// 4. Palavra + "2024"
-// 5. Leetspeak: a→@, o→0, i→1, e→3 (use .replace(/a/g, '@') etc.)
-function gerarMutacoes(palavra) {
-  const mutacoes = [];
-  // Adicione as 5 variações aqui
-  return mutacoes;
+    javascript: `function gerarMutacoes(palavra) {
+  // 1. palavra original
+  // 2. primeira letra maiúscula: palavra.charAt(0).toUpperCase() + palavra.slice(1)
+  // 3. palavra + "123"
+  // 4. palavra + "2024"
+  // 5. leetspeak: palavra.replace(/a/g,'@').replace(/o/g,'0').replace(/i/g,'1').replace(/e/g,'3')
+  // Devolva um array com as 5, nessa ordem
 }
-
-console.log("=== Gerando wordlist com mutações ===\\n");
-
-// Percorra palavrasBase, gere mutações de cada uma
-// Junte tudo em um array wordlistFinal usando .concat()
-// Imprima "Total de senhas geradas: " + wordlistFinal.length
-// Imprima "\\nExemplos:" e liste as 10 primeiras:
-//   (i + 1) + ". " + wordlistFinal[i]
 `,
-    python: `palavras_base = ["admin", "password"]
-
-# Implemente a função gerar_mutacoes que retorna uma lista com 5 variações:
-# 1. A palavra original
-# 2. Primeira letra maiúscula (.capitalize())
-# 3. Palavra + "123"
-# 4. Palavra + "2024"
-# 5. Leetspeak: a→@, o→0, i→1, e→3 (use .replace())
-def gerar_mutacoes(palavra):
-    mutacoes = []
-    # Adicione as 5 variações aqui
-    return mutacoes
-
-print("=== Gerando wordlist com mutações ===\\n")
-
-# Percorra palavras_base, gere mutações de cada uma
-# Junte tudo em uma lista wordlist_final usando .extend()
-# Imprima f"Total de senhas geradas: {len(wordlist_final)}"
-# Imprima "\\nExemplos:" e liste as 10 primeiras:
-#   f"{i + 1}. {senha}"
+    python: `def gerar_mutacoes(palavra):
+    # 1. palavra original
+    # 2. primeira letra maiúscula: palavra[:1].upper() + palavra[1:]
+    # 3. palavra + "123"
+    # 4. palavra + "2024"
+    # 5. leetspeak: troque a→@, o→0, i→1, e→3 (uma chamada .replace() para cada)
+    # Devolva uma lista com as 5, nessa ordem
+    pass
 `,
   },
-  expectedOutput: 'Total de senhas geradas: 10\n\nExemplos:\n1. admin\n2. Admin\n3. admin123\n4. admin2024\n5. @dm1n',
+  tests: {
+    fn: { javascript: 'gerarMutacoes', python: 'gerar_mutacoes' },
+    cases: [
+      { name: '"admin"', args: ['admin'], expected: ['admin', 'Admin', 'admin123', 'admin2024', '@dm1n'] },
+      { name: '"password"', args: ['password'], expected: ['password', 'Password', 'password123', 'password2024', 'p@ssw0rd'] },
+      { name: '"teste"', args: ['teste'], expected: ['teste', 'Teste', 'teste123', 'teste2024', 't3st3'], hidden: true },
+      { name: 'palavra vazia', args: [''], expected: ['', '', '123', '2024', ''], hidden: true },
+    ],
+  },
+  solution: {
+    javascript: `function gerarMutacoes(palavra) {
+  const maiuscula = palavra.length ? palavra.charAt(0).toUpperCase() + palavra.slice(1) : "";
+  const leet = palavra.replace(/a/g, '@').replace(/o/g, '0').replace(/i/g, '1').replace(/e/g, '3');
+  return [palavra, maiuscula, palavra + "123", palavra + "2024", leet];
+}`,
+    python: `def gerar_mutacoes(palavra):
+    maiuscula = palavra[:1].upper() + palavra[1:] if palavra else ""
+    leet = palavra.replace('a', '@').replace('o', '0').replace('i', '1').replace('e', '3')
+    return [palavra, maiuscula, palavra + "123", palavra + "2024", leet]`,
+  },
   explanation: `
-**De 2 palavras → 10 variações!**
+**De 1 palavra → 5 variações!**
 
 **Técnicas aplicadas:**
 • Capitalização (Password)
 • Números comuns (123, 2024)
 • Leetspeak (p@ssw0rd)
 
+Repare: para 2 palavras-base (admin, password), isso já geraria 10 senhas testáveis — sem precisar digitar cada uma na mão.
+
 **No mundo real:**
-Ferramentas como Hashcat usam arquivos de regras complexas:
+Ferramentas como Hashcat usam arquivos de regras muito mais complexos que isso:
 • JohnTheRipper rules
 • Best64.rule (64 regras otimizadas)
 • OneRuleToRuleThemAll
 
-Com regras profissionais: 1 senha → 1000+ variações!
+Com regras profissionais: 1 senha-base → 1000+ variações!
   `,
   hints: [
-    'Veja como 2 palavras viram 10 senhas diferentes',
-    'Mutações aumentam drasticamente chances de sucesso',
+    'A ordem do array importa: original, capitalizada, +123, +2024, leetspeak',
+    '.replace(/a/g, "@") troca TODAS as ocorrências (o /g é "global"); em Python, .replace() já troca todas por padrão',
+    'Palavra vazia: capitalizar e aplicar leetspeak numa string vazia ainda dá string vazia',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const theory7_5: TheoryChallenge = {

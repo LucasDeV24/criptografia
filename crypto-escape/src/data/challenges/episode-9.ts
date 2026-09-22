@@ -46,77 +46,81 @@ const code9_1: CodeChallenge = {
   episode: 9,
   room: '9.1',
   title: 'Decodificando um JWT',
-  description: 'JWT parece código aleatório, mas na verdade é Base64! Vamos decodificar e ver o conteúdo.',
-  instructions: 'Execute e veja o interior de um JWT',
+  description: 'JWT parece código aleatório, mas na verdade é só Base64! Escreva a função que extrai e decodifica os dados de dentro de qualquer JWT.',
+  instructions: 'Complete decodificarPayloadJWT(jwt): separe o JWT em partes por ".", pegue a parte do meio (payload), decodifique de Base64 e devolva o objeto (use JSON.parse/json.loads). Cuidado: talvez falte padding "=" no final — calcule quantos "=" faltam para o tamanho virar múltiplo de 4, e complete antes de decodificar.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// JWT de exemplo
-const jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiam9obiIsInJvbGUiOiJ1c2VyIn0.SIGNATURE";
-
-// JWT tem 3 partes separadas por "."
-const partes = jwt.split('.');
-
-console.log("=== Decodificando JWT ===\\n");
-
-// Decodificar header (parte 1)
-const header = JSON.parse(atob(partes[0]));
-console.log("📋 Header:");
-console.log(JSON.stringify(header, null, 2));
-
-// Decodificar payload (parte 2)
-const payload = JSON.parse(atob(partes[1]));
-console.log("\\n📦 Payload (dados do usuário):");
-console.log(JSON.stringify(payload, null, 2));
-
-// Signature não decodificamos (é hash)
-console.log("\\n🔐 Signature: " + partes[2]);
+    javascript: `function decodificarPayloadJWT(jwt) {
+  const partes = jwt.split('.');
+  let payloadB64 = partes[1];
+  // Calcule quantos "=" faltam: (4 - payloadB64.length % 4) % 4
+  // Adicione essa quantidade de "=" ao final com .repeat(quantidade)
+  // Decodifique com atob() e depois JSON.parse()
+  // Devolva o objeto com return
+}
 `,
     python: `import base64
 import json
 
-# JWT de exemplo
-jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiam9obiIsInJvbGUiOiJ1c2VyIn0.SIGNATURE"
-
-# JWT tem 3 partes separadas por "."
-partes = jwt.split('.')
-
-print("=== Decodificando JWT ===\\n")
-
-# Decodificar header (parte 1)
-header = json.loads(base64.b64decode(partes[0] + '==').decode('utf-8'))
-print("📋 Header:")
-print(json.dumps(header, indent=2))
-
-# Decodificar payload (parte 2)
-payload = json.loads(base64.b64decode(partes[1] + '==').decode('utf-8'))
-print("\\n📦 Payload (dados do usuário):")
-print(json.dumps(payload, indent=2))
-
-# Signature não decodificamos (é hash)
-print(f"\\n🔐 Signature: {partes[2]}")
+def decodificar_payload_jwt(jwt):
+    partes = jwt.split('.')
+    payload_b64 = partes[1]
+    # Calcule quantos "=" faltam: (4 - len(payload_b64) % 4) % 4
+    # Adicione essa quantidade de "=" ao final com "=" * quantidade
+    # Decodifique com base64.b64decode(...).decode('utf-8') e depois json.loads()
+    # Devolva o objeto com return
+    pass
 `,
   },
-  expectedOutput: '📦 Payload (dados do usuário):\n{\n  "userId": 1,\n  "username": "john",\n  "role": "user"\n}',
+  tests: {
+    fn: { javascript: 'decodificarPayloadJWT', python: 'decodificar_payload_jwt' },
+    cases: [
+      {
+        name: 'usuário comum',
+        args: ['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiam9obiIsInJvbGUiOiJ1c2VyIn0.SIGNATURE'],
+        expected: { userId: 1, username: 'john', role: 'user' },
+      },
+      {
+        name: 'token de admin',
+        args: ['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjk5OSwibmFtZSI6IkFkbWluIiwicm9sZSI6ImFkbWluIn0.SIGNATURE'],
+        expected: { userId: 999, name: 'Admin', role: 'admin' },
+        hidden: true,
+      },
+    ],
+  },
+  solution: {
+    javascript: `function decodificarPayloadJWT(jwt) {
+  const partes = jwt.split('.');
+  let payloadB64 = partes[1];
+  const faltam = (4 - payloadB64.length % 4) % 4;
+  payloadB64 += "=".repeat(faltam);
+  return JSON.parse(atob(payloadB64));
+}`,
+    python: `import base64
+import json
+
+def decodificar_payload_jwt(jwt):
+    partes = jwt.split('.')
+    payload_b64 = partes[1]
+    faltam = (4 - len(payload_b64) % 4) % 4
+    payload_b64 += "=" * faltam
+    return json.loads(base64.b64decode(payload_b64).decode('utf-8'))`,
+  },
   explanation: `
 **JWT decodificado!**
 
-**Descobrimos:**
-• userId: 1
-• username: "john"
-• role: "user" (não é admin!)
+A parte do meio (payload) é só um objeto comum, em Base64. Qualquer pessoa consegue **ler** um JWT — não tem nenhum segredo nisso. O que protege o token contra ser **modificado** é a terceira parte, a signature, que não decodificamos.
 
-**Importante:**
-Decodificar NÃO é o mesmo que quebrar!
-A signature protege contra modificações.
+**Sobre a conta do padding:** \`(4 - tamanho % 4) % 4\` calcula direto quantos "=" faltam, sem precisar de loop — o segundo \`% 4\` cobre o caso em que o tamanho já é múltiplo de 4 (aí não falta nenhum).
 
-**Mas e se pudéssemos modificar o role para "admin"?** 🤔
-Próxima sala vamos tentar isso!
+**Mas e se pudéssemos criar um JWT novo, com o role que quisermos?** 🤔 Próxima sala!
   `,
   hints: [
-    'JWT é apenas Base64 - não é criptografia!',
-    'Qualquer um pode LER um JWT, mas não MODIFICAR (por causa da signature)',
+    '(4 - payloadB64.length % 4) % 4 calcula quantos "=" faltam (Python: mesma fórmula com len(...))',
+    '"=".repeat(faltam) (Python: "=" * faltam) monta a string de padding de uma vez',
+    'atob(payloadB64) decodifica; JSON.parse(...) transforma o texto em objeto',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const code9_2: CodeChallenge = {
@@ -125,51 +129,72 @@ const code9_2: CodeChallenge = {
   episode: 9,
   room: '9.2',
   title: 'Vulnerabilidade: algoritmo "none"',
-  description: 'Alguns servidores aceitam JWT com algoritmo "none" (SEM assinatura!). Isso permite modificar o token livremente.',
-  instructions: 'Execute e veja como criar um JWT malicioso',
+  description: 'Alguns servidores aceitam JWT com algoritmo "none" (SEM assinatura!). Isso permite MONTAR um token do zero, com qualquer payload — inclusive role: "admin".',
+  instructions: 'Complete forjarJwtNone(payload): codifique payload em Base64 e monte "HEADER_B64" + "." + payloadB64 + "." (o cabeçalho { alg: "none", typ: "JWT" } já vem pronto, codificado em HEADER_B64).',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Crie um JWT malicioso com algoritmo "none" (sem assinatura)
+    javascript: `// Header { alg: "none", typ: "JWT" } já codificado em Base64:
+const HEADER_B64 = "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0";
 
-// 1. Crie o objeto header com: alg: "none", typ: "JWT"
-
-// 2. Crie o objeto payload com: userId: 1, username: "john", role: "admin"
-//    (mudamos "user" para "admin"!)
-
-// 3. Codifique header e payload em Base64 com btoa(JSON.stringify(...))
-
-// 4. Monte o JWT: headerB64 + "." + payloadB64 + "."
-//    (termina com "." porque não tem signature)
-
-// 5. Imprima o token e depois: "\\n⚠️ Agora você é ADMIN sem senha!"
+function forjarJwtNone(payload) {
+  // Codifique "payload" em Base64: btoa(JSON.stringify(payload))
+  // Monte e devolva: HEADER_B64 + "." + payloadB64 + "."
+  // (termina com "." porque não existe signature nenhuma)
+}
 `,
     python: `import base64
 import json
 
-# Crie um JWT malicioso com algoritmo "none" (sem assinatura)
+# Header { "alg": "none", "typ": "JWT" } já codificado em Base64:
+HEADER_B64 = "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0"
 
-# 1. Crie o dicionário header com: "alg": "none", "typ": "JWT"
-
-# 2. Crie o dicionário payload com: "userId": 1, "username": "john", "role": "admin"
-#    (mudamos "user" para "admin"!)
-
-# 3. Codifique header e payload em Base64:
-#    base64.b64encode(json.dumps(obj).encode()).decode().rstrip('=')
-
-# 4. Monte o JWT: f"{header_b64}.{payload_b64}."
-#    (termina com "." porque não tem signature)
-
-# 5. Imprima o token e depois: "\\n⚠️ Agora você é ADMIN sem senha!"
+def forjar_jwt_none(payload):
+    # Codifique "payload" em Base64:
+    # base64.b64encode(json.dumps(payload, separators=(",", ":")).encode()).decode()
+    # (o separators sem espaços deixa o JSON idêntico ao do JavaScript)
+    # Monte e devolva: HEADER_B64 + "." + payload_b64 + "."
+    pass
 `,
   },
-  expectedOutput: '⚠️ Agora você é ADMIN sem senha!',
+  tests: {
+    fn: { javascript: 'forjarJwtNone', python: 'forjar_jwt_none' },
+    cases: [
+      {
+        name: 'escala privilégio para admin',
+        args: [{ userId: 1, username: 'john', role: 'admin' }],
+        expected: 'eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiam9obiIsInJvbGUiOiJhZG1pbiJ9.',
+      },
+      {
+        name: 'outro usuário',
+        args: [{ userId: 2, username: 'maria', role: 'admin' }],
+        expected: 'eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJ1c2VySWQiOjIsInVzZXJuYW1lIjoibWFyaWEiLCJyb2xlIjoiYWRtaW4ifQ==.',
+        hidden: true,
+      },
+    ],
+  },
+  solution: {
+    javascript: `const HEADER_B64 = "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0";
+
+function forjarJwtNone(payload) {
+  const payloadB64 = btoa(JSON.stringify(payload));
+  return HEADER_B64 + "." + payloadB64 + ".";
+}`,
+    python: `import base64
+import json
+
+HEADER_B64 = "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0"
+
+def forjar_jwt_none(payload):
+    payload_b64 = base64.b64encode(json.dumps(payload, separators=(",", ":")).encode()).decode()
+    return HEADER_B64 + "." + payload_b64 + "."`,
+  },
   explanation: `
 **VULNERABILIDADE CRÍTICA!**
 
-**O que fizemos:**
-1. Mudamos role de "user" para "admin"
-2. Usamos algoritmo "none" (sem assinatura)
-3. Servidor aceitou = privilégio escalado!
+**O que aconteceu:**
+1. Você montou um payload com role: "admin" do zero, sem precisar de senha nenhuma
+2. Usou o header de algoritmo "none" (sem assinatura)
+3. Um servidor vulnerável, que aceita "none", trataria isso como um token legítimo!
 
 **Casos reais:**
 • 2015 - Auth0 tinha essa vulnerabilidade
@@ -177,20 +202,19 @@ import json
 
 **Defesa:**
 • Nunca aceitar algoritmo "none"
-• Validar algoritmo rigorosamente
-• Usar bibliotecas atualizadas
+• Validar o algoritmo esperado explicitamente no servidor
+• Usar bibliotecas JWT atualizadas
 
 **Ferramentas:**
-• jwt.io (decodificar)
-• jwt_tool (exploração)
+• jwt.io (decodificar e inspecionar tokens)
+• jwt_tool (automatiza esse tipo de exploração)
   `,
   hints: [
-    'Crie header: const header = { alg: "none", typ: "JWT" }',
-    'Crie payload com role: "admin" em vez de "user"',
-    'Use btoa(JSON.stringify(header)) para codificar em Base64',
-    'Monte: headerB64 + "." + payloadB64 + "." (sem signature)',
+    'btoa(JSON.stringify(payload)) codifica o payload (Python: base64.b64encode(json.dumps(payload, separators=(",", ":")).encode()).decode())',
+    'O separators sem espaços em Python é essencial — sem isso, o JSON fica diferente do JavaScript e o Base64 também muda',
+    'HEADER_B64 já vem pronto — você só monta HEADER_B64 + "." + payloadB64 + "."',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const theory9_3: TheoryChallenge = {
@@ -243,77 +267,113 @@ const code9_4: CodeChallenge = {
   episode: 9,
   room: '9.4',
   title: 'Simulando session hijacking',
-  description: 'Você roubou um JWT de uma vítima via XSS. Agora use esse token para acessar dados confidenciais.',
-  instructions: 'Execute e veja o ataque funcionando',
+  description: 'Você roubou um JWT de uma vítima via XSS. Só vale a pena usá-lo se o token tiver privilégios de admin — escreva a função que decide isso e simula o acesso.',
+  instructions: 'Complete simularSessionHijacking(tokenRoubado, dadosConfidenciais): decodifique o payload do token. Se role não for "admin", devolva "Acesso negado: token não tem privilégios de admin.". Se for, devolva "⚠️ Session hijacking bem-sucedido!\\nDados confidenciais acessados:\\n" + uma linha "user | cpf | saldo" por item de dadosConfidenciais.',
   languages: ['javascript', 'python'],
   starterCode: {
-    javascript: `// Token roubado da vítima (via XSS)
-const tokenRoubado = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjk5OSwibmFtZSI6IkFkbWluIiwicm9sZSI6ImFkbWluIn0.SIGNATURE";
-
-// Dados confidenciais que o servidor retornaria
-const dadosConfidenciais = [
-  { user: "joao", cpf: "111.222.333-44", saldo: "R$ 5.000" },
-  { user: "maria", cpf: "555.666.777-88", saldo: "R$ 12.000" }
-];
-
-// 1. Decodifique o payload do JWT (segunda parte, separada por ".")
-//    Use: JSON.parse(atob(tokenRoubado.split('.')[1]))
-// 2. Imprima os dados do payload para ver de quem é o token
-// 3. Simule a requisição: imprima a URL e o header Authorization
-// 4. Imprima os dados confidenciais com JSON.stringify()
-// 5. No final, imprima: "\\n⚠️ Session hijacking bem-sucedido!"
+    javascript: `function simularSessionHijacking(tokenRoubado, dadosConfidenciais) {
+  // Decodifique o payload (igual à sala 9.1: split, completar padding, atob, JSON.parse)
+  // Se payload.role !== "admin", devolva "Acesso negado: token não tem privilégios de admin."
+  // Senão, monte as linhas "user | cpf | saldo" com .map() e junte com .join("\\n")
+  // Devolva "⚠️ Session hijacking bem-sucedido!\\nDados confidenciais acessados:\\n" + as linhas
+}
 `,
     python: `import base64
 import json
 
-# Token roubado da vítima (via XSS)
-token_roubado = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjk5OSwibmFtZSI6IkFkbWluIiwicm9sZSI6ImFkbWluIn0.SIGNATURE"
-
-# Dados confidenciais que o servidor retornaria
-dados_confidenciais = [
-    {"user": "joao", "cpf": "111.222.333-44", "saldo": "R$ 5.000"},
-    {"user": "maria", "cpf": "555.666.777-88", "saldo": "R$ 12.000"}
-]
-
-# 1. Decodifique o payload do JWT (segunda parte, separada por ".")
-#    Use: json.loads(base64.b64decode(token_roubado.split('.')[1] + '==').decode())
-# 2. Imprima os dados do payload para ver de quem é o token
-# 3. Simule a requisição: imprima a URL e o header Authorization
-# 4. Imprima os dados confidenciais com json.dumps()
-# 5. No final, imprima: "\\n⚠️ Session hijacking bem-sucedido!"
+def simular_session_hijacking(token_roubado, dados_confidenciais):
+    # Decodifique o payload (igual à sala 9.1: split, completar padding, b64decode, json.loads)
+    # Se payload["role"] != "admin", devolva "Acesso negado: token não tem privilégios de admin."
+    # Senão, monte as linhas "user | cpf | saldo" com uma list comprehension e junte com "\\n".join(...)
+    # Devolva "⚠️ Session hijacking bem-sucedido!\\nDados confidenciais acessados:\\n" + as linhas
+    pass
 `,
   },
-  expectedOutput: '⚠️ Session hijacking bem-sucedido!',
+  tests: {
+    fn: { javascript: 'simularSessionHijacking', python: 'simular_session_hijacking' },
+    cases: [
+      {
+        name: 'token de admin acessa os dados',
+        args: [
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjk5OSwibmFtZSI6IkFkbWluIiwicm9sZSI6ImFkbWluIn0.SIGNATURE',
+          [{ user: 'joao', cpf: '111.222.333-44', saldo: 'R$ 5.000' }, { user: 'maria', cpf: '555.666.777-88', saldo: 'R$ 12.000' }],
+        ],
+        expected: '⚠️ Session hijacking bem-sucedido!\nDados confidenciais acessados:\njoao | 111.222.333-44 | R$ 5.000\nmaria | 555.666.777-88 | R$ 12.000',
+      },
+      {
+        name: 'token comum é recusado',
+        args: [
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiam9obiIsInJvbGUiOiJ1c2VyIn0.SIGNATURE',
+          [{ user: 'joao', cpf: '111.222.333-44', saldo: 'R$ 5.000' }],
+        ],
+        expected: 'Acesso negado: token não tem privilégios de admin.',
+      },
+      {
+        name: 'token de admin mas sem dados para mostrar',
+        args: [
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjk5OSwibmFtZSI6IkFkbWluIiwicm9sZSI6ImFkbWluIn0.SIGNATURE',
+          [],
+        ],
+        expected: '⚠️ Session hijacking bem-sucedido!\nDados confidenciais acessados:\n',
+        hidden: true,
+      },
+    ],
+  },
+  solution: {
+    javascript: `function simularSessionHijacking(tokenRoubado, dadosConfidenciais) {
+  const partes = tokenRoubado.split('.');
+  let payloadB64 = partes[1];
+  const faltam = (4 - payloadB64.length % 4) % 4;
+  payloadB64 += "=".repeat(faltam);
+  const payload = JSON.parse(atob(payloadB64));
+
+  if (payload.role !== "admin") {
+    return "Acesso negado: token não tem privilégios de admin.";
+  }
+  const linhas = dadosConfidenciais.map(d => d.user + " | " + d.cpf + " | " + d.saldo);
+  return "⚠️ Session hijacking bem-sucedido!\\nDados confidenciais acessados:\\n" + linhas.join("\\n");
+}`,
+    python: `import base64
+import json
+
+def simular_session_hijacking(token_roubado, dados_confidenciais):
+    partes = token_roubado.split('.')
+    payload_b64 = partes[1]
+    faltam = (4 - len(payload_b64) % 4) % 4
+    payload_b64 += "=" * faltam
+    payload = json.loads(base64.b64decode(payload_b64).decode('utf-8'))
+
+    if payload["role"] != "admin":
+        return "Acesso negado: token não tem privilégios de admin."
+    linhas = [f"{d['user']} | {d['cpf']} | {d['saldo']}" for d in dados_confidenciais]
+    return "⚠️ Session hijacking bem-sucedido!\\nDados confidenciais acessados:\\n" + "\\n".join(linhas)`,
+  },
   explanation: `
 **ATAQUE COMPLETO!**
 
 **O que aconteceu:**
-1. Roubamos JWT via XSS
-2. Token tinha role="admin"
-3. Usamos para acessar endpoint /api/admin/usuarios
-4. Servidor validou token = acesso total!
+1. Decodificamos o JWT roubado via XSS
+2. Conferimos que o role era "admin" ANTES de fazer qualquer coisa com ele
+3. Só então "acessamos" o endpoint confidencial
 
 **Impacto real:**
-• Acesso a dados financeiros
-• CPFs, cartões, senhas
-• Controle total da conta
+• Acesso a dados financeiros, CPFs, saldos
+• Controle total da conta da vítima
 
 **Como empresas detectam:**
-• Monitorar IP changes
+• Monitorar mudanças de IP no meio de uma sessão
 • Device fingerprinting
-• Behavioral analysis (padrões de uso)
+• Análise comportamental (padrões de uso)
 
 **Caso real:**
-2020 - Zoom teve vulnerabilidade de session hijacking.
-Hackers roubavam tokens de reuniões.
+2020 - Zoom teve uma vulnerabilidade de session hijacking; hackers roubavam tokens de reuniões.
   `,
   hints: [
-    'Separe o JWT com .split(".") e pegue a parte [1] (payload)',
-    'Use atob() ou base64.b64decode() para decodificar o payload',
-    'O token pertence ao Admin - role="admin"',
-    'No final imprima: "⚠️ Session hijacking bem-sucedido!"',
+    'Reaproveite a lógica de decodificação da sala 9.1 (split, padding, atob/b64decode, JSON.parse)',
+    'payload.role !== "admin" (Python: payload["role"] != "admin") decide qual caminho seguir',
+    '.map(d => d.user + " | " + d.cpf + " | " + d.saldo).join("\\n") (Python: list comprehension + "\\n".join(...))',
   ],
-  difficulty: 'easy',
+  difficulty: 'medium',
 };
 
 const theory9_5: TheoryChallenge = {

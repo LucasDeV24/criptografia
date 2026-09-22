@@ -20,6 +20,10 @@ const jsWorkerSrc = fs.readFileSync(path.join(root, 'public/workers/js-worker.js
 function runJs(code, tests) {
   return new Promise((resolve) => {
     const sandbox = { structuredClone, console: { log() {} } };
+    // atob/btoa são globais de verdade em Workers de navegador (produção funciona sem isso);
+    // só precisam de polyfill aqui porque o teste roda numa VM do Node, não num navegador.
+    sandbox.atob = (b64) => Buffer.from(b64, 'base64').toString('latin1');
+    sandbox.btoa = (str) => Buffer.from(str, 'latin1').toString('base64');
     sandbox.self = { postMessage: resolve };
     vm.createContext(sandbox);
     vm.runInContext(jsWorkerSrc, sandbox);
