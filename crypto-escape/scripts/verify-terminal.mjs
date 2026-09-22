@@ -37,6 +37,7 @@ const byEpisode = {
   50: (await import(pathToFileURL(path.join(root, 'src/data/challenges/ep50-active-directory.ts')).href)).activeDirectoryChallenges,
   51: (await import(pathToFileURL(path.join(root, 'src/data/challenges/ep51-web-pentest-tools.ts')).href)).webPentestToolsChallenges,
   52: (await import(pathToFileURL(path.join(root, 'src/data/challenges/ep52-log-siem.ts')).href)).logSiemChallenges,
+  53: (await import(pathToFileURL(path.join(root, 'src/data/challenges/ep53-malware-analysis.ts')).href)).malwareAnalysisChallenges,
 };
 const terminalChallenges = COURSE_ORDER.filter((ep) => byEpisode[ep]).flatMap((ep) => byEpisode[ep]);
 

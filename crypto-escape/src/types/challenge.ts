@@ -77,6 +77,8 @@ export type LabId =
   | "term-web-pentest"
   | "term-siem-correlate"
   | "term-siem-timeline"
+  | "term-malware-triage"
+  | "term-malware-hunt"
   | "web-sqli"
   | "web-xss"
   | "web-idor";

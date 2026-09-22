@@ -51,6 +51,7 @@ import { networkingChallenges } from './ep49-networking';
 import { activeDirectoryChallenges } from './ep50-active-directory';
 import { webPentestToolsChallenges } from './ep51-web-pentest-tools';
 import { logSiemChallenges } from './ep52-log-siem';
+import { malwareAnalysisChallenges } from './ep53-malware-analysis';
 import { COURSE_ORDER } from '../course-order';
 import type { Challenge } from '@/types/challenge';
 
@@ -124,6 +125,8 @@ export const challengesByEpisode: Record<number, Challenge[]> = {
   51: webPentestToolsChallenges,
   // "Log e SIEM: investigação sob pressão" (cruzar múltiplos logs) — logo após Pentest Web
   52: logSiemChallenges,
+  // "Análise de Malware: perícia estática" (file, strings, sha256sum, hashcheck) — logo após SIEM
+  53: malwareAnalysisChallenges,
 };
 
 export function getChallenge(episode: number, room: string): Challenge | undefined {

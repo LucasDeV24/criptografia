@@ -1,7 +1,7 @@
 const STORAGE_KEY = 'crypto-escape-progress';
 
 // Total de salas em src/data/challenges (contagem de campos "room"). Atualize ao adicionar salas.
-export const TOTAL_ROOMS = 360;
+export const TOTAL_ROOMS = 368;
 
 export type ProgressSyncCallback = () => void;
 let progressSyncCallback: ProgressSyncCallback | null = null;

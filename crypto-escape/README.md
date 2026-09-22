@@ -9,9 +9,10 @@ Plataforma interativa para aprender **programação e cibersegurança** resolven
   fica em `src/data/course-order.ts`). Terminal simulado com tarefas conferidas pelo sistema: comandos de arquivo,
   processos (`ps`/`kill`) com laboratórios de **cronômetro real** de ataque e defesa, e rede (`ping`, `dig`, `curl`).
 - **Cibersegurança (episódios 8 a 45):** criptografia, vulnerabilidades web, blue team, OSINT, automação.
-- **Active Directory, Ferramentas de Pentest e SIEM (episódios 50-52):** domínio, grupos aninhados e escalonamento
-  de privilégio, `gobuster`/`sqlmap` automatizando reconhecimento e SQL Injection, e cruzamento de logs (web,
-  autenticação, firewall) sob pressão de tempo para reconstruir um incidente — encaixados após o Blue Team.
+- **Active Directory, Pentest Web, SIEM e Malware (episódios 50-53):** domínio, grupos aninhados e escalonamento
+  de privilégio, `gobuster`/`sqlmap` automatizando reconhecimento e SQL Injection, cruzamento de logs (web,
+  autenticação, firewall) sob pressão de tempo para reconstruir um incidente, e perícia estática de malware
+  (`file`/`strings`/`sha256sum`/`hashcheck`) sem executar nada — encaixados após o Blue Team.
 - **Modo Hacker (episódio 46):** terminal simulado e sites vulneráveis (SQL Injection, XSS, IDOR) com flags.
 - **Trilhas de carreira (`/trilhas`):** o que aprender e como entrar na área, marcando o que ainda é "em breve".
 

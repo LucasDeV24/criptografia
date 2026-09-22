@@ -15,6 +15,12 @@ export interface FileNode {
   mode?: number;
   /** Linhas que o "script" imprime quando executado (./arquivo) */
   run?: string[];
+  /** Tipo de arquivo "detectado" pelo comando file (ex.: "PE32 executable (console) Intel 80386, for MS Windows") */
+  fileType?: string;
+  /** Textos legíveis "embutidos" no arquivo, mostrados pelo comando strings (ex.: um domínio de C2) */
+  strings?: string[];
+  /** Hash sha256 declarado; se ausente, sha256sum calcula um hash determinístico a partir do conteúdo */
+  sha256?: string;
 }
 
 export interface DirNode {
@@ -116,6 +122,8 @@ export interface Scenario {
   dns?: Record<string, { type: "A" | "MX" | "TXT" | "NS" | "CNAME"; value: string; priority?: number }[]>;
   /** Texto de "whois" por domínio */
   whois?: Record<string, string[]>;
+  /** Base de inteligência de ameaças fictícia, por hash sha256 (comando hashcheck) */
+  threatIntel?: Record<string, { verdict: "malicioso" | "limpo"; name?: string; note?: string }>;
 }
 
 export interface Session {
@@ -187,6 +195,10 @@ export const COMMAND_HELP: Record<string, string> = {
   ssh: "conecta em outra máquina (ssh usuario@10.0.0.5)",
   exit: "sai da máquina remota",
   clear: "limpa a tela",
+  file: "identifica o tipo real de um arquivo (file fatura.pdf.exe)",
+  strings: "mostra os textos legíveis embutidos em um arquivo (strings arquivo.exe)",
+  sha256sum: "calcula o hash sha256 de um arquivo (sha256sum arquivo.exe)",
+  hashcheck: "consulta uma base de inteligência de ameaças por hash (hashcheck <hash>)",
 };
 
 export const file = (content: string, extra: Partial<Omit<FileNode, "type" | "content">> = {}): FileNode => ({
@@ -385,6 +397,26 @@ function globToRegex(glob: string): RegExp {
 }
 
 const splitLines = (content: string): string[] => (content === "" ? [] : content.replace(/\n$/, "").split("\n"));
+
+/** Hash determinístico (não é sha256 de verdade, mas tem a cara de um: 64 caracteres hexadecimais) */
+function fakeSha256(text: string): string {
+  let h1 = 0x811c9dc5;
+  let h2 = 0xdeadbeef ^ text.length;
+  for (let i = 0; i < text.length; i++) {
+    const c = text.charCodeAt(i);
+    h1 = Math.imul(h1 ^ c, 16777619) >>> 0;
+    h2 = Math.imul(h2 ^ c, 2654435761) >>> 0;
+  }
+  let out = "";
+  let a = h1;
+  let b = h2;
+  for (let i = 0; i < 8; i++) {
+    a = Math.imul(a ^ (a >>> 15), 2246822519) >>> 0;
+    b = Math.imul(b ^ (b >>> 13), 3266489917) >>> 0;
+    out += (a ^ b).toString(16).padStart(8, "0");
+  }
+  return out.slice(0, 64).padEnd(64, "0");
+}
 
 // ---------------------------------------------------------------- filtros (recebem linhas)
 
@@ -890,6 +922,50 @@ function runCommand(s: Scenario, st: TermState, line: string): ExecResult {
       const statusLine = `HTTP/1.1 ${route.status} ${route.statusText ?? (route.status === 200 ? "OK" : "")}`.trimEnd();
       const headerLines = Object.entries(route.headers ?? {}).map(([k, v]) => `${k}: ${v}`);
       return res(flags.has("i") ? [statusLine, ...headerLines, "", ...route.body.split("\n")] : route.body.split("\n"));
+    }
+
+    case "file": {
+      const target = args[0];
+      if (!target) return res(["uso: file <arquivo>"]);
+      const { node, denied } = read(target);
+      if (denied) return res([`file: ${target}: Permissão negada`]);
+      if (!node) return res([`file: ${target}: Arquivo ou diretório inexistente`]);
+      if (node.type === "dir") return res([`${target}: diretório`]);
+      return res([`${target}: ${node.fileType ?? "ASCII text"}`]);
+    }
+
+    case "strings": {
+      const target = args[0];
+      if (!target) return res(["uso: strings <arquivo>"]);
+      const { node, denied } = read(target);
+      if (denied) return res([`strings: ${target}: Permissão negada`]);
+      if (!node) return res([`strings: ${target}: Arquivo ou diretório inexistente`]);
+      if (node.type === "dir") return res([`strings: ${target}: É um diretório`]);
+      if (node.strings?.length) return res(node.strings);
+      return res(splitLines(node.content).filter((l) => l.trim().length >= 4));
+    }
+
+    case "sha256sum": {
+      const target = args[0];
+      if (!target) return res(["uso: sha256sum <arquivo>"]);
+      const { node, denied } = read(target);
+      if (denied) return res([`sha256sum: ${target}: Permissão negada`]);
+      if (!node) return res([`sha256sum: ${target}: Arquivo ou diretório inexistente`]);
+      if (node.type === "dir") return res([`sha256sum: ${target}: É um diretório`]);
+      const hash = node.sha256 ?? fakeSha256(node.content);
+      return res([`${hash}  ${target}`]);
+    }
+
+    case "hashcheck": {
+      const hash = args[0];
+      if (!hash) return res(["uso: hashcheck <hash>  (veja o hash com sha256sum)"]);
+      const intel = s.threatIntel?.[hash];
+      if (!intel) return res([`Nenhum resultado para ${hash} na base de inteligência de ameaças.`]);
+      return res([
+        `Hash:     ${hash}`,
+        `Veredito: ${intel.verdict === "malicioso" ? "MALICIOSO" : "limpo"}${intel.name ? ` (${intel.name})` : ""}`,
+        ...(intel.note ? [intel.note] : []),
+      ]);
     }
 
     case "net": {

@@ -37,6 +37,8 @@ export default function LabChallenge({
     case 'term-web-pentest':
     case 'term-siem-correlate':
     case 'term-siem-timeline':
+    case 'term-malware-triage':
+    case 'term-malware-hunt':
       return <TerminalLab scenario={SCENARIOS[challenge.labId]} onComplete={onComplete} />;
     case 'web-sqli':
       return <SqliLab onComplete={onComplete} />;
