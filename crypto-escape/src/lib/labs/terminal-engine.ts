@@ -42,6 +42,20 @@ export interface HttpRoute {
   statusText?: string;
   headers?: Record<string, string>;
   body: string;
+  /** Se true, o parâmetro desta rota é vulnerável a SQL Injection (sqlmap) */
+  sqlInjectable?: boolean;
+}
+
+/** Uma tabela de um banco fictício, para o comando sqlmap (--dump) */
+export interface DbTable {
+  name: string;
+  columns: string[];
+  rows: string[][];
+}
+
+export interface FakeDatabase {
+  name: string;
+  tables: DbTable[];
 }
 
 /** Um usuário de domínio (Active Directory), para o comando net */
@@ -71,6 +85,8 @@ export interface Machine {
   pingBlocked?: boolean;
   /** Domínio Active Directory que essa máquina enxerga (net user, net group) */
   ad?: { domain: string; users: AdUser[]; groups: AdGroup[] };
+  /** Bancos de dados fictícios expostos por rotas com sqlInjectable (sqlmap) */
+  databases?: FakeDatabase[];
 }
 
 /** Uma tarefa de um laboratório: some da lista de pendências quando `done` fica verdadeiro */
@@ -162,6 +178,8 @@ export const COMMAND_HELP: Record<string, string> = {
   whois: "mostra o registro de um domínio (whois exemplo.com)",
   curl: "faz uma requisição HTTP (curl http://10.0.0.9/, -i mostra os cabeçalhos)",
   net: 'consulta o domínio: net user, net user <nome>, net group, net group "<nome>"',
+  gobuster: "acha caminhos escondidos de um site (gobuster dir -u <url> -w <wordlist>)",
+  sqlmap: "automatiza SQL Injection (sqlmap -u <url> --dbs | -D <banco> --tables | -D <banco> -T <tabela> --dump)",
   whoami: "mostra seu usuário",
   id: "mostra seu usuário e grupos",
   hostname: "mostra o nome da máquina",
@@ -198,6 +216,17 @@ function resolveHost(s: Scenario, target: string): string | null {
   const records = s.dns?.[target];
   const a = records?.find((r) => r.type === "A");
   return a ? a.value : null;
+}
+
+/** Quebra uma URL em máquina de destino, caminho e query string (usado por curl, sqlmap, gobuster) */
+function resolveHttpTarget(s: Scenario, url: string): { target: Machine; path: string; query: string } | null {
+  const match = /^(?:https?:\/\/)?([^/]+)(\/[^?]*)?(?:\?(.*))?$/i.exec(url);
+  if (!match) return null;
+  const [, hostPart, pathPart = "/", query = ""] = match;
+  const ip = resolveHost(s, hostPart.split(":")[0]);
+  const target = ip ? s.machines.find((mm) => mm.ip === ip) : undefined;
+  if (!target) return null;
+  return { target, path: pathPart || "/", query };
 }
 
 export function initialState(s: Scenario): TermState {
@@ -890,6 +919,72 @@ function runCommand(s: Scenario, st: TermState, line: string): ExecResult {
       return res(['uso: net user | net user <nome> | net group | net group "<nome>"']);
     }
 
+    case "gobuster": {
+      if (args[0] !== "dir") return res(["uso: gobuster dir -u <url> -w <wordlist>"]);
+      const uIdx = args.indexOf("-u");
+      const url = uIdx >= 0 ? args[uIdx + 1] : undefined;
+      const wIdx = args.indexOf("-w");
+      if (!url || wIdx < 0 || !args[wIdx + 1]) return res(["uso: gobuster dir -u <url> -w <wordlist>"]);
+      const resolved = resolveHttpTarget(s, url);
+      if (!resolved) return res([`gobuster: não foi possível resolver o alvo: ${url}`]);
+      const paths = Object.keys(resolved.target.http ?? {}).filter((p) => p !== "/");
+      return res([
+        "Gobuster v3.6",
+        `[+] Url:            ${url}`,
+        `[+] Method:         GET`,
+        `[+] Wordlist:       ${args[wIdx + 1]}`,
+        "===============================================================",
+        ...paths.map((p) => `${p.padEnd(28)} (Status: ${resolved.target.http![p].status})`),
+        "===============================================================",
+        "Finalizado em " + paths.length + " resultado(s)",
+      ]);
+    }
+
+    case "sqlmap": {
+      const uIdx = args.indexOf("-u");
+      const url = uIdx >= 0 ? args[uIdx + 1] : undefined;
+      if (!url) return res(["uso: sqlmap -u <url> [--dbs | -D <banco> --tables | -D <banco> -T <tabela> --dump]"]);
+      const resolved = resolveHttpTarget(s, url);
+      if (!resolved) return res([`[CRITICAL] não foi possível conectar a ${url}`]);
+      const route = resolved.target.http?.[resolved.path];
+      if (!route || !route.sqlInjectable || !resolved.query) {
+        return res([
+          `sqlmap identificou 0 pontos de injeção em ${url}`,
+          "[CRITICAL] todos os parâmetros testados parecem não ser injetáveis",
+        ]);
+      }
+      const dIdx = args.indexOf("-D");
+      const dbName = dIdx >= 0 ? args[dIdx + 1] : undefined;
+      const tIdx = args.indexOf("-T");
+      const tableName = tIdx >= 0 ? args[tIdx + 1] : undefined;
+      const dbs = resolved.target.databases ?? [];
+
+      if (args.includes("--dbs")) {
+        return res([
+          `parâmetro injetável confirmado em ${url}`,
+          `banco de dados disponíveis [${dbs.length}]:`,
+          ...dbs.map((d) => `[*] ${d.name}`),
+        ]);
+      }
+      if (args.includes("--tables")) {
+        const db = dbs.find((d) => d.name === dbName);
+        if (!db) return res([`[CRITICAL] banco "${dbName}" não encontrado (use --dbs para listar)`]);
+        return res([`Banco: ${db.name}`, `[${db.tables.length} tabelas]`, ...db.tables.map((t) => `| ${t.name} |`)]);
+      }
+      if (args.includes("--dump")) {
+        const db = dbs.find((d) => d.name === dbName);
+        const table = db?.tables.find((t) => t.name === tableName);
+        if (!table) return res([`[CRITICAL] tabela "${tableName}" não encontrada em "${dbName}" (use --tables para listar)`]);
+        return res([
+          `Banco: ${db!.name}  Tabela: ${table.name}`,
+          `[${table.rows.length} registros]`,
+          table.columns.join(" | "),
+          ...table.rows.map((r) => r.join(" | ")),
+        ]);
+      }
+      return res(["uso: sqlmap -u <url> [--dbs | -D <banco> --tables | -D <banco> -T <tabela> --dump]"]);
+    }
+
     case "nmap": {
       const ip = args.filter((a) => !a.startsWith("-"))[0];
       if (!ip) return res(["uso: nmap <ip>  (ex.: nmap 10.0.0.5)"]);
@@ -966,7 +1061,7 @@ function handlePassword(s: Scenario, st: TermState, password: string): ExecResul
   };
 }
 
-const ERROR_HINT = /(inexistente|Permissão negada|não encontrado|não foi encontrad[oa]|É um diretório|não foi possível|^uso:|\(use -\w\)|perigoso|não permitida|inválido|malformada|indisponível|Falha ao conectar|Conexão recusada|Nenhuma entrada encontrada|só grep, wc|Nenhum processo)/i;
+const ERROR_HINT = /(inexistente|Permissão negada|não encontrad[oa]|não foi encontrad[oa]|É um diretório|não foi possível|^uso:|\(use -\w\)|perigoso|não permitida|inválido|malformada|indisponível|Falha ao conectar|Conexão recusada|Nenhuma entrada encontrada|só grep, wc|Nenhum processo)/i;
 
 /** A saída parece uma mensagem de erro (no Linux real ela iria para a tela, não para o pipe) */
 export const looksLikeError = (lines: string[]): boolean => lines.length > 0 && lines.every((l) => ERROR_HINT.test(l));

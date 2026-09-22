@@ -74,8 +74,9 @@ const EPISODE_META = [
   { title: 'Terminal e Linux', desc: 'Comandos, arquivos, logs, pipes e permissões', icon: Terminal, color: 'var(--cyber-cyan)' },
   { title: 'Terminal: Ataque e Defesa', desc: 'Processos (ps/kill) e laboratórios cronometrados', icon: Zap, color: 'var(--error-red)' },
   { title: 'Redes', desc: 'ping, traceroute, DNS e HTTP no terminal', icon: Wifi, color: 'var(--cyber-cyan)' },
-  // Módulo 8: Active Directory (50), depois do Blue Team
+  // Módulo 8: Active Directory (50) e Ferramentas de Pentest (51), depois do Blue Team
   { title: 'Active Directory', desc: 'Domínios, grupos e escalonamento de privilégio', icon: Users, color: 'var(--error-red)' },
+  { title: 'Ferramentas de Pentest', desc: 'gobuster e sqlmap: automatizando ataques web', icon: Crosshair, color: 'var(--error-red)' },
 ];
 
 export default function EpisodesPage() {
@@ -188,9 +189,9 @@ export default function EpisodesPage() {
 
         <section className="mb-12">
           <h2 className="text-sm font-medium text-[var(--error-red)] uppercase tracking-wider mb-1">Módulo 8</h2>
-          <p className="text-lg text-[var(--ghost-white)] font-semibold mb-6">Active Directory</p>
+          <p className="text-lg text-[var(--ghost-white)] font-semibold mb-6">Active Directory e Ferramentas de Pentest</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {EPISODE_META.slice(50, 51).map((ep, idx) => (
+            {EPISODE_META.slice(50, 52).map((ep, idx) => (
               <EpisodeCard key={idx + 50} ep={ep} idx={idx + 50} completedRooms={completedRooms} />
             ))}
           </div>

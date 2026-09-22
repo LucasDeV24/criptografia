@@ -96,7 +96,7 @@ e em Python, ele confere que: (1) a `solution` passa em todos os testes; (2) o `
 (3) há `solution`, `explanation`, `hints` e testes ocultos (quando a função recebe argumentos); (4) uma resposta
 fixa não passa em todos os testes. Ele usa os mesmos workers do site, então o resultado é fiel.
 
-## 7. Módulos de terminal (episódios 47, 48, 49 e 50)
+## 7. Módulos de terminal (episódios 47, 48, 49, 50 e 51)
 
 - **Separados da programação:** as salas têm só terminal (nada de editor de código) e as de programação não têm terminal. Isso evita misturar dois modos de pensar.
 - **Ordem do curso:** fica em `src/data/course-order.ts`. Hoje: programação 0-7 → terminal 47, 48, 49 → Cibersegurança 8-19 → ... → Blue Team 33-36 → Active Directory 50 → OSINT 37 em diante. As chaves dos episódios não mudam; só a navegação. Ao inserir um módulo no meio da lista, os rótulos "Módulo N" da página `/episodes` (só os `<h2>`, não a lógica) precisam ser renumerados manualmente.
@@ -109,7 +109,8 @@ fixa não passa em todos os testes. Ele usa os mesmos workers do site, então o 
 - **Cronômetro real** (episódio 48): `Scenario.timeLimitSeconds` + `timeoutMessage`. É só da interface (`TerminalLab.tsx`, baseada em `Date.now()`); o motor não tem noção de tempo.
 - **Rede** (episódio 49): `Scenario.dns` (zona fictícia: domínio → registros A/MX/TXT/NS) e `Scenario.whois`; `Machine.http` (rotas por caminho, para `curl`) e `Machine.pingBlocked` (a máquina existe mas não responde a `ping`/`traceroute` — ensina que "não respondeu" não é prova de "está desligado").
 - **Active Directory** (episódio 50): `Machine.ad` = `{ domain, users, groups }`. `net user`/`net user <nome>`/`net group`/`net group "<nome>"` consultam esses dados. O mesmo objeto `ad` pode ser reaproveitado em várias máquinas do cenário (representa um único diretório compartilhado pelo domínio).
-- Rode `npm run verify:terminal` depois de mexer em qualquer um dos quatro módulos.
+- **Ferramentas de pentest** (episódio 51): `gobuster dir -u <url> -w <wordlist>` lista as chaves de `Machine.http` (exceto `/`) — simula descoberta de conteúdo. `sqlmap -u <url> [--dbs | -D <banco> --tables | -D <banco> -T <tabela> --dump]` exige que a `HttpRoute` da URL tenha `sqlInjectable: true` **e** que a URL tenha uma query string; os dados ficam em `Machine.databases`.
+- Rode `npm run verify:terminal` depois de mexer em qualquer um dos módulos de terminal.
 
 ## 8. Estado atual e próximos passos
 
@@ -123,16 +124,24 @@ fixa não passa em todos os testes. Ele usa os mesmos workers do site, então o 
 - Módulo Redes (episódio 49): ping, traceroute, dig, whois, curl — 3 laboratórios (conectividade, DNS, HTTP).
 - Módulo Active Directory (episódio 50): domínio, usuários, grupos aninhados — 2 laboratórios (enumeração e
   escalonamento de privilégio por herança de grupo).
+- Módulo Ferramentas de Pentest (episódio 51): gobuster, sqlmap — 3 laboratórios (descoberta, SQLi
+  automatizado, e um capstone cronometrado combinando os dois).
 - Modo Hacker: 5 laboratórios simulados (terminal, SQLi, XSS, IDOR) + teoria.
 - Página de trilhas de carreira (`/trilhas`) e abas "Mundo Real"/"Ferramentas" por episódio.
 - Ranking sem exposição de dados pessoais (migração `supabase/migrations/002_privacidade_ranking.sql`).
 
+**Decisão de rumo:** os episódios 0-7 (programação) têm 111 salas contra 61 de terminal (47-51). O usuário apontou
+esse desequilíbrio — várias salas de programação são exercícios genéricos (matemática, sem tema de segurança). Não
+remover as existentes (quebraria progresso salvo e o on-ramp para quem nunca programou), mas **não crescer mais a
+trilha de programação por ora**: todo trabalho novo vai para terminal/segurança até esse equilíbrio melhorar.
+
 **Próximos (por prioridade)**
-1. Migrar os episódios 20 a 45 (lógica, web, cripto, blue team, OSINT, automação) para testes de função.
+1. Mais módulos de terminal/segurança (o pedido explícito é "vários", com ataque e defesa cronometrados):
+   candidatos avaliados — Log/SIEM sob pressão (Blue Team), Análise estática de malware (defensivo, strings/hash),
+   Cloud (CLI fictícia estilo AWS), Firewall ao vivo (estender o "contain" do ep. 48 com um comando de bloqueio).
+2. Migrar os episódios 20 a 45 (lógica, web, cripto, blue team, OSINT, automação) para testes de função.
    Os episódios 8 a 19 (Cibersegurança) também ainda validam só a saída.
-2. Novas trilhas do desenvolvedor: HTML/CSS/DOM, HTTP e APIs, SQL, Git/GitHub, testes.
-3. Mais laboratórios: escalada de privilégios no Linux, JWT, command injection, quebra de hash, análise de tráfego.
-4. Mini-projetos de portfólio com testes (ex.: verificador de senhas, scanner de portas).
+3. Mini-projetos de portfólio com testes (ex.: verificador de senhas, scanner de portas).
 5. Revisão do conteúdo por um profissional de segurança (fatos, fontes, exemplos reais).
 6. Ranking com integridade no servidor (hoje o cliente grava o próprio progresso).
 

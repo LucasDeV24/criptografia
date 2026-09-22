@@ -72,6 +72,9 @@ export type LabId =
   | "term-net-http"
   | "term-ad-enum"
   | "term-ad-escalate"
+  | "term-web-gobuster"
+  | "term-web-sqlmap"
+  | "term-web-pentest"
   | "web-sqli"
   | "web-xss"
   | "web-idor";

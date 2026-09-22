@@ -4,6 +4,7 @@ import { TERMINAL_MODULE_SCENARIOS } from "./terminal-module-scenarios";
 import { TERMINAL_PRESSURE_SCENARIOS } from "./terminal-pressure-scenarios";
 import { TERMINAL_NETWORKING_SCENARIOS } from "./terminal-networking-scenarios";
 import { TERMINAL_AD_SCENARIOS } from "./terminal-ad-scenarios";
+import { TERMINAL_PENTEST_SCENARIOS } from "./terminal-pentest-scenarios";
 
 /** Laboratório 1: primeiros passos no terminal (arquivos ocultos) */
 const RECON_FLAG = "FLAG{ls_a_revela_o_que_esta_escondido}";
@@ -155,4 +156,5 @@ export const SCENARIOS: Record<string, Scenario> = {
   ...TERMINAL_PRESSURE_SCENARIOS,
   ...TERMINAL_NETWORKING_SCENARIOS,
   ...TERMINAL_AD_SCENARIOS,
+  ...TERMINAL_PENTEST_SCENARIOS,
 };

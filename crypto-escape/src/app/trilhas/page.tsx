@@ -40,6 +40,7 @@ const SEC_TRACK: Stage[] = [
   { title: 'OSINT, dados ocultos e engenharia social', learn: 'Google dorks, metadados, esteganografia, phishing e como as pessoas são o elo mais fraco.', episodes: [17, 37, 38, 39] },
   { title: 'Relatórios e missão final', learn: 'Documentar achados, medir risco e conduzir um pentest do início ao fim.', episodes: [43, 44, 45] },
   { title: 'Active Directory', learn: 'Domínios, usuários, grupos e por que grupos aninhados escondem privilégios de administrador sem ninguém perceber. Um dos alvos mais comuns em pentest corporativo.', episodes: [50] },
+  { title: 'Ferramentas de Pentest', learn: 'gobuster (descoberta de conteúdo) e sqlmap (SQL Injection automatizado): as mesmas ferramentas usadas no Kali Linux, automatizando o que você já fez na mão.', episodes: [51] },
   { title: 'Linux avançado e escalada de privilégios', learn: 'Serviços, sudo, processos e como um atacante sobe de nível numa máquina (depois do módulo Terminal e Linux, que já cobre o básico).', episodes: [] },
   { title: 'Forense e análise de malware', learn: 'Investigar evidências, memória, arquivos e comportamento de programas suspeitos.', episodes: [] },
   { title: 'Segurança em nuvem e DevSecOps', learn: 'Configurações seguras em cloud, contêineres e segurança no pipeline.', episodes: [] },

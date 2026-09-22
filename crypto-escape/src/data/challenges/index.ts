@@ -49,6 +49,7 @@ import { terminalChallenges } from './ep47-terminal';
 import { terminalPressureChallenges } from './ep48-terminal-pressure';
 import { networkingChallenges } from './ep49-networking';
 import { activeDirectoryChallenges } from './ep50-active-directory';
+import { webPentestToolsChallenges } from './ep51-web-pentest-tools';
 import { COURSE_ORDER } from '../course-order';
 import type { Challenge } from '@/types/challenge';
 
@@ -118,6 +119,8 @@ export const challengesByEpisode: Record<number, Challenge[]> = {
   49: networkingChallenges,
   // "Active Directory: fundamentos" (net user/group) — depois do Blue Team (33-36)
   50: activeDirectoryChallenges,
+  // "Exploração Web: Ferramentas de Pentest" (gobuster, sqlmap) — logo após o AD
+  51: webPentestToolsChallenges,
 };
 
 export function getChallenge(episode: number, room: string): Challenge | undefined {

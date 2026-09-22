@@ -32,6 +32,9 @@ export default function LabChallenge({
     case 'term-net-http':
     case 'term-ad-enum':
     case 'term-ad-escalate':
+    case 'term-web-gobuster':
+    case 'term-web-sqlmap':
+    case 'term-web-pentest':
       return <TerminalLab scenario={SCENARIOS[challenge.labId]} onComplete={onComplete} />;
     case 'web-sqli':
       return <SqliLab onComplete={onComplete} />;
