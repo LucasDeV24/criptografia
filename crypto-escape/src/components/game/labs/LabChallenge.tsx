@@ -23,6 +23,10 @@ export default function LabChallenge({
     case 'term-search':
     case 'term-pipes':
     case 'term-perm':
+    case 'term-ps-kill':
+    case 'term-contain':
+    case 'term-twohop':
+    case 'term-two-threats':
       return <TerminalLab scenario={SCENARIOS[challenge.labId]} onComplete={onComplete} />;
     case 'web-sqli':
       return <SqliLab onComplete={onComplete} />;

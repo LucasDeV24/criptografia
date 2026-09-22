@@ -46,6 +46,7 @@ import { pentestFinalChallenges } from './ep44-pentest-final';
 import { certificationChallenges } from './ep45-certification';
 import { labChallenges } from './ep46-labs';
 import { terminalChallenges } from './ep47-terminal';
+import { terminalPressureChallenges } from './ep48-terminal-pressure';
 import { COURSE_ORDER } from '../course-order';
 import type { Challenge } from '@/types/challenge';
 
@@ -109,6 +110,8 @@ export const challengesByEpisode: Record<number, Challenge[]> = {
   46: labChallenges,
   // Módulo "Terminal e Linux": vem depois da programação (ver COURSE_ORDER)
   47: terminalChallenges,
+  // Continuação: "Terminal: Ataque e Defesa" (ps/kill, laboratórios cronometrados)
+  48: terminalPressureChallenges,
 };
 
 export function getChallenge(episode: number, room: string): Challenge | undefined {

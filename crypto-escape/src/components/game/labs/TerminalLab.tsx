@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { CheckCircle2, Circle, Flag, RotateCcw } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Circle, Clock, Flag, RotateCcw } from 'lucide-react';
 import { COMMAND_HELP, execute, initialState, promptOf, tasksDone } from '@/lib/labs/terminal-engine';
 import type { Scenario } from '@/lib/labs/terminal-engine';
 
@@ -9,6 +9,11 @@ type Line = { kind: 'cmd' | 'out'; prompt?: string; text: string };
 
 const welcomeLines = (scenario: Scenario): Line[] =>
   scenario.welcome.map((text) => ({ kind: 'out', text }));
+
+const formatTime = (totalSeconds: number): string => {
+  const s = Math.max(0, totalSeconds);
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+};
 
 export default function TerminalLab({
   scenario,
@@ -26,10 +31,31 @@ export default function TerminalLab({
   const inputRef = useRef<HTMLInputElement>(null);
   const screenRef = useRef<HTMLDivElement>(null);
 
+  // Cronômetro (só existe se o laboratório definir timeLimitSeconds)
+  const hasTimer = scenario.timeLimitSeconds !== undefined;
+  const deadlineRef = useRef(0);
+  const [remaining, setRemaining] = useState(scenario.timeLimitSeconds ?? 0);
+  // "Falhou" é derivado (não é estado próprio): fica true assim que o tempo chega a 0 sem ter concluído
+  const failed = hasTimer && remaining <= 0 && !done;
+
+  // Define o horário-limite fora do render (Date.now() não pode ser chamado durante o render)
+  useEffect(() => {
+    if (hasTimer) deadlineRef.current = Date.now() + (scenario.timeLimitSeconds ?? 0) * 1000;
+  }, [hasTimer, scenario.timeLimitSeconds]);
+
   useEffect(() => {
     const el = screenRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, [lines]);
+
+  // Recalcula o tempo restante a partir de um horário-limite real (evita atrasos do setInterval)
+  useEffect(() => {
+    if (!hasTimer) return;
+    const id = setInterval(() => {
+      setRemaining(Math.max(0, Math.ceil((deadlineRef.current - Date.now()) / 1000)));
+    }, 250);
+    return () => clearInterval(id);
+  }, [hasTimer]);
 
   const masked = state.pending !== null;
   const tasks = scenario.tasks ?? [];
@@ -38,6 +64,7 @@ export default function TerminalLab({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (failed) return;
     const raw = input;
     const echo: Line = { kind: 'cmd', prompt: promptOf(scenario, state), text: masked ? '' : raw };
     if (!masked && raw.trim()) setHistory((h) => [...h, raw]);
@@ -85,6 +112,11 @@ export default function TerminalLab({
     setLines(welcomeLines(scenario));
     setInput('');
     setHistoryIdx(-1);
+    setDone(false);
+    if (hasTimer) {
+      deadlineRef.current = Date.now() + (scenario.timeLimitSeconds ?? 0) * 1000;
+      setRemaining(scenario.timeLimitSeconds ?? 0);
+    }
     inputRef.current?.focus();
   };
 
@@ -92,6 +124,11 @@ export default function TerminalLab({
     <div className="lab lab-terminal-wrap">
       <div className="lab-toolbar">
         <span className="lab-badge">SIMULADO · nada aqui sai do seu navegador</span>
+        {hasTimer && !done && !failed && (
+          <span className={`lab-timer ${remaining <= 30 ? 'lab-timer-urgent' : ''}`} role="timer" aria-live="off">
+            <Clock className="icon" /> {formatTime(remaining)}
+          </span>
+        )}
         <button type="button" className="lab-btn" onClick={reset}>
           <RotateCcw className="icon" /> Reiniciar
         </button>
@@ -131,23 +168,35 @@ export default function TerminalLab({
           </div>
         ))}
 
-        <form className="lab-input-row" onSubmit={handleSubmit}>
-          <span className="lab-prompt">{promptOf(scenario, state)}</span>
-          <input
-            ref={inputRef}
-            className="lab-input"
-            type={masked ? 'password' : 'text'}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            autoComplete="off"
-            autoCapitalize="off"
-            autoCorrect="off"
-            spellCheck={false}
-            aria-label="Digite um comando"
-          />
-        </form>
+        {!failed && (
+          <form className="lab-input-row" onSubmit={handleSubmit}>
+            <span className="lab-prompt">{promptOf(scenario, state)}</span>
+            <input
+              ref={inputRef}
+              className="lab-input"
+              type={masked ? 'password' : 'text'}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              autoComplete="off"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
+              aria-label="Digite um comando"
+            />
+          </form>
+        )}
       </div>
+
+      {failed && (
+        <div className="lab-fail" role="alert">
+          <AlertTriangle className="icon" />
+          <div>
+            <strong>Tempo esgotado!</strong>
+            <p>{scenario.timeoutMessage ?? 'Você não concluiu a tempo. Clique em Reiniciar para tentar de novo.'}</p>
+          </div>
+        </div>
+      )}
 
       {done && (
         <div className="lab-success" role="status">

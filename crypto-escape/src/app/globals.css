@@ -1339,3 +1339,27 @@ body::before {
 .lab-tasks li .icon { width: 1rem; height: 1rem; margin-top: 0.15rem; flex-shrink: 0; }
 .lab-tasks li.lab-task-done { color: var(--matrix-green); }
 .lab-tasks li.lab-task-done span { text-decoration: line-through; opacity: 0.85; }
+
+/* Cronômetro e falha por tempo esgotado (laboratórios de terminal) */
+.lab-timer {
+  display: inline-flex; align-items: center; gap: 0.35rem; font-variant-numeric: tabular-nums;
+  font-family: ui-monospace, monospace; font-size: 0.85rem; font-weight: 600; color: var(--cyber-cyan);
+  border: 1px solid rgba(0, 212, 255, 0.35); background: rgba(0, 212, 255, 0.08);
+  padding: 0.25rem 0.65rem; border-radius: 999px;
+}
+.lab-timer .icon { width: 0.9rem; height: 0.9rem; }
+.lab-timer-urgent {
+  color: var(--error-red); border-color: rgba(255, 51, 102, 0.45); background: rgba(255, 51, 102, 0.1);
+  animation: lab-timer-pulse 1s ease-in-out infinite;
+}
+@keyframes lab-timer-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+.lab-fail {
+  display: flex; align-items: center; gap: 0.9rem; padding: 1rem 1.2rem; border-radius: 10px;
+  border: 1px solid var(--error-red); background: rgba(255, 51, 102, 0.08); color: var(--ghost-white);
+}
+.lab-fail strong { color: var(--error-red); }
+.lab-fail p { margin: 0.3rem 0 0; color: var(--muted-gray); font-size: 0.9rem; }
+.lab-fail .icon { width: 1.6rem; height: 1.6rem; flex-shrink: 0; color: var(--error-red); }

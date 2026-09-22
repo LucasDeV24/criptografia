@@ -28,12 +28,22 @@ export interface DirNode {
 
 export type FsNode = FileNode | DirNode;
 
+export interface Process {
+  pid: number;
+  user: string;
+  cmd: string;
+  /** Se existir, matar este processo mostra este aviso extra (ex.: era um serviço legítimo) */
+  warnOnKill?: string;
+}
+
 export interface Machine {
   hostname: string;
   ip: string;
   fs: DirNode;
   users: Record<string, { home: string; password?: string }>;
   ports: { port: number; service: string }[];
+  /** Processos "rodando" na máquina (ps, kill) */
+  processes?: Process[];
 }
 
 /** Uma tarefa de um laboratório: some da lista de pendências quando `done` fica verdadeiro */
@@ -55,6 +65,10 @@ export interface Scenario {
   tasks?: Task[];
   /** Sequência de comandos que resolve o laboratório (usada pelo verificador) */
   solution?: string[];
+  /** Se existir, um cronômetro real (em segundos) aparece; ao chegar a 0 sem concluir, o laboratório "falha" */
+  timeLimitSeconds?: number;
+  /** Mensagem mostrada quando o tempo acaba */
+  timeoutMessage?: string;
 }
 
 export interface Session {
@@ -70,6 +84,8 @@ export interface TermState extends Session {
   pending: { ip: string; user: string } | null;
   /** Sistema de arquivos atual de cada máquina (editável) */
   files: Record<string, DirNode>;
+  /** Processos rodando em cada máquina (editável: ps, kill) */
+  processes: Record<string, Process[]>;
   /** Comandos digitados (tentativas, funcionando ou não) */
   history: string[];
   /** Só os comandos que funcionaram (sem erro): é o que conta para as tarefas */
@@ -107,6 +123,8 @@ export const COMMAND_HELP: Record<string, string> = {
   uniq: "junta linhas repetidas vizinhas (-c conta quantas)",
   cut: "recorta colunas (cut -d ' ' -f 4 arquivo)",
   chmod: "muda permissões (chmod +x arquivo, chmod 644 arquivo)",
+  ps: "lista os processos rodando (ps ou ps aux)",
+  kill: "encerra um processo pelo PID (kill 1337)",
   whoami: "mostra seu usuário",
   id: "mostra seu usuário e grupos",
   hostname: "mostra o nome da máquina",
@@ -138,7 +156,11 @@ function machineOf(s: Scenario, ip: string): Machine {
 export function initialState(s: Scenario): TermState {
   const m = machineOf(s, s.start.ip);
   const files: Record<string, DirNode> = {};
-  for (const machine of s.machines) files[machine.ip] = structuredClone(machine.fs);
+  const processes: Record<string, Process[]> = {};
+  for (const machine of s.machines) {
+    files[machine.ip] = structuredClone(machine.fs);
+    processes[machine.ip] = structuredClone(machine.processes ?? []);
+  }
   const cwd = m.users[s.start.user].home;
   return {
     ip: m.ip,
@@ -147,6 +169,7 @@ export function initialState(s: Scenario): TermState {
     stack: [],
     pending: null,
     files,
+    processes,
     history: [],
     okHistory: [],
     visited: [cwd],
@@ -675,6 +698,26 @@ function runCommand(s: Scenario, st: TermState, line: string): ExecResult {
       return res(out, withFs(st, root));
     }
 
+    case "ps": {
+      const procs = [...(st.processes[st.ip] ?? [])].sort((a, b) => a.pid - b.pid);
+      return res([
+        "USER       PID COMMAND",
+        ...procs.map((p) => `${p.user.padEnd(10)} ${String(p.pid).padStart(3)} ${p.cmd}`),
+      ]);
+    }
+
+    case "kill": {
+      const pidArg = args.find((a) => !a.startsWith("-"));
+      const pid = pidArg ? parseInt(pidArg, 10) : NaN;
+      if (!pidArg || Number.isNaN(pid)) return res(["uso: kill <pid>  (veja o PID com ps)"]);
+      const procs = st.processes[st.ip] ?? [];
+      const proc = procs.find((p) => p.pid === pid);
+      if (!proc) return res([`kill: (${pid}): Nenhum processo com esse PID`]);
+      if (st.user !== "root" && proc.user !== st.user) return res([`kill: (${pid}): Operação não permitida`]);
+      const next = { ...st, processes: { ...st.processes, [st.ip]: procs.filter((p) => p.pid !== pid) } };
+      return res(proc.warnOnKill ? [proc.warnOnKill] : [], next);
+    }
+
     case "nmap": {
       const ip = args.filter((a) => !a.startsWith("-"))[0];
       if (!ip) return res(["uso: nmap <ip>  (ex.: nmap 10.0.0.5)"]);
@@ -751,7 +794,7 @@ function handlePassword(s: Scenario, st: TermState, password: string): ExecResul
   };
 }
 
-const ERROR_HINT = /(inexistente|Permissão negada|não encontrado|É um diretório|não foi possível|^uso:|(use -w)|perigoso|não permitida|inválido|só grep, wc)/i;
+const ERROR_HINT = /(inexistente|Permissão negada|não encontrado|É um diretório|não foi possível|^uso:|\(use -\w\)|perigoso|não permitida|inválido|só grep, wc|Nenhum processo)/i;
 
 /** A saída parece uma mensagem de erro (no Linux real ela iria para a tela, não para o pipe) */
 export const looksLikeError = (lines: string[]): boolean => lines.length > 0 && lines.every((l) => ERROR_HINT.test(l));
@@ -818,22 +861,27 @@ function executeLine(s: Scenario, st: TermState, raw: string): ExecResult {
 
 // ---------------------------------------------------------------- consultas para as tarefas
 
-/** Lê o conteúdo de um arquivo na máquina atual (ou undefined) */
-export function readFile(st: TermState, path: string): string | undefined {
+/** Lê o conteúdo de um arquivo em qualquer máquina do cenário (padrão: a máquina atual) */
+export function readFile(st: TermState, path: string, ip: string = st.ip): string | undefined {
   const parts = normalize(path, "/", "/");
-  const { node } = lookup(st.files[st.ip], parts, "root");
+  const { node } = lookup(st.files[ip], parts, "root");
   return node && node.type === "file" ? node.content : undefined;
 }
 
-export function pathExists(st: TermState, path: string): "file" | "dir" | null {
-  const { node } = lookup(st.files[st.ip], normalize(path, "/", "/"), "root");
+export function pathExists(st: TermState, path: string, ip: string = st.ip): "file" | "dir" | null {
+  const { node } = lookup(st.files[ip], normalize(path, "/", "/"), "root");
   return node ? node.type : null;
 }
 
 /** Permissões (octal) de um arquivo ou pasta */
-export function modeOf(st: TermState, path: string): number | undefined {
-  const { node } = lookup(st.files[st.ip], normalize(path, "/", "/"), "root");
+export function modeOf(st: TermState, path: string, ip: string = st.ip): number | undefined {
+  const { node } = lookup(st.files[ip], normalize(path, "/", "/"), "root");
   return node ? (node.mode ?? (node.type === "dir" ? 0o755 : 0o644)) : undefined;
+}
+
+/** O processo com esse PID ainda está rodando nessa máquina? */
+export function processExists(st: TermState, pid: number, ip: string = st.ip): boolean {
+  return (st.processes[ip] ?? []).some((p) => p.pid === pid);
 }
 
 /** Algum comando que FUNCIONOU combina com a expressão? */

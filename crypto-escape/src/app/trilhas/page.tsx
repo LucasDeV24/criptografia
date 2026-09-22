@@ -16,7 +16,7 @@ type Stage = {
 
 const DEV_TRACK: Stage[] = [
   { title: 'Lógica de programação', learn: 'Variáveis, condições, funções, repetição, listas, textos e objetos. Você escreve funções que são testadas com casos de borda ocultos.', episodes: [0, 1, 2, 3, 4, 5, 6, 7] },
-  { title: 'Terminal e linha de comando', learn: 'Navegar, ler e organizar arquivos, buscar texto, combinar comandos com pipes e entender permissões. É onde o dev roda e investiga tudo.', episodes: [47] },
+  { title: 'Terminal e linha de comando', learn: 'Navegar, ler e organizar arquivos, buscar texto, combinar comandos com pipes, permissões, processos (ps/kill) e laboratórios cronometrados. É onde o dev roda e investiga tudo.', episodes: [47, 48] },
   { title: 'Algoritmos e estruturas', learn: 'Operadores lógicos, while, busca e ordenação, e como medir se uma solução é boa.', episodes: [20, 21, 22, 23] },
   { title: 'Código seguro', learn: 'Validar e sanitizar entradas, cabeçalhos de segurança, e não confiar no que vem do usuário.', episodes: [27, 28] },
   { title: 'Automação e regex', learn: 'Expressões regulares, scanners e scripts que automatizam tarefas.', episodes: [40, 41, 42] },
@@ -29,7 +29,7 @@ const DEV_TRACK: Stage[] = [
 ];
 
 const SEC_TRACK: Stage[] = [
-  { title: 'Terminal e Linux (base)', learn: 'Pré-requisito da segurança: pwd, ls, cd, cat, grep, find, pipes e permissões. Todo ataque e toda defesa passam por aqui.', episodes: [47] },
+  { title: 'Terminal e Linux (base)', learn: 'Pré-requisito da segurança: pwd, ls, cd, cat, grep, find, pipes, permissões, processos (ps/kill) e laboratórios cronometrados de ataque e defesa. Todo incidente real passa por aqui.', episodes: [47, 48] },
   { title: 'Fundamentos de segurança', learn: 'Criptografia clássica, hash e senhas, Base64 e o básico de força bruta.', episodes: [8, 9, 10, 14] },
   { title: 'Vulnerabilidades web (OWASP)', learn: 'XSS, SQL Injection, CSRF, injeção de comandos, directory traversal, IDOR e JWT.', episodes: [11, 12, 15, 16, 24, 25, 26] },
   { title: 'Modo Hacker: prática no terminal e em sites', learn: 'Terminal, nmap, ssh e laboratórios de SQLi, XSS e IDOR com flags.', episodes: [46] },

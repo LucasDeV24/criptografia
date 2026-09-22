@@ -72,6 +72,7 @@ const EPISODE_META = [
   { title: 'Modo Hacker', desc: 'Terminal e sites vulneráveis simulados', icon: Terminal, color: 'var(--matrix-green)' },
   // Módulo 2: Terminal e Linux (47), vem depois da programação
   { title: 'Terminal e Linux', desc: 'Comandos, arquivos, logs, pipes e permissões', icon: Terminal, color: 'var(--cyber-cyan)' },
+  { title: 'Terminal: Ataque e Defesa', desc: 'Processos (ps/kill) e laboratórios cronometrados', icon: Zap, color: 'var(--error-red)' },
 ];
 
 export default function EpisodesPage() {
@@ -126,7 +127,7 @@ export default function EpisodesPage() {
             Separado da programação: aqui você só usa o terminal. Recomendado antes da Cibersegurança e liberado desde o início.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {EPISODE_META.slice(47, 48).map((ep, idx) => (
+            {EPISODE_META.slice(47, 49).map((ep, idx) => (
               <EpisodeCard key={idx + 47} ep={ep} idx={idx + 47} completedRooms={completedRooms} />
             ))}
           </div>

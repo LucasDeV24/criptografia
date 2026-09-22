@@ -1,10 +1,11 @@
 /**
- * Verifica o módulo "Terminal e Linux" (rode: npm run verify:terminal).
- *  1) Para cada laboratório com tarefas: nenhuma tarefa pode vir cumprida, e a `solution`
- *     precisa cumprir TODAS.
+ * Verifica os módulos de terminal ("Terminal e Linux" + "Terminal: Ataque e Defesa";
+ * rode: npm run verify:terminal).
+ *  1) Para cada laboratório: nenhuma tarefa (ou a flag) pode vir cumprida, e a `solution`
+ *     precisa cumprir TODAS as tarefas (ou revelar a flag, em labs só de flag).
  *  2) Cada comando e opção usados na solução precisam ter sido ensinados em uma sala de
- *     teoria ANTERIOR do módulo (aparecem como código na teoria).
- *  3) Testes do motor: pipes, redirecionamento, permissões, cópia/movimentação.
+ *     teoria ANTERIOR (contando as duas salas de terminal juntas, na ordem do curso).
+ *  3) Testes do motor: pipes, redirecionamento, permissões, cópia/movimentação, processos.
  */
 import fs from 'node:fs';
 import os from 'node:os';
@@ -24,7 +25,16 @@ fs.writeFileSync(path.join(tmp, 'package.json'), '{"type":"module"}');
 const load = (f) => import(pathToFileURL(path.join(tmp, f)).href);
 const engine = await load('terminal-engine.ts');
 const { SCENARIOS } = await load('terminal-scenarios.ts');
-const { terminalChallenges } = await import(pathToFileURL(path.join(root, 'src/data/challenges/ep47-terminal.ts')).href);
+
+// Os módulos de terminal, na ordem em que o aluno os percorre (ver src/data/course-order.ts).
+// Importa os arquivos de conteúdo diretamente (não via index.ts: seus imports relativos sem
+// extensão não resolvem no carregador nativo de TypeScript do Node).
+const { COURSE_ORDER } = await import(pathToFileURL(path.join(root, 'src/data/course-order.ts')).href);
+const byEpisode = {
+  47: (await import(pathToFileURL(path.join(root, 'src/data/challenges/ep47-terminal.ts')).href)).terminalChallenges,
+  48: (await import(pathToFileURL(path.join(root, 'src/data/challenges/ep48-terminal-pressure.ts')).href)).terminalPressureChallenges,
+};
+const terminalChallenges = COURSE_ORDER.filter((ep) => byEpisode[ep]).flatMap((ep) => byEpisode[ep]);
 
 let problems = 0;
 const fail = (msg) => {
@@ -50,24 +60,30 @@ terminalChallenges.forEach((c, index) => {
   labs++;
   const scn = SCENARIOS[c.labId];
   if (!scn) return fail(`[${c.id}] cenário ${c.labId} não existe`);
-  if (!scn.tasks?.length) return fail(`[${c.id}] sem tarefas`);
+  if (!scn.tasks?.length && !scn.flag) return fail(`[${c.id}] sem tarefas nem flag`);
   if (!scn.solution?.length) return fail(`[${c.id}] sem solution`);
   if (!c.hints?.length || !c.explanation) fail(`[${c.id}] faltam dicas ou explicação`);
 
-  const start = engine.initialState(scn);
-  scn.tasks.forEach((t) => {
-    if (t.done(start)) fail(`[${c.id}] a tarefa já vem cumprida: "${t.label}"`);
-  });
+  if (scn.tasks?.length) {
+    const start = engine.initialState(scn);
+    scn.tasks.forEach((t) => {
+      if (t.done(start)) fail(`[${c.id}] a tarefa já vem cumprida: "${t.label}"`);
+    });
+  }
 
   const { st, outputs } = runAll(scn, scn.solution);
-  scn.tasks.forEach((t) => {
-    if (!t.done(st)) fail(`[${c.id}] a solução não cumpre a tarefa: "${t.label}"`);
-  });
+  if (scn.tasks?.length) {
+    scn.tasks.forEach((t) => {
+      if (!t.done(st)) fail(`[${c.id}] a solução não cumpre a tarefa: "${t.label}"`);
+    });
+  } else if (scn.flag) {
+    if (!outputs.flat().some((l) => l.includes(scn.flag))) fail(`[${c.id}] a solução não revela a flag`);
+  }
   outputs.forEach((lines, i) => {
-    if (lines.some((l) => l.includes('comando não encontrado'))) fail(`[${c.id}] "${scn.solution[i]}" não é um comando conhecido`);
+    if (lines.some((l) => l.includes('comando não encontrado'))) fail(`[${c.id}] "${scn.solution[i]}" não é um comando conhecido (pode ser uma senha — confira a ordem da solution)`);
   });
 
-  // Tudo o que a solução usa precisa estar na teoria anterior
+  // Tudo o que a solução usa precisa estar na teoria anterior (contando os dois módulos)
   const theory = terminalChallenges
     .slice(0, index)
     .filter((x) => x.type === 'theory')
@@ -75,7 +91,8 @@ terminalChallenges.forEach((c, index) => {
     .join('\n');
   for (const line of scn.solution) {
     const cmd = line.trim().split(/\s+/)[0];
-    if (!cmd.startsWith('./') && !new RegExp('`' + cmd.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[` ]').test(theory)) {
+    const isCommand = /^[a-z.][a-z0-9_./-]*$/i.test(cmd); // pula linhas que são só uma senha (ex.: no lab de dois saltos)
+    if (isCommand && !cmd.startsWith('./') && !new RegExp('`' + cmd.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[` ]').test(theory)) {
       fail(`[${c.id}] o comando "${cmd}" é usado mas não foi ensinado antes`);
     }
     for (const m of line.matchAll(/(?:^|\s)(-[a-zA-Z])(?=[\s'"a-zA-Z0-9]|$)/g)) {
@@ -84,6 +101,12 @@ terminalChallenges.forEach((c, index) => {
     if (line.includes('|') && !/pipe/i.test(theory)) fail(`[${c.id}] usa pipe sem tê-lo ensinado`);
     if (/\s>>?\s/.test(line) && !theory.includes('`>`')) fail(`[${c.id}] usa redirecionamento sem tê-lo ensinado`);
     if (line.includes('chmod +x') && !theory.includes('chmod +x')) fail(`[${c.id}] usa "chmod +x" sem tê-lo ensinado`);
+  }
+
+  // Cronômetro: se existir, precisa de uma mensagem de tempo esgotado e um limite razoável
+  if (scn.timeLimitSeconds !== undefined) {
+    if (!scn.timeoutMessage) fail(`[${c.id}] tem cronômetro mas não define timeoutMessage`);
+    if (scn.timeLimitSeconds < 60) fail(`[${c.id}] cronômetro curto demais (${scn.timeLimitSeconds}s) para ser jogável`);
   }
 });
 
@@ -153,6 +176,32 @@ const check = (name, cond, got) => {
   check('tentativa falha mas conta como tentativa (laboratório de permissões)', perm.tasks[1].done(st) === true);
   check('mas não conta como execução com sucesso', perm.tasks[3].done(st) === false);
 }
+
+// ---------- 4: processos (ps/kill), específico dos laboratórios com cronômetro ----------
+{
+  const contain = SCENARIOS['term-contain'];
+  const { st, outputs } = runAll(contain, ['ps', 'kill 1319', 'ps']);
+  check('ps lista o processo malicioso antes', outputs[0].some((l) => l.includes('1319') && l.includes('agent.sh')), outputs[0]);
+  check('kill remove o processo', !engine.processExists(st, 1319, '10.0.0.9'));
+  check('ps não lista mais o processo depois', !outputs[2].some((l) => l.includes('1319')), outputs[2]);
+}
+{
+  const twoThreats = SCENARIOS['term-two-threats'];
+  const { st } = runAll(twoThreats, ['kill 305']);
+  check('matar o processo legítimo mostra o aviso (mas não impede continuar)', engine.processExists(st, 305, '10.0.0.12') === false);
+  check('a ameaça real continua de pé (o alvo era outro PID)', engine.processExists(st, 1210, '10.0.0.12') === true);
+  const r = runAll(twoThreats, ['kill 305']).outputs[0];
+  check('mensagem de aviso ao matar o processo errado', r.some((l) => l.includes('legítimo')), r);
+}
+{
+  const psKill = SCENARIOS['term-ps-kill'];
+  const r = runAll(psKill, ['kill 99999']).outputs[0];
+  check('matar PID inexistente dá erro claro', r.some((l) => l.includes('Nenhum processo')), r);
+}
+
+// Nota: o cronômetro em si (contagem regressiva, falha ao chegar a 0) é decidido pela interface
+// (TerminalLab.tsx), não pelo motor — o motor não tem noção de tempo. Esse comportamento é
+// verificado com um teste de navegador (ver a suíte de UI), não aqui.
 
 fs.rmSync(tmp, { recursive: true, force: true });
 console.log(`\n${labs} laboratórios de terminal verificados, ${problems} problema(s).`);

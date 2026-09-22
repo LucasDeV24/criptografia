@@ -63,6 +63,10 @@ export type LabId =
   | "term-search"
   | "term-pipes"
   | "term-perm"
+  | "term-ps-kill"
+  | "term-contain"
+  | "term-twohop"
+  | "term-two-threats"
   | "web-sqli"
   | "web-xss"
   | "web-idor";
