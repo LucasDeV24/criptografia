@@ -124,6 +124,8 @@ export interface Scenario {
   whois?: Record<string, string[]>;
   /** Base de inteligência de ameaças fictícia, por hash sha256 (comando hashcheck) */
   threatIntel?: Record<string, { verdict: "malicioso" | "limpo"; name?: string; note?: string }>;
+  /** Buckets S3 fictícios, por nome de bucket (comando aws s3) */
+  s3Buckets?: Record<string, { public: boolean; objects: Record<string, string> }>;
 }
 
 export interface Session {
@@ -199,6 +201,7 @@ export const COMMAND_HELP: Record<string, string> = {
   strings: "mostra os textos legíveis embutidos em um arquivo (strings arquivo.exe)",
   sha256sum: "calcula o hash sha256 de um arquivo (sha256sum arquivo.exe)",
   hashcheck: "consulta uma base de inteligência de ameaças por hash (hashcheck <hash>)",
+  aws: "gerencia armazenamento em nuvem (aws s3 ls s3://<bucket>, aws s3 cp s3://<bucket>/<chave> -)",
 };
 
 export const file = (content: string, extra: Partial<Omit<FileNode, "type" | "content">> = {}): FileNode => ({
@@ -968,6 +971,34 @@ function runCommand(s: Scenario, st: TermState, line: string): ExecResult {
       ]);
     }
 
+    case "aws": {
+      const usage = ["uso: aws s3 ls s3://<bucket>   ou   aws s3 cp s3://<bucket>/<chave> -"];
+      const [svc, action, ...rest] = args;
+      if (svc !== "s3" || (action !== "ls" && action !== "cp")) return res(usage);
+
+      if (action === "ls") {
+        const url = rest[0];
+        const m = url && /^s3:\/\/([^/]+)\/?$/.exec(url);
+        if (!m) return res(usage);
+        const bucket = s.s3Buckets?.[m[1]];
+        if (!bucket) return res([`An error occurred (NoSuchBucket) when calling the ListObjectsV2 operation: The specified bucket does not exist`]);
+        if (!bucket.public) return res([`An error occurred (AccessDenied) when calling the ListObjectsV2 operation: Access Denied`]);
+        const keys = Object.keys(bucket.objects);
+        return res(keys.length ? keys.map((k) => `2024-01-15 09:00:00  ${String(bucket.objects[k].length).padStart(10)} ${k}`) : ["(bucket vazio)"]);
+      }
+
+      // cp
+      const [src, dst] = rest;
+      const m = src && /^s3:\/\/([^/]+)\/(.+)$/.exec(src);
+      if (!m || dst !== "-") return res(["uso: aws s3 cp s3://<bucket>/<chave> -   (o - imprime o conteúdo na tela)"]);
+      const bucket = s.s3Buckets?.[m[1]];
+      if (!bucket) return res([`An error occurred (NoSuchBucket) when calling the GetObject operation: The specified bucket does not exist`]);
+      if (!bucket.public) return res([`An error occurred (AccessDenied) when calling the GetObject operation: Access Denied`]);
+      const content = bucket.objects[m[2]];
+      if (content === undefined) return res([`An error occurred (NoSuchKey) when calling the GetObject operation: The specified key does not exist.`]);
+      return res(content.split("\n"));
+    }
+
     case "net": {
       const domain = s.machines.find((mm) => mm.ip === st.ip)?.ad;
       if (!domain) return res(["net: comando de domínio indisponível nesta máquina"]);
@@ -1137,7 +1168,7 @@ function handlePassword(s: Scenario, st: TermState, password: string): ExecResul
   };
 }
 
-const ERROR_HINT = /(inexistente|Permissão negada|não encontrad[oa]|não foi encontrad[oa]|É um diretório|não foi possível|^uso:|\(use -\w\)|perigoso|não permitida|inválido|malformada|indisponível|Falha ao conectar|Conexão recusada|Nenhuma entrada encontrada|só grep, wc|Nenhum processo)/i;
+const ERROR_HINT = /(inexistente|Permissão negada|não encontrad[oa]|não foi encontrad[oa]|É um diretório|não foi possível|^uso:|\(use -\w\)|perigoso|não permitida|inválido|malformada|indisponível|Falha ao conectar|Conexão recusada|Nenhuma entrada encontrada|só grep, wc|Nenhum processo|NoSuchBucket|NoSuchKey)/i;
 
 /** A saída parece uma mensagem de erro (no Linux real ela iria para a tela, não para o pipe) */
 export const looksLikeError = (lines: string[]): boolean => lines.length > 0 && lines.every((l) => ERROR_HINT.test(l));

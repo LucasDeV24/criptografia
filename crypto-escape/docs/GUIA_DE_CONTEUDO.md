@@ -96,10 +96,10 @@ e em Python, ele confere que: (1) a `solution` passa em todos os testes; (2) o `
 (3) há `solution`, `explanation`, `hints` e testes ocultos (quando a função recebe argumentos); (4) uma resposta
 fixa não passa em todos os testes. Ele usa os mesmos workers do site, então o resultado é fiel.
 
-## 7. Módulos de terminal (episódios 47, 48, 49, 50, 51, 52 e 53)
+## 7. Módulos de terminal (episódios 47, 48, 49, 50, 51, 52, 53 e 54)
 
 - **Separados da programação:** as salas têm só terminal (nada de editor de código) e as de programação não têm terminal. Isso evita misturar dois modos de pensar.
-- **Ordem do curso:** fica em `src/data/course-order.ts`. Hoje: programação 0-7 → terminal 47, 48, 49 → Cibersegurança 8-19 → ... → Blue Team 33-36 → Active Directory/Pentest Web/SIEM/Malware 50, 51, 52, 53 → OSINT 37 em diante. As chaves dos episódios não mudam; só a navegação. Ao inserir um módulo no meio da lista, os rótulos "Módulo N" da página `/episodes` (só os `<h2>`, não a lógica) precisam ser renumerados manualmente — ou, se o módulo cabe no grupo temático anterior, basta estender o `slice()` e o título daquela seção (foi o caso dos episódios 52 e 53, que só estenderam o Módulo 8).
+- **Ordem do curso:** fica em `src/data/course-order.ts`. Hoje: programação 0-7 → terminal 47, 48, 49 → Cibersegurança 8-19 → ... → Blue Team 33-36 → Active Directory/Pentest Web/SIEM/Malware/Cloud 50, 51, 52, 53, 54 → OSINT 37 em diante. As chaves dos episódios não mudam; só a navegação. Ao inserir um módulo no meio da lista, os rótulos "Módulo N" da página `/episodes` (só os `<h2>`, não a lógica) precisam ser renumerados manualmente — ou, se o módulo cabe no grupo temático anterior, basta estender o `slice()` e o título daquela seção (foi o caso dos episódios 52, 53 e 54, que só estenderam o Módulo 8).
 - **Formato:** teoria curta, depois um laboratório. Um comando só aparece em um laboratório se foi ensinado em uma teoria anterior — contando **todos** os módulos de terminal juntos, na ordem do curso (o verificador confere isso automaticamente).
 - **Um comando só conta como "ensinado" se aparecer entre uma única crase** (`` `dig` ``), não só dentro de um bloco de código de três crases. É a forma como o verificador detecta a menção — um comando citado só dentro de \`\`\`...\`\`\` não é reconhecido.
 - **Laboratórios**: cada um tem `tasks` (lista que o aluno vê e que o sistema confere) e/ou uma `flag`, além de `solution` (comandos que resolvem, usados pelo verificador). Nunca combine `tasks` parciais com `flag` no mesmo laboratório: se as tasks puderem ficar todas concluídas sem o aluno ter chegado à flag, o laboratório "termina" cedo demais.
@@ -112,6 +112,7 @@ fixa não passa em todos os testes. Ele usa os mesmos workers do site, então o 
 - **Ferramentas de pentest** (episódio 51): `gobuster dir -u <url> -w <wordlist>` lista as chaves de `Machine.http` (exceto `/`) — simula descoberta de conteúdo. `sqlmap -u <url> [--dbs | -D <banco> --tables | -D <banco> -T <tabela> --dump]` exige que a `HttpRoute` da URL tenha `sqlInjectable: true` **e** que a URL tenha uma query string; os dados ficam em `Machine.databases`.
 - **Log e SIEM** (episódio 52): sem comandos novos — reaproveita `cat`/`grep`/`cut`/`sort`/`uniq`/`wc`. A habilidade nova é cruzar o mesmo indício (IP) em três arquivos de log simulando fontes diferentes (`web.log`, `auth.log`, `firewall.log`); o lab 2 é cronometrado (240s) e exige reconstruir a ordem dos eventos para achar a flag, sem `tasks` (para não fechar cedo demais).
 - **Análise de Malware** (episódio 53): 4 comandos novos, todos só leitura de metadados declarados no `FileNode` (`fileType`, `strings`, `sha256`) — nada executa de verdade. `file <arquivo>` mostra o tipo real (revela a técnica de extensão dupla, ex. `fatura.pdf.exe`). `strings <arquivo>` lista o campo `FileNode.strings` (ou, se ausente, extrai linhas do `content` com 4+ caracteres) — simula textos/IOCs embutidos num binário. `sha256sum <arquivo>` imprime `FileNode.sha256` ou, se ausente, um hash determinístico calculado do conteúdo (`fakeSha256`, não é sha256 real, só tem a cara de um). `hashcheck <hash>` consulta `Scenario.threatIntel` (mapa hash → veredito); um hash desconhecido responde de forma informativa ("Nenhum resultado..."), sem disparar `ERROR_HINT` — mesmo padrão do "não injetável" do sqlmap.
+- **Cloud** (episódio 54): `aws s3 ls s3://<bucket>` e `aws s3 cp s3://<bucket>/<chave> -` leem `Scenario.s3Buckets` (por nome de bucket: `public` e `objects`). `NoSuchBucket`/`NoSuchKey` disparam `ERROR_HINT` (nome errado/chave errada — mais próximo de um engano); `AccessDenied` NÃO dispara (bucket existe e está corretamente protegido — resultado informativo, mesmo padrão do "não injetável" do sqlmap e do "tempo esgotado" do ping bloqueado).
 - Rode `npm run verify:terminal` depois de mexer em qualquer um dos módulos de terminal.
 
 ## 8. Estado atual e próximos passos
@@ -132,11 +133,13 @@ fixa não passa em todos os testes. Ele usa os mesmos workers do site, então o 
   (correlação livre, e reconstrução de timeline cronometrada para achar o que foi exfiltrado).
 - Módulo Análise de Malware (episódio 53): file, strings, sha256sum, hashcheck — 2 laboratórios (perícia
   guiada de um anexo de extensão dupla, e triagem cronometrada de 4 arquivos para achar o único malicioso).
+- Módulo Cloud (episódio 54): aws s3 ls/cp — 2 laboratórios (bucket exposto guiado, com contraste
+  público/protegido, e adivinhação cronometrada de nome de bucket até achar um segredo exposto).
 - Modo Hacker: 5 laboratórios simulados (terminal, SQLi, XSS, IDOR) + teoria.
 - Página de trilhas de carreira (`/trilhas`) e abas "Mundo Real"/"Ferramentas" por episódio.
 - Ranking sem exposição de dados pessoais (migração `supabase/migrations/002_privacidade_ranking.sql`).
 
-**Decisão de rumo:** os episódios 0-7 (programação) têm 111 salas contra 75 de terminal (47-53). O usuário apontou
+**Decisão de rumo:** os episódios 0-7 (programação) têm 111 salas contra 82 de terminal (47-54). O usuário apontou
 esse desequilíbrio — várias salas de programação são exercícios genéricos (matemática, sem tema de segurança). Não
 remover as existentes (quebraria progresso salvo e o on-ramp para quem nunca programou), mas **não crescer mais a
 trilha de programação por ora**: todo trabalho novo vai para terminal/segurança até esse equilíbrio melhorar. O
@@ -145,7 +148,8 @@ usuário aprovou explicitamente construir os 4 módulos abaixo, "bem elaborados,
 **Próximos (por prioridade)**
 1. Mais módulos de terminal/segurança (o pedido explícito é "vários", com ataque e defesa cronometrados):
    Log/SIEM sob pressão — **feito (episódio 52)**. Análise estática de malware — **feito (episódio 53)**.
-   Faltam: Cloud (CLI fictícia estilo AWS), Firewall ao vivo (estender o "contain" do ep. 48 com um comando de bloqueio).
+   Cloud (buckets S3 mal configurados) — **feito (episódio 54)**. Falta: Firewall ao vivo (estender o
+   "contain" do ep. 48 com um comando de bloqueio, o último dos 4 módulos aprovados).
 2. Migrar os episódios 20 a 45 (lógica, web, cripto, blue team, OSINT, automação) para testes de função.
    Os episódios 8 a 19 (Cibersegurança) também ainda validam só a saída.
 3. Mini-projetos de portfólio com testes (ex.: verificador de senhas, scanner de portas).

@@ -43,6 +43,7 @@ const SEC_TRACK: Stage[] = [
   { title: 'Ferramentas de Pentest', learn: 'gobuster (descoberta de conteúdo) e sqlmap (SQL Injection automatizado): as mesmas ferramentas usadas no Kali Linux, automatizando o que você já fez na mão.', episodes: [51] },
   { title: 'Log e SIEM: investigação sob pressão', learn: 'Cruzar várias fontes de log (web, autenticação, firewall) para reconstruir a timeline de um incidente real, como um analista de SOC faria com Splunk ou Elastic.', episodes: [52] },
   { title: 'Análise de Malware: perícia estática', learn: 'Identificar um arquivo malicioso sem executá-lo: tipo real (file), textos embutidos (strings) e hash contra uma base de inteligência de ameaças (sha256sum + hashcheck), como no VirusTotal.', episodes: [53] },
+  { title: 'Cloud: erros de configuração', learn: 'O modelo de responsabilidade compartilhada e o erro mais comum em nuvem: buckets S3 públicos por engano (aws s3 ls/cp).', episodes: [54] },
   { title: 'Linux avançado e escalada de privilégios', learn: 'Serviços, sudo, processos e como um atacante sobe de nível numa máquina (depois do módulo Terminal e Linux, que já cobre o básico).', episodes: [] },
   { title: 'Segurança em nuvem e DevSecOps', learn: 'Configurações seguras em cloud, contêineres e segurança no pipeline.', episodes: [] },
 ];

@@ -79,6 +79,8 @@ export type LabId =
   | "term-siem-timeline"
   | "term-malware-triage"
   | "term-malware-hunt"
+  | "term-cloud-bucket"
+  | "term-cloud-hunt"
   | "web-sqli"
   | "web-xss"
   | "web-idor";

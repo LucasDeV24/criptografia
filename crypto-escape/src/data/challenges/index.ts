@@ -52,6 +52,7 @@ import { activeDirectoryChallenges } from './ep50-active-directory';
 import { webPentestToolsChallenges } from './ep51-web-pentest-tools';
 import { logSiemChallenges } from './ep52-log-siem';
 import { malwareAnalysisChallenges } from './ep53-malware-analysis';
+import { cloudChallenges } from './ep54-cloud';
 import { COURSE_ORDER } from '../course-order';
 import type { Challenge } from '@/types/challenge';
 
@@ -127,6 +128,8 @@ export const challengesByEpisode: Record<number, Challenge[]> = {
   52: logSiemChallenges,
   // "Análise de Malware: perícia estática" (file, strings, sha256sum, hashcheck) — logo após SIEM
   53: malwareAnalysisChallenges,
+  // "Cloud: erros de configuração" (aws s3 ls/cp) — logo após Malware
+  54: cloudChallenges,
 };
 
 export function getChallenge(episode: number, room: string): Challenge | undefined {
