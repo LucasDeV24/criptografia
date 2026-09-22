@@ -75,6 +75,8 @@ export type LabId =
   | "term-web-gobuster"
   | "term-web-sqlmap"
   | "term-web-pentest"
+  | "term-siem-correlate"
+  | "term-siem-timeline"
   | "web-sqli"
   | "web-xss"
   | "web-idor";

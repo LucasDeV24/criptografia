@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Lucas" }],
   openGraph: {
     title: "Crypto Escape — Aprenda Cibersegurança",
-    description: "354 salas interativas de cibersegurança, com laboratórios práticos. Do zero ao nível profissional.",
+    description: "360 salas interativas de cibersegurança, com laboratórios práticos. Do zero ao nível profissional.",
     type: "website",
     locale: "pt_BR",
   },

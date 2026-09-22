@@ -35,6 +35,8 @@ export default function LabChallenge({
     case 'term-web-gobuster':
     case 'term-web-sqlmap':
     case 'term-web-pentest':
+    case 'term-siem-correlate':
+    case 'term-siem-timeline':
       return <TerminalLab scenario={SCENARIOS[challenge.labId]} onComplete={onComplete} />;
     case 'web-sqli':
       return <SqliLab onComplete={onComplete} />;

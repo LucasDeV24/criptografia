@@ -210,6 +210,7 @@ const SPECIFIC: Record<number, Context> = {
   49: TERMINAL,
   50: TERMINAL,
   51: TERMINAL,
+  52: TERMINAL,
   11: XSS,
   12: SQLI,
   46: LABS,
