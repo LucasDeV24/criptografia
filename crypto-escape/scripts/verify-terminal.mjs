@@ -39,6 +39,7 @@ const byEpisode = {
   52: (await import(pathToFileURL(path.join(root, 'src/data/challenges/ep52-log-siem.ts')).href)).logSiemChallenges,
   53: (await import(pathToFileURL(path.join(root, 'src/data/challenges/ep53-malware-analysis.ts')).href)).malwareAnalysisChallenges,
   54: (await import(pathToFileURL(path.join(root, 'src/data/challenges/ep54-cloud.ts')).href)).cloudChallenges,
+  55: (await import(pathToFileURL(path.join(root, 'src/data/challenges/ep55-firewall-live.ts')).href)).firewallLiveChallenges,
 };
 const terminalChallenges = COURSE_ORDER.filter((ep) => byEpisode[ep]).flatMap((ep) => byEpisode[ep]);
 
@@ -203,6 +204,43 @@ const check = (name, cond, got) => {
   const psKill = SCENARIOS['term-ps-kill'];
   const r = runAll(psKill, ['kill 99999']).outputs[0];
   check('matar PID inexistente dá erro claro', r.some((l) => l.includes('Nenhum processo')), r);
+}
+
+// ---------- 5: rede e firewall (netstat/ufw), específico do módulo de contenção ao vivo ----------
+{
+  const contain = SCENARIOS['term-firewall-contain'];
+  const { st, outputs } = runAll(contain, ['netstat', 'ufw deny from 203.0.113.44', 'netstat', 'ufw status']);
+  check('netstat lista a conexão maliciosa antes do bloqueio', outputs[0].some((l) => l.includes('203.0.113.44') && l.includes('4931')), outputs[0]);
+  check('ufw deny confirma a regra adicionada', outputs[1].some((l) => l.includes('Rule added')), outputs[1]);
+  check('o IP fica registrado como bloqueado no estado', engine.ipBlocked(st, '203.0.113.44', '10.0.0.30'));
+  check('netstat some com a conexão bloqueada depois', !outputs[2].some((l) => l.includes('203.0.113.44')), outputs[2]);
+  check('ufw status lista o IP bloqueado', outputs[3].some((l) => l.includes('203.0.113.44')), outputs[3]);
+}
+{
+  // regra duplicada não gera um segundo bloqueio nem quebra nada
+  const contain = SCENARIOS['term-firewall-contain'];
+  const { outputs } = runAll(contain, ['ufw deny from 203.0.113.44', 'ufw deny from 203.0.113.44']);
+  check('bloquear o mesmo IP duas vezes avisa que a regra já existe', outputs[1].some((l) => l.includes('Skipping')), outputs[1]);
+}
+{
+  // ssh verifica o bloqueio usando o IP de ORIGEM atual (st.ip) contra o alvo — regressão do motor,
+  // não faz parte da solução de nenhum laboratório (por isso testado aqui, e não via verify-terminal comum)
+  const scn = {
+    id: 'ssh-block-regressao',
+    start: { ip: '10.0.0.2', user: 'hacker' },
+    welcome: [],
+    commands: ['ssh'],
+    machines: [
+      { hostname: 'atacante', ip: '10.0.0.2', ports: [], users: { hacker: { home: '/home/hacker' } }, fs: engine.dir({}) },
+      { hostname: 'alvo', ip: '10.0.0.40', ports: [{ port: 22, service: 'ssh' }], users: { root: { home: '/root', password: 'x' } }, fs: engine.dir({}) },
+    ],
+  };
+  const before = runAll(scn, ['ssh root@10.0.0.40']);
+  check('ssh conecta normalmente antes de qualquer bloqueio (pede senha)', before.st.pending !== null, before.outputs[0]);
+  let blocked = engine.initialState(scn);
+  blocked = { ...blocked, blockedIps: { '10.0.0.40': ['10.0.0.2'] } };
+  const r = engine.execute(scn, blocked, 'ssh root@10.0.0.40');
+  check('ssh é recusado quando o alvo bloqueou o IP de origem', r.lines.some((l) => l.includes('Connection refused')), r.lines);
 }
 
 // Nota: o cronômetro em si (contagem regressiva, falha ao chegar a 0) é decidido pela interface

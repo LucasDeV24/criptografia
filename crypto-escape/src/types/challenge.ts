@@ -81,6 +81,8 @@ export type LabId =
   | "term-malware-hunt"
   | "term-cloud-bucket"
   | "term-cloud-hunt"
+  | "term-firewall-contain"
+  | "term-firewall-live"
   | "web-sqli"
   | "web-xss"
   | "web-idor";

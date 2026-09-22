@@ -8,6 +8,7 @@ import { TERMINAL_PENTEST_SCENARIOS } from "./terminal-pentest-scenarios";
 import { TERMINAL_SIEM_SCENARIOS } from "./terminal-siem-scenarios";
 import { TERMINAL_MALWARE_SCENARIOS } from "./terminal-malware-scenarios";
 import { TERMINAL_CLOUD_SCENARIOS } from "./terminal-cloud-scenarios";
+import { TERMINAL_FIREWALL_SCENARIOS } from "./terminal-firewall-scenarios";
 
 /** Laboratório 1: primeiros passos no terminal (arquivos ocultos) */
 const RECON_FLAG = "FLAG{ls_a_revela_o_que_esta_escondido}";
@@ -163,4 +164,5 @@ export const SCENARIOS: Record<string, Scenario> = {
   ...TERMINAL_SIEM_SCENARIOS,
   ...TERMINAL_MALWARE_SCENARIOS,
   ...TERMINAL_CLOUD_SCENARIOS,
+  ...TERMINAL_FIREWALL_SCENARIOS,
 };

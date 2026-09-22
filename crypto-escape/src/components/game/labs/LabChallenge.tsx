@@ -41,6 +41,8 @@ export default function LabChallenge({
     case 'term-malware-hunt':
     case 'term-cloud-bucket':
     case 'term-cloud-hunt':
+    case 'term-firewall-contain':
+    case 'term-firewall-live':
       return <TerminalLab scenario={SCENARIOS[challenge.labId]} onComplete={onComplete} />;
     case 'web-sqli':
       return <SqliLab onComplete={onComplete} />;

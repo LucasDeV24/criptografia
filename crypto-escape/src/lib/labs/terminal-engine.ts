@@ -93,6 +93,8 @@ export interface Machine {
   ad?: { domain: string; users: AdUser[]; groups: AdGroup[] };
   /** Bancos de dados fictícios expostos por rotas com sqlInjectable (sqlmap) */
   databases?: FakeDatabase[];
+  /** Conexões de rede ativas nessa máquina (netstat), cruzadas com o PID do processo dono */
+  connections?: { remoteIp: string; remotePort: number; localPort: number; pid?: number; state?: string }[];
 }
 
 /** Uma tarefa de um laboratório: some da lista de pendências quando `done` fica verdadeiro */
@@ -151,6 +153,8 @@ export interface TermState extends Session {
   visited: string[];
   /** Eventos especiais, como "exec:backup.sh" */
   events: string[];
+  /** IPs bloqueados no firewall de cada máquina (ufw deny from), por IP da máquina */
+  blockedIps: Record<string, string[]>;
 }
 
 export interface ExecResult {
@@ -202,6 +206,8 @@ export const COMMAND_HELP: Record<string, string> = {
   sha256sum: "calcula o hash sha256 de um arquivo (sha256sum arquivo.exe)",
   hashcheck: "consulta uma base de inteligência de ameaças por hash (hashcheck <hash>)",
   aws: "gerencia armazenamento em nuvem (aws s3 ls s3://<bucket>, aws s3 cp s3://<bucket>/<chave> -)",
+  netstat: "lista as conexões de rede ativas, cruzando com o PID do processo dono",
+  ufw: "gerencia o firewall (ufw status, ufw deny from <ip>)",
 };
 
 export const file = (content: string, extra: Partial<Omit<FileNode, "type" | "content">> = {}): FileNode => ({
@@ -265,6 +271,7 @@ export function initialState(s: Scenario): TermState {
     okHistory: [],
     visited: [cwd],
     events: [],
+    blockedIps: {},
   };
 }
 
@@ -829,6 +836,41 @@ function runCommand(s: Scenario, st: TermState, line: string): ExecResult {
       return res(proc.warnOnKill ? [proc.warnOnKill] : [], next);
     }
 
+    case "netstat": {
+      const blocked = st.blockedIps[st.ip] ?? [];
+      const conns = (m.connections ?? []).filter((c) => !blocked.includes(c.remoteIp));
+      const procName = (pid?: number) => {
+        const p = (st.processes[st.ip] ?? []).find((x) => x.pid === pid);
+        return pid ? `${pid}/${p ? p.cmd.split(" ")[0] : "?"}` : "-";
+      };
+      return res([
+        "Proto Local Address        Foreign Address        State        PID/Program",
+        ...conns.map((c) => `tcp   0.0.0.0:${String(c.localPort).padEnd(13)} ${`${c.remoteIp}:${c.remotePort}`.padEnd(22)} ${(c.state ?? "ESTABLISHED").padEnd(12)} ${procName(c.pid)}`),
+      ]);
+    }
+
+    case "ufw": {
+      const [sub, ...rest] = args;
+      if (sub === "status") {
+        const blocked = st.blockedIps[st.ip] ?? [];
+        return res([
+          "Status: active",
+          "",
+          "To                         Action      From",
+          "--                         ------      ----",
+          ...(blocked.length ? blocked.map((ip) => `Anywhere                   DENY        ${ip}`) : ["(nenhuma regra de bloqueio ainda)"]),
+        ]);
+      }
+      if (sub === "deny" && rest[0] === "from" && rest[1]) {
+        const ip = rest[1];
+        if (!IP_RE.test(ip)) return res(["uso: ufw deny from <ip>"]);
+        const already = st.blockedIps[st.ip] ?? [];
+        if (already.includes(ip)) return res(["Skipping adding existing rule"]);
+        return res(["Rule added"], { ...st, blockedIps: { ...st.blockedIps, [st.ip]: [...already, ip] } });
+      }
+      return res(["uso: ufw status   ou   ufw deny from <ip>"]);
+    }
+
     case "ping": {
       const target = args.find((a) => !a.startsWith("-"));
       if (!target) return res(["uso: ping <host>  (ex.: ping 10.0.0.5 ou ping exemplo.com)"]);
@@ -1118,7 +1160,7 @@ function runCommand(s: Scenario, st: TermState, line: string): ExecResult {
       const [user, ip] = dest.includes("@") ? dest.split("@") : [st.user, dest];
       const target = s.machines.find((x) => x.ip === ip);
       if (!target) return res([`ssh: connect to host ${ip} port 22: No route to host`]);
-      if (!target.ports.some((p) => p.port === 22)) {
+      if ((st.blockedIps[ip] ?? []).includes(st.ip) || !target.ports.some((p) => p.port === 22)) {
         return res([`ssh: connect to host ${ip} port 22: Connection refused`]);
       }
       return res([], { ...st, pending: { ip, user } });
@@ -1256,6 +1298,11 @@ export function modeOf(st: TermState, path: string, ip: string = st.ip): number 
 /** O processo com esse PID ainda está rodando nessa máquina? */
 export function processExists(st: TermState, pid: number, ip: string = st.ip): boolean {
   return (st.processes[ip] ?? []).some((p) => p.pid === pid);
+}
+
+/** Esse IP está bloqueado no firewall dessa máquina (ufw deny from)? */
+export function ipBlocked(st: TermState, ip: string, machineIp: string = st.ip): boolean {
+  return (st.blockedIps[machineIp] ?? []).includes(ip);
 }
 
 /** Algum comando que FUNCIONOU combina com a expressão? */

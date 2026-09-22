@@ -80,6 +80,7 @@ const EPISODE_META = [
   { title: 'Log e SIEM', desc: 'Cruzar logs sob pressão e reconstruir um incidente', icon: FileSearch, color: 'var(--error-red)' },
   { title: 'Análise de Malware', desc: 'Perícia estática: file, strings, sha256sum e hashcheck', icon: Crosshair, color: 'var(--error-red)' },
   { title: 'Cloud', desc: 'Buckets S3 mal configurados e o modelo de responsabilidade compartilhada', icon: Cloud, color: 'var(--error-red)' },
+  { title: 'Firewall ao Vivo', desc: 'netstat + ufw + kill: contenção completa em tempo real', icon: ShieldAlert, color: 'var(--error-red)' },
 ];
 
 export default function EpisodesPage() {
@@ -192,9 +193,9 @@ export default function EpisodesPage() {
 
         <section className="mb-12">
           <h2 className="text-sm font-medium text-[var(--error-red)] uppercase tracking-wider mb-1">Módulo 8</h2>
-          <p className="text-lg text-[var(--ghost-white)] font-semibold mb-6">Active Directory, Pentest Web e Resposta a Incidentes</p>
+          <p className="text-lg text-[var(--ghost-white)] font-semibold mb-6">Active Directory, Pentest Web e Resposta a Incidentes Avançada</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {EPISODE_META.slice(50, 55).map((ep, idx) => (
+            {EPISODE_META.slice(50, 56).map((ep, idx) => (
               <EpisodeCard key={idx + 50} ep={ep} idx={idx + 50} completedRooms={completedRooms} />
             ))}
           </div>

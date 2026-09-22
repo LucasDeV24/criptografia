@@ -53,6 +53,7 @@ import { webPentestToolsChallenges } from './ep51-web-pentest-tools';
 import { logSiemChallenges } from './ep52-log-siem';
 import { malwareAnalysisChallenges } from './ep53-malware-analysis';
 import { cloudChallenges } from './ep54-cloud';
+import { firewallLiveChallenges } from './ep55-firewall-live';
 import { COURSE_ORDER } from '../course-order';
 import type { Challenge } from '@/types/challenge';
 
@@ -130,6 +131,8 @@ export const challengesByEpisode: Record<number, Challenge[]> = {
   53: malwareAnalysisChallenges,
   // "Cloud: erros de configuração" (aws s3 ls/cp) — logo após Malware
   54: cloudChallenges,
+  // "Firewall ao vivo: bloqueando em tempo real" (netstat, ufw) — logo após Cloud
+  55: firewallLiveChallenges,
 };
 
 export function getChallenge(episode: number, room: string): Challenge | undefined {
