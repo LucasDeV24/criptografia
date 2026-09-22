@@ -33,6 +33,8 @@ const { COURSE_ORDER } = await import(pathToFileURL(path.join(root, 'src/data/co
 const byEpisode = {
   47: (await import(pathToFileURL(path.join(root, 'src/data/challenges/ep47-terminal.ts')).href)).terminalChallenges,
   48: (await import(pathToFileURL(path.join(root, 'src/data/challenges/ep48-terminal-pressure.ts')).href)).terminalPressureChallenges,
+  49: (await import(pathToFileURL(path.join(root, 'src/data/challenges/ep49-networking.ts')).href)).networkingChallenges,
+  50: (await import(pathToFileURL(path.join(root, 'src/data/challenges/ep50-active-directory.ts')).href)).activeDirectoryChallenges,
 };
 const terminalChallenges = COURSE_ORDER.filter((ep) => byEpisode[ep]).flatMap((ep) => byEpisode[ep]);
 

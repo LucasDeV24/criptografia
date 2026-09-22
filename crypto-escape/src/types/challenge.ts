@@ -67,6 +67,11 @@ export type LabId =
   | "term-contain"
   | "term-twohop"
   | "term-two-threats"
+  | "term-net-ping"
+  | "term-net-dns"
+  | "term-net-http"
+  | "term-ad-enum"
+  | "term-ad-escalate"
   | "web-sqli"
   | "web-xss"
   | "web-idor";

@@ -27,6 +27,11 @@ export default function LabChallenge({
     case 'term-contain':
     case 'term-twohop':
     case 'term-two-threats':
+    case 'term-net-ping':
+    case 'term-net-dns':
+    case 'term-net-http':
+    case 'term-ad-enum':
+    case 'term-ad-escalate':
       return <TerminalLab scenario={SCENARIOS[challenge.labId]} onComplete={onComplete} />;
     case 'web-sqli':
       return <SqliLab onComplete={onComplete} />;

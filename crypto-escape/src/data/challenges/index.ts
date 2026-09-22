@@ -47,6 +47,8 @@ import { certificationChallenges } from './ep45-certification';
 import { labChallenges } from './ep46-labs';
 import { terminalChallenges } from './ep47-terminal';
 import { terminalPressureChallenges } from './ep48-terminal-pressure';
+import { networkingChallenges } from './ep49-networking';
+import { activeDirectoryChallenges } from './ep50-active-directory';
 import { COURSE_ORDER } from '../course-order';
 import type { Challenge } from '@/types/challenge';
 
@@ -112,6 +114,10 @@ export const challengesByEpisode: Record<number, Challenge[]> = {
   47: terminalChallenges,
   // Continuação: "Terminal: Ataque e Defesa" (ps/kill, laboratórios cronometrados)
   48: terminalPressureChallenges,
+  // Continuação: "Redes" (ping, traceroute, dig, whois, curl)
+  49: networkingChallenges,
+  // "Active Directory: fundamentos" (net user/group) — depois do Blue Team (33-36)
+  50: activeDirectoryChallenges,
 };
 
 export function getChallenge(episode: number, room: string): Challenge | undefined {

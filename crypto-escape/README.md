@@ -5,9 +5,12 @@ Plataforma interativa para aprender **programação e cibersegurança** resolven
 
 - **Base de programação (episódios 0 a 7):** 75 exercícios em que o aluno escreve funções, validadas por
   **testes visíveis e ocultos** (casos de borda), em escada de dificuldade.
-- **Terminal e Linux (episódio 47):** módulo separado, sem misturar com o código. Depois da programação e antes da
-  cibersegurança (a ordem fica em `src/data/course-order.ts`). Terminal simulado com tarefas conferidas pelo sistema.
+- **Terminal (episódios 47-49):** módulo separado, sem misturar com o código, logo depois da programação (a ordem
+  fica em `src/data/course-order.ts`). Terminal simulado com tarefas conferidas pelo sistema: comandos de arquivo,
+  processos (`ps`/`kill`) com laboratórios de **cronômetro real** de ataque e defesa, e rede (`ping`, `dig`, `curl`).
 - **Cibersegurança (episódios 8 a 45):** criptografia, vulnerabilidades web, blue team, OSINT, automação.
+- **Active Directory (episódio 50):** domínio, usuários, grupos aninhados e escalonamento de privilégio, encaixado
+  depois do Blue Team.
 - **Modo Hacker (episódio 46):** terminal simulado e sites vulneráveis (SQL Injection, XSS, IDOR) com flags.
 - **Trilhas de carreira (`/trilhas`):** o que aprender e como entrar na área, marcando o que ainda é "em breve".
 

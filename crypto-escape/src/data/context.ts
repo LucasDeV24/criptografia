@@ -207,6 +207,8 @@ const TERMINAL: Context = {
 const SPECIFIC: Record<number, Context> = {
   47: TERMINAL,
   48: TERMINAL,
+  49: TERMINAL,
+  50: TERMINAL,
   11: XSS,
   12: SQLI,
   46: LABS,

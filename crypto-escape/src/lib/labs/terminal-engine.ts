@@ -36,6 +36,27 @@ export interface Process {
   warnOnKill?: string;
 }
 
+/** Uma resposta HTTP fictícia, para o comando curl */
+export interface HttpRoute {
+  status: number;
+  statusText?: string;
+  headers?: Record<string, string>;
+  body: string;
+}
+
+/** Um usuário de domínio (Active Directory), para o comando net */
+export interface AdUser {
+  name: string;
+  /** O campo "descrição" do AD — um dos lugares clássicos onde senhas vazam por engano */
+  description?: string;
+  groups: string[];
+}
+
+export interface AdGroup {
+  name: string;
+  members: string[];
+}
+
 export interface Machine {
   hostname: string;
   ip: string;
@@ -44,6 +65,12 @@ export interface Machine {
   ports: { port: number; service: string }[];
   /** Processos "rodando" na máquina (ps, kill) */
   processes?: Process[];
+  /** Rotas HTTP respondidas por essa máquina (curl), por caminho (ex.: "/", "/admin") */
+  http?: Record<string, HttpRoute>;
+  /** Se true, a máquina existe e está ligada, mas não responde a ping/traceroute (firewall bloqueando ICMP) */
+  pingBlocked?: boolean;
+  /** Domínio Active Directory que essa máquina enxerga (net user, net group) */
+  ad?: { domain: string; users: AdUser[]; groups: AdGroup[] };
 }
 
 /** Uma tarefa de um laboratório: some da lista de pendências quando `done` fica verdadeiro */
@@ -69,6 +96,10 @@ export interface Scenario {
   timeLimitSeconds?: number;
   /** Mensagem mostrada quando o tempo acaba */
   timeoutMessage?: string;
+  /** Zona de DNS fictícia: domínio → registros (dig) */
+  dns?: Record<string, { type: "A" | "MX" | "TXT" | "NS" | "CNAME"; value: string; priority?: number }[]>;
+  /** Texto de "whois" por domínio */
+  whois?: Record<string, string[]>;
 }
 
 export interface Session {
@@ -125,6 +156,12 @@ export const COMMAND_HELP: Record<string, string> = {
   chmod: "muda permissões (chmod +x arquivo, chmod 644 arquivo)",
   ps: "lista os processos rodando (ps ou ps aux)",
   kill: "encerra um processo pelo PID (kill 1337)",
+  ping: "testa se um host responde (ping 10.0.0.5)",
+  traceroute: "mostra o caminho (hops) até um host",
+  dig: "consulta o DNS de um domínio (dig exemplo.com, dig exemplo.com TXT)",
+  whois: "mostra o registro de um domínio (whois exemplo.com)",
+  curl: "faz uma requisição HTTP (curl http://10.0.0.9/, -i mostra os cabeçalhos)",
+  net: 'consulta o domínio: net user, net user <nome>, net group, net group "<nome>"',
   whoami: "mostra seu usuário",
   id: "mostra seu usuário e grupos",
   hostname: "mostra o nome da máquina",
@@ -151,6 +188,16 @@ export const dir = (children: Record<string, FsNode> = {}, only?: string[]): Dir
 
 function machineOf(s: Scenario, ip: string): Machine {
   return s.machines.find((m) => m.ip === ip) ?? s.machines[0];
+}
+
+const IP_RE = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
+
+/** Resolve um alvo (IP direto, ou nome de domínio via o registro A do DNS do cenário) para um IP */
+function resolveHost(s: Scenario, target: string): string | null {
+  if (IP_RE.test(target)) return target;
+  const records = s.dns?.[target];
+  const a = records?.find((r) => r.type === "A");
+  return a ? a.value : null;
 }
 
 export function initialState(s: Scenario): TermState {
@@ -718,6 +765,131 @@ function runCommand(s: Scenario, st: TermState, line: string): ExecResult {
       return res(proc.warnOnKill ? [proc.warnOnKill] : [], next);
     }
 
+    case "ping": {
+      const target = args.find((a) => !a.startsWith("-"));
+      if (!target) return res(["uso: ping <host>  (ex.: ping 10.0.0.5 ou ping exemplo.com)"]);
+      const ip = resolveHost(s, target);
+      if (!ip) return res([`ping: ${target}: Não foi possível resolver o nome do host`]);
+      const machine = s.machines.find((mm) => mm.ip === ip);
+      if (!machine || machine.pingBlocked) {
+        return res([
+          `PING ${target} (${ip}): 56 bytes de dados`,
+          ...[1, 2, 3, 4].map((i) => `Tempo esgotado para icmp_seq ${i}`),
+          "",
+          `--- estatísticas de ping de ${target} ---`,
+          "4 pacotes transmitidos, 0 recebidos, 100% de perda",
+        ]);
+      }
+      const times = [12.4, 11.8, 13.1, 12.0];
+      return res([
+        `PING ${target} (${ip}): 56 bytes de dados`,
+        ...times.map((t, i) => `64 bytes de ${ip}: icmp_seq=${i + 1} ttl=64 tempo=${t} ms`),
+        "",
+        `--- estatísticas de ping de ${target} ---`,
+        "4 pacotes transmitidos, 4 recebidos, 0% de perda",
+      ]);
+    }
+
+    case "traceroute": {
+      const target = args.find((a) => !a.startsWith("-"));
+      if (!target) return res(["uso: traceroute <host>"]);
+      const ip = resolveHost(s, target);
+      if (!ip) return res([`traceroute: ${target}: Não foi possível resolver o nome do host`]);
+      const machine = s.machines.find((mm) => mm.ip === ip);
+      const header = `traceroute para ${target} (${ip}), 30 hops máximo`;
+      if (!machine || machine.pingBlocked) {
+        return res([header, ` 1  10.0.0.1 (10.0.0.1)  1.204 ms`, ` 2  198.51.100.1 (198.51.100.1)  8.417 ms`, ` 3  * * *`, ` 4  * * *`]);
+      }
+      return res([
+        header,
+        ` 1  10.0.0.1 (10.0.0.1)  1.204 ms`,
+        ` 2  198.51.100.1 (198.51.100.1)  8.417 ms`,
+        ` 3  ${ip} (${ip})  14.732 ms`,
+      ]);
+    }
+
+    case "dig": {
+      const rest = args.filter((a) => !a.startsWith("-"));
+      const domain = rest[0];
+      if (!domain) return res(["uso: dig <domínio> [tipo]  (ex.: dig exemplo.com, dig exemplo.com TXT)"]);
+      const wantType = rest[1]?.toUpperCase();
+      const all = s.dns?.[domain];
+      if (!all) {
+        return res([
+          `; <<>> DiG 9.18 <<>> ${domain}${wantType ? " " + wantType : ""}`,
+          ";; connection timed out; no servers could be reached",
+        ]);
+      }
+      const records = wantType ? all.filter((r) => r.type === wantType) : all;
+      return res([
+        `; <<>> DiG 9.18 <<>> ${domain}${wantType ? " " + wantType : ""}`,
+        ";; ANSWER SECTION:",
+        ...(records.length
+          ? records.map((r) => `${domain}.${" ".repeat(Math.max(1, 20 - domain.length))}300  IN   ${r.type}${r.priority !== undefined ? ` ${r.priority}` : ""}  ${r.value}`)
+          : [`;; Nenhum registro do tipo ${wantType} para ${domain}`]),
+      ]);
+    }
+
+    case "whois": {
+      const domain = args.find((a) => !a.startsWith("-"));
+      if (!domain) return res(["uso: whois <domínio>"]);
+      const info = s.whois?.[domain];
+      if (!info) return res([`Nenhuma entrada encontrada para "${domain}"`]);
+      return res(info);
+    }
+
+    case "curl": {
+      const { flags, rest } = parseArgs(args);
+      const url = rest[0];
+      if (!url) return res(["uso: curl <url>  (-i mostra os cabeçalhos)"]);
+      const match = /^(?:https?:\/\/)?([^/]+)(\/.*)?$/i.exec(url);
+      if (!match) return res([`curl: (3) URL malformada: ${url}`]);
+      const [, hostPart, pathPart = "/"] = match;
+      const [hostname, portStr] = hostPart.split(":");
+      const ip = resolveHost(s, hostname);
+      const target = ip ? s.machines.find((mm) => mm.ip === ip) : undefined;
+      if (!target) return res([`curl: (6) Não foi possível resolver o host: ${hostname}`]);
+      const port = portStr ? Number(portStr) : 80;
+      if (!target.ports.some((p) => p.port === port)) {
+        return res([`curl: (7) Falha ao conectar em ${hostname} na porta ${port}: Conexão recusada`]);
+      }
+      const path = pathPart.split("?")[0].split("#")[0] || "/";
+      const route = target.http?.[path];
+      if (!route) {
+        return res(flags.has("i") ? ["HTTP/1.1 404 Not Found", "", "404 Not Found"] : ["404 Not Found"]);
+      }
+      const statusLine = `HTTP/1.1 ${route.status} ${route.statusText ?? (route.status === 200 ? "OK" : "")}`.trimEnd();
+      const headerLines = Object.entries(route.headers ?? {}).map(([k, v]) => `${k}: ${v}`);
+      return res(flags.has("i") ? [statusLine, ...headerLines, "", ...route.body.split("\n")] : route.body.split("\n"));
+    }
+
+    case "net": {
+      const domain = s.machines.find((mm) => mm.ip === st.ip)?.ad;
+      if (!domain) return res(["net: comando de domínio indisponível nesta máquina"]);
+      const [sub, ...rest] = args;
+      if (sub === "user") {
+        if (!rest[0]) {
+          return res(["Contas de usuário do domínio " + domain.domain, "-----------------------------------", ...domain.users.map((u) => u.name)]);
+        }
+        const user = domain.users.find((u) => u.name.toLowerCase() === rest[0].toLowerCase());
+        if (!user) return res([`O nome de usuário não foi encontrado: ${rest[0]}`]);
+        return res([
+          `Nome de usuário         ${user.name}`,
+          `Descrição               ${user.description ?? "(em branco)"}`,
+          `Grupos locais/globais    ${user.groups.join(", ") || "(nenhum)"}`,
+        ]);
+      }
+      if (sub === "group") {
+        if (!rest[0]) {
+          return res(["Grupos do domínio " + domain.domain, "-------------------------", ...domain.groups.map((g) => g.name)]);
+        }
+        const group = domain.groups.find((g) => g.name.toLowerCase() === rest[0].toLowerCase());
+        if (!group) return res([`O nome do grupo não foi encontrado: ${rest[0]}`]);
+        return res([`Nome do grupo     ${group.name}`, "Membros           " + (group.members.join(", ") || "(nenhum)")]);
+      }
+      return res(['uso: net user | net user <nome> | net group | net group "<nome>"']);
+    }
+
     case "nmap": {
       const ip = args.filter((a) => !a.startsWith("-"))[0];
       if (!ip) return res(["uso: nmap <ip>  (ex.: nmap 10.0.0.5)"]);
@@ -794,7 +966,7 @@ function handlePassword(s: Scenario, st: TermState, password: string): ExecResul
   };
 }
 
-const ERROR_HINT = /(inexistente|Permissão negada|não encontrado|É um diretório|não foi possível|^uso:|\(use -\w\)|perigoso|não permitida|inválido|só grep, wc|Nenhum processo)/i;
+const ERROR_HINT = /(inexistente|Permissão negada|não encontrado|não foi encontrad[oa]|É um diretório|não foi possível|^uso:|\(use -\w\)|perigoso|não permitida|inválido|malformada|indisponível|Falha ao conectar|Conexão recusada|Nenhuma entrada encontrada|só grep, wc|Nenhum processo)/i;
 
 /** A saída parece uma mensagem de erro (no Linux real ela iria para a tela, não para o pipe) */
 export const looksLikeError = (lines: string[]): boolean => lines.length > 0 && lines.every((l) => ERROR_HINT.test(l));
