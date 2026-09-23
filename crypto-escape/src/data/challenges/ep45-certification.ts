@@ -11,31 +11,42 @@ const theory0: TheoryChallenge = {
 • Variáveis, condições, loops, arrays, funções, objetos
 • Manipulação de strings e algoritmos
 
-**Cibersegurança (Módulo 2):**
+**Terminal e Redes (Módulo 2):**
+• Linux real (arquivos, permissões, processos), ataque e defesa cronometrados
+• ping, traceroute, dig, whois, curl
+
+**Cibersegurança (Módulo 3):**
 • Cifras, hash, encoding, XSS, SQLi
 • SOC Analyst, APIs, JWT, esteganografia
 
-**Lógica e Algoritmos (Módulo 3):**
+**Lógica e Algoritmos (Módulo 4):**
 • Operadores lógicos, busca, ordenação
 
-**Segurança Web Avançada (Módulo 4):**
+**Segurança Web Avançada (Módulo 5):**
 • CSRF, Command Injection, Directory Traversal
 • Validação, CORS, Security Headers
 
-**Criptografia Moderna (Módulo 5):**
+**Criptografia Moderna (Módulo 6):**
 • XOR, AES, RSA, Hashing avançado
 
-**Blue Team (Módulo 6):**
+**Blue Team (Módulo 7):**
 • Firewall, IDS/IPS, Incident Response, Hardening
 
-**OSINT (Módulo 7):**
+**Active Directory, Pentest Web e Resposta a Incidentes Avançada (Módulo 8):**
+• Domínios e escalonamento de privilégio, gobuster/sqlmap, Log e SIEM sob pressão
+• Perícia de malware, buckets S3 mal configurados, contenção em tempo real (netstat/ufw)
+
+**OSINT (Módulo 9):**
 • Google Dorks, Metadados, Engenharia Social
 
-**Automação (Módulo 8):**
+**Automação (Módulo 10):**
 • Regex, Scanners, Automação, Relatórios
 
-**Pentest (Módulo 9):**
+**Missão Final (Módulo 11):**
 • Pentest completo do reconhecimento ao relatório
+
+**Modo Hacker (Módulo 12):**
+• Terminal e sites vulneráveis simulados, com flags para capturar
   `,
 };
 
@@ -48,14 +59,17 @@ const code1: CodeChallenge = {
   starterCode: {
     javascript: `const modulos = [
   { nome: "Programacao", nivel: 100, episodios: 8 },
+  { nome: "Terminal e Redes", nivel: 100, episodios: 3 },
   { nome: "Ciberseguranca", nivel: 100, episodios: 12 },
   { nome: "Logica e Algoritmos", nivel: 100, episodios: 4 },
   { nome: "Seguranca Web", nivel: 100, episodios: 5 },
   { nome: "Criptografia", nivel: 100, episodios: 4 },
   { nome: "Blue Team", nivel: 100, episodios: 4 },
+  { nome: "AD e Pentest Avancado", nivel: 100, episodios: 6 },
   { nome: "OSINT", nivel: 100, episodios: 3 },
   { nome: "Automacao", nivel: 100, episodios: 4 },
-  { nome: "Pentest", nivel: 100, episodios: 2 }
+  { nome: "Missao Final", nivel: 100, episodios: 2 },
+  { nome: "Modo Hacker", nivel: 100, episodios: 1 }
 ];
 
 // Gere o perfil completo:
@@ -63,19 +77,22 @@ const code1: CodeChallenge = {
 // Para cada modulo: "  NOME(padEnd 18) [===...] NIVEL%"
 //   barra = "=" repetido (nivel / 5) vezes
 // Some episodios: "\\nTotal: N episodios completados"
-// "Modulos: 9/9"
+// "Modulos: 12/12"
 // "\\nPronto para: eJPT, CompTIA Security+, CEH"
 `,
     python: `modulos = [
     {"nome": "Programacao", "nivel": 100, "episodios": 8},
+    {"nome": "Terminal e Redes", "nivel": 100, "episodios": 3},
     {"nome": "Ciberseguranca", "nivel": 100, "episodios": 12},
     {"nome": "Logica e Algoritmos", "nivel": 100, "episodios": 4},
     {"nome": "Seguranca Web", "nivel": 100, "episodios": 5},
     {"nome": "Criptografia", "nivel": 100, "episodios": 4},
     {"nome": "Blue Team", "nivel": 100, "episodios": 4},
+    {"nome": "AD e Pentest Avancado", "nivel": 100, "episodios": 6},
     {"nome": "OSINT", "nivel": 100, "episodios": 3},
     {"nome": "Automacao", "nivel": 100, "episodios": 4},
-    {"nome": "Pentest", "nivel": 100, "episodios": 2}
+    {"nome": "Missao Final", "nivel": 100, "episodios": 2},
+    {"nome": "Modo Hacker", "nivel": 100, "episodios": 1}
 ]
 
 # Gere o perfil completo:
@@ -83,11 +100,11 @@ const code1: CodeChallenge = {
 # Para cada modulo: "  NOME(ljust 18) [===...] NIVEL%"
 #   barra = "=" repetido (nivel // 5) vezes
 # Some episodios: "\\nTotal: N episodios completados"
-# "Modulos: 9/9"
+# "Modulos: 12/12"
 # "\\nPronto para: eJPT, CompTIA Security+, CEH"
 `,
   },
-  expectedOutput: '=== PERFIL DO HACKER ===\nStatus: FORMADO NO CRYPTO ESCAPE\n\n  Programacao        [====================] 100%\n  Ciberseguranca     [====================] 100%\n  Logica e Algoritmos [====================] 100%\n  Seguranca Web      [====================] 100%\n  Criptografia       [====================] 100%\n  Blue Team          [====================] 100%\n  OSINT              [====================] 100%\n  Automacao          [====================] 100%\n  Pentest            [====================] 100%\n\nTotal: 46 episodios completados\nModulos: 9/9\n\nPronto para: eJPT, CompTIA Security+, CEH',
+  expectedOutput: '=== PERFIL DO HACKER ===\nStatus: FORMADO NO CRYPTO ESCAPE\n\n  Programacao        [====================] 100%\n  Terminal e Redes   [====================] 100%\n  Ciberseguranca     [====================] 100%\n  Logica e Algoritmos [====================] 100%\n  Seguranca Web      [====================] 100%\n  Criptografia       [====================] 100%\n  Blue Team          [====================] 100%\n  AD e Pentest Avancado [====================] 100%\n  OSINT              [====================] 100%\n  Automacao          [====================] 100%\n  Missao Final       [====================] 100%\n  Modo Hacker        [====================] 100%\n\nTotal: 56 episodios completados\nModulos: 12/12\n\nPronto para: eJPT, CompTIA Security+, CEH',
   hints: ['Seu perfil mostra todas as habilidades adquiridas ao longo da jornada.'],
   difficulty: 'easy',
 };
@@ -134,10 +151,11 @@ De zero absoluto até pentest profissional.
 De "o que é uma variável?" até explorar vulnerabilidades reais.
 
 **Sua jornada:**
-• 46 episódios
-• 9 módulos
+• 56 episódios
+• 12 módulos
 • Centenas de linhas de código
 • Dezenas de conceitos de segurança
+• Terminal real de ataque e defesa, com laboratórios cronometrados
 
 **O que fazer agora:**
 1. Monte um lab em casa (VMs, Kali Linux)
