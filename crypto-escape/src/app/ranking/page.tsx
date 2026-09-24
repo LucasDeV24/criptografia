@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 import { Trophy, Medal, ArrowLeft, User, RefreshCw } from 'lucide-react';
+import { estimateLevelFromCount } from '@/lib/gamification';
 
 type RankRow = {
   rank: number;
@@ -191,9 +192,17 @@ export default function RankingPage() {
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-[var(--ghost-white)] truncate">
-                    {r.full_name || 'Anônimo'}
-                  </p>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="font-medium text-[var(--ghost-white)] truncate">
+                      {r.full_name || 'Anônimo'}
+                    </p>
+                    <span
+                      title="Nível estimado a partir das salas completadas"
+                      className="text-[10px] px-2 py-0.5 rounded-full border border-[var(--cyber-cyan)]/30 bg-[var(--cyber-cyan)]/10 text-[var(--cyber-cyan)] font-medium whitespace-nowrap"
+                    >
+                      Nv. {estimateLevelFromCount(r.completed).level}
+                    </span>
+                  </div>
                   <p className="text-xs text-[var(--muted-gray)]">
                     {r.completed} salas · {r.total_attempts} tentativas
                   </p>

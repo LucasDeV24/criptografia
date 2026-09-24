@@ -19,6 +19,10 @@ Plataforma interativa para aprender **programação e cibersegurança** resolven
   (`netstat` + `ufw` + `kill`) — encaixados após o Blue Team.
 - **Modo Hacker (episódio 46):** terminal simulado e sites vulneráveis (SQL Injection, XSS, IDOR) com flags.
 - **Trilhas de carreira (`/trilhas`):** o que aprender e como entrar na área, marcando o que ainda é "em breve".
+- **XP, nível e conquistas (`src/lib/gamification.ts`):** todo derivado do progresso que já existe (salas
+  completadas, linguagem usada, acertos de primeira, tempo total) — sem precisar de coluna nova no Supabase.
+  Aparece na home (XP exato do jogador) e no ranking (nível estimado de cada jogador, a partir de quantas
+  salas completou, já que o ranking público não expõe quais salas por privacidade).
 
 ## Como rodar
 

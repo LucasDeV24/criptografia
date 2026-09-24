@@ -5,6 +5,7 @@ import { Terminal, Code, Shield, Book, Trophy, LogIn, UserPlus, LogOut } from 'l
 import { TOTAL_ROOMS } from '@/lib/progress';
 import { useProgress } from '@/lib/useProgress';
 import { useAuth } from '@/contexts/AuthContext';
+import { computeXp, getLevelInfo, getUnlockedAchievements } from '@/lib/gamification';
 
 export default function Home() {
   const { user, loading: authLoading, signingOut, signOut } = useAuth();
@@ -15,6 +16,8 @@ export default function Home() {
 
   const hasProgress = completed > 0;
   const percentage = Math.round((completed / TOTAL_ROOMS) * 100);
+  const levelInfo = getLevelInfo(computeXp(progress.completedRooms));
+  const unlockedAchievements = hasProgress ? getUnlockedAchievements(progress) : [];
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-8 relative overflow-hidden">
@@ -80,17 +83,49 @@ export default function Home() {
         </p>
 
         {hasProgress && (
-          <div className="mb-10 max-w-md mx-auto">
-            <div className="flex items-center justify-between text-sm mb-2">
-              <span className="text-[var(--muted-gray)]">Progresso</span>
-              <span className="text-[var(--matrix-green)] font-medium">{completed}/{TOTAL_ROOMS} salas ({percentage}%)</span>
+          <div className="mb-10 max-w-md mx-auto space-y-4">
+            <div>
+              <div className="flex items-center justify-between text-sm mb-2">
+                <span className="text-[var(--cyber-cyan)] font-semibold">
+                  Nível {levelInfo.level} · {levelInfo.title}
+                </span>
+                <span className="text-[var(--muted-gray)]">{levelInfo.xp} XP</span>
+              </div>
+              <div className="w-full h-2 bg-[var(--deep-space)] rounded-full overflow-hidden border border-[var(--border-subtle)]">
+                <div
+                  className="h-full bg-[var(--cyber-cyan)] rounded-full transition-all duration-700"
+                  style={{ width: `${levelInfo.percentToNextLevel}%` }}
+                />
+              </div>
             </div>
-            <div className="w-full h-2 bg-[var(--deep-space)] rounded-full overflow-hidden border border-[var(--border-subtle)]">
-              <div
-                className="h-full bg-[var(--matrix-green)] rounded-full transition-all duration-700"
-                style={{ width: `${percentage}%` }}
-              />
+
+            <div>
+              <div className="flex items-center justify-between text-sm mb-2">
+                <span className="text-[var(--muted-gray)]">Progresso</span>
+                <span className="text-[var(--matrix-green)] font-medium">{completed}/{TOTAL_ROOMS} salas ({percentage}%)</span>
+              </div>
+              <div className="w-full h-2 bg-[var(--deep-space)] rounded-full overflow-hidden border border-[var(--border-subtle)]">
+                <div
+                  className="h-full bg-[var(--matrix-green)] rounded-full transition-all duration-700"
+                  style={{ width: `${percentage}%` }}
+                />
+              </div>
             </div>
+
+            {unlockedAchievements.length > 0 && (
+              <div className="flex flex-wrap gap-2 justify-center pt-1">
+                {unlockedAchievements.map((a) => (
+                  <div
+                    key={a.id}
+                    title={a.description}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--matrix-green)]/30 bg-[var(--matrix-green)]/10 text-xs text-[var(--ghost-white)]"
+                  >
+                    <span>{a.icon}</span>
+                    <span>{a.title}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -101,7 +136,7 @@ export default function Home() {
               className="px-8 py-4 rounded-lg bg-[var(--matrix-green)] text-[var(--void-black)] font-semibold hover:shadow-[0_0_30px_var(--glow-green)] transition-all flex items-center gap-2"
             >
               <Play className="w-5 h-5" />
-              Continuar
+              Continuar missão
             </Link>
           ) : (
             <Link
@@ -109,7 +144,7 @@ export default function Home() {
               className="px-8 py-4 rounded-lg bg-[var(--matrix-green)] text-[var(--void-black)] font-semibold hover:shadow-[0_0_30px_var(--glow-green)] transition-all flex items-center gap-2"
             >
               <Play className="w-5 h-5" />
-              Começar
+              Iniciar missão
             </Link>
           )}
           <Link
@@ -144,7 +179,7 @@ export default function Home() {
           </div>
           <div className="p-6 rounded-lg border border-[var(--border-subtle)] bg-[var(--deep-space)]/50 hover:border-[var(--matrix-green)]/30 transition-colors">
             <Terminal className="w-8 h-8 text-[var(--cyber-cyan)] mb-3" />
-            <h3 className="font-semibold text-[var(--ghost-white)] mb-2">46 Episódios</h3>
+            <h3 className="font-semibold text-[var(--ghost-white)] mb-2">56 Episódios</h3>
             <p className="text-sm text-[var(--muted-gray)]">
               Do tutorial ao nível profissional em cibersegurança.
             </p>
